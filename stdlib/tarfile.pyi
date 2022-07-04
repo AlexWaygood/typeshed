@@ -37,10 +37,10 @@ class _Fileobj(Protocol):
     # name: str | bytes
     # mode: Literal["rb", "r+b", "wb", "xb"]
 
-class _Bz2ReadableFileobj(bz2._ReadableFileobj):
+class _Bz2ReadableFileobj(bz2._ReadableFileobj, Protocol):
     def close(self) -> object: ...
 
-class _Bz2WritableFileobj(bz2._WritableFileobj):
+class _Bz2WritableFileobj(bz2._WritableFileobj, Protocol):
     def close(self) -> object: ...
 
 # tar constants

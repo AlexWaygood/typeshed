@@ -2,10 +2,10 @@ import functools
 import traceback
 from collections.abc import Iterable
 from types import FrameType, FunctionType
-from typing import Any, overload
+from typing import Any, Protocol, overload
 from typing_extensions import TypeAlias
 
-class _HasWrapper:
+class _HasWrapper(Protocol):
     __wrapper__: _HasWrapper | FunctionType
 
 _FuncType: TypeAlias = FunctionType | _HasWrapper | functools.partial[Any] | functools.partialmethod[Any]

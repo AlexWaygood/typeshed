@@ -1,11 +1,11 @@
 import codecs
 import sys
 from collections.abc import Callable
-from typing import overload
+from typing import Protocol, overload
 from typing_extensions import Literal, TypeAlias
 
 # This type is not exposed; it is defined in unicodeobject.c
-class _EncodingMap:
+class _EncodingMap(Protocol):
     def size(self) -> int: ...
 
 _CharMap: TypeAlias = dict[int, int] | _EncodingMap
