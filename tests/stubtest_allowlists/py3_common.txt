@@ -532,8 +532,14 @@ xml.etree
 xml.sax
 
 # Platform differences that cannot be captured by the type system
-os.O_[A-Z_]+
-(posix.O_[A-Z_]+)?
+os.O_ASYNC  # Gnu extension if in C library
+os.O_DIRECT  # Gnu extension if in C library
+os.O_DIRECTORY  # Gnu extension if in C library
+os.O_NOFOLLOW  # Gnu extension if in C library
+os.O_NOATIME  # Gnu extension if in C library
+os.O_PATH  # Gnu extension if in C library
+os.O_TMPFILE  # Gnu extension if in C library
+os.O_LARGEFILE  # Gnu extension if in C library
 (posix.ST_[A-Z]+)?
 socket.AF_DECnet
 (termios.[A-Z0-9_]+)?
