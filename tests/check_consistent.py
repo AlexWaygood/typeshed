@@ -154,13 +154,14 @@ def get_precommit_requirements() -> dict[str, SpecifierSet]:
     yam = yaml.load(precommit, Loader=yaml.Loader)
     precommit_requirements = {}
     for repo in yam["repos"]:
-        hook = repo["hooks"][0]
-        package_name, package_rev = hook["id"], repo["rev"]
+        package_name = repo["repo"].split("/")[-1]
+        package_rev = repo["rev"]
         package_specifier = SpecifierSet(f"=={package_rev.removeprefix('v')}")
         precommit_requirements[package_name] = package_specifier
-        for additional_req in hook.get("additional_dependencies", []):
-            req = Requirement(additional_req)
-            precommit_requirements[req.name] = req.specifier
+        for hook in repo["hooks"]:
+            for additional_req in hook.get("additional_dependencies", []):
+                requirement = Requirement(additional_req)
+                precommit_requirements[requirement.name] = requirement.specifier
     return precommit_requirements
 
 
@@ -169,7 +170,7 @@ def check_requirements() -> None:
     precommit_requirements = get_precommit_requirements()
     no_txt_entry_msg = "All pre-commit requirements must also be listed in `requirements-tests.txt` (missing {requirement!r})"
     for requirement, specifier in precommit_requirements.items():
-        assert requirement in requirements_txt_requirements, no_txt_entry_msg.format(requirement)
+        assert requirement in requirements_txt_requirements, no_txt_entry_msg.format(requirement=requirement)
         specifier_mismatch = (
             f'Specifier "{specifier}" for {requirement!r} in `.pre-commit-config.yaml` '
             f'does not match specifier "{requirements_txt_requirements[requirement]}" in `requirements-tests.txt`'

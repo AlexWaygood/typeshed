@@ -7,6 +7,7 @@ flake8-pyi==22.8.2      # must match .pre-commit-config.yaml
 isort==5.10.1           # must match .pre-commit-config.yaml
 mypy==0.971
 packaging==21.3
+pre-commit-hooks==4.3.0 # must match .pre-commit-config.yaml
 pycln==2.1.1            # must match .pre-commit-config.yaml
 pyyaml==6.0
 pytype==2022.08.30; platform_system != "Windows"

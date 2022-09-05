@@ -83,7 +83,8 @@ terminal to install all non-pytype requirements:
 ## Code formatting
 
 The code is formatted using `black` and `isort`. Unused imports are also
-auto-removed using `pycln`.
+auto-removed using `pycln`, and `requirements.txt` files are automatically
+sorted using `requirements-txt-fixer`.
 
 The repository is equipped with a [`pre-commit.ci`](https://pre-commit.ci/)
 configuration file. This means that you don't *need* to do anything yourself to
