@@ -1,3 +1,8 @@
+[tool.typeshed]
+min_supported_version = "3.7"
+max_supported_version = "3.11"
+supported_platforms = ["linux", "darwin", "win32"]
+
 [tool.black]
 line_length = 130
 target_version = ["py310"]

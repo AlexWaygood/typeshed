@@ -13,6 +13,7 @@ from itertools import filterfalse, product
 from pathlib import Path
 from typing_extensions import TypeAlias
 
+from config import get_typeshed_config
 from utils import (
     PackageInfo,
     colored,
@@ -23,10 +24,12 @@ from utils import (
     testcase_dir_from_package_name,
 )
 
-ReturnCode: TypeAlias = int
+_config = get_typeshed_config()
 
-SUPPORTED_PLATFORMS = ["linux", "darwin", "win32"]
-SUPPORTED_VERSIONS = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+SUPPORTED_PLATFORMS = _config.supported_platforms
+SUPPORTED_VERSIONS = _config.supported_versions
+
+ReturnCode: TypeAlias = int
 
 
 def package_with_test_cases(package_name: str) -> PackageInfo:

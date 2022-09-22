@@ -14,17 +14,19 @@ from io import StringIO
 from itertools import product
 from pathlib import Path
 from typing import TYPE_CHECKING, NamedTuple
+from typing_extensions import Annotated, TypeAlias
+
+import tomli
+from config import get_typeshed_config
+from utils import VERSIONS_RE as VERSION_LINE_RE, colored, print_error, print_success_msg, read_dependencies, strip_comments
 
 if TYPE_CHECKING:
     from _typeshed import StrPath
 
-from typing_extensions import Annotated, TypeAlias
+_config = get_typeshed_config()
 
-import tomli
-from utils import VERSIONS_RE as VERSION_LINE_RE, colored, print_error, print_success_msg, read_dependencies, strip_comments
-
-SUPPORTED_VERSIONS = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-SUPPORTED_PLATFORMS = ("linux", "win32", "darwin")
+SUPPORTED_VERSIONS = _config.supported_versions
+SUPPORTED_PLATFORMS = _config.supported_platforms
 DIRECTORIES_TO_TEST = [Path("stdlib"), Path("stubs")]
 
 ReturnCode: TypeAlias = int

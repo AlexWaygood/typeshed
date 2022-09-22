@@ -8,11 +8,6 @@ from typing import NamedTuple
 
 import tomli
 
-
-def strip_comments(text: str) -> str:
-    return text.split("#")[0].strip()
-
-
 try:
     from termcolor import colored as colored
 except ImportError:
@@ -31,6 +26,14 @@ def print_error(error: str, end: str = "\n", fix_path: tuple[str, str] = ("", ""
 
 def print_success_msg() -> None:
     print(colored("success", "green"))
+
+
+def strip_comments(text: str) -> str:
+    return text.split("#")[0].strip()
+
+
+def minor_version_from_version_string(x: str) -> int:
+    return int(x.split(".")[-1])
 
 
 # ====================================================================

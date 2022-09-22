@@ -8,13 +8,16 @@ import sys
 from itertools import product
 from typing_extensions import TypeAlias
 
-from utils import colored, print_error
+from config import get_typeshed_config
+from utils import colored, minor_version_from_version_string, print_error
+
+_config = get_typeshed_config()
+
+SUPPORTED_PLATFORMS = _config.supported_platforms
+SUPPORTED_VERSIONS = [version for version in _config.supported_versions if minor_version_from_version_string(version) >= 9]
+DIRECTORIES_TO_TEST = ("scripts", "tests")
 
 ReturnCode: TypeAlias = int
-
-SUPPORTED_PLATFORMS = ("linux", "darwin", "win32")
-SUPPORTED_VERSIONS = ("3.11", "3.10", "3.9")
-DIRECTORIES_TO_TEST = ("scripts", "tests")
 
 parser = argparse.ArgumentParser(description="Run mypy on typeshed's own code in the `scripts` and `tests` directories.")
 parser.add_argument(
