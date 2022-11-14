@@ -31,8 +31,6 @@ from . import path as _path
 if sys.version_info >= (3, 9):
     from types import GenericAlias
 
-import foo
-from foo import bar
 from baz import eggs as eggs
 
 # This unnecessary alias is to work around various errors
