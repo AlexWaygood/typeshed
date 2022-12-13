@@ -19,15 +19,14 @@ from utils import (
     colored,
     get_all_testcase_directories,
     get_recursive_requirements,
+    get_typeshed_config,
     print_error,
     print_success_msg,
     testcase_dir_from_package_name,
 )
 
 ReturnCode: TypeAlias = int
-
-SUPPORTED_PLATFORMS = ["linux", "darwin", "win32"]
-SUPPORTED_VERSIONS = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+CONFIG = get_typeshed_config()
 
 
 def package_with_test_cases(package_name: str) -> PackageInfo:
@@ -63,7 +62,7 @@ parser.add_argument("--quiet", action="store_true", help="Print less output to t
 parser.add_argument(
     "--platform",
     dest="platforms_to_test",
-    choices=SUPPORTED_PLATFORMS,
+    choices=CONFIG.tested_platforms,
     nargs="*",
     action="extend",
     help=(
@@ -75,7 +74,7 @@ parser.add_argument(
     "-p",
     "--python-version",
     dest="versions_to_test",
-    choices=SUPPORTED_VERSIONS,
+    choices=CONFIG.tested_versions,
     nargs="*",
     action="extend",
     help=(
@@ -143,7 +142,7 @@ def test_testcase_directory(package: PackageInfo, version: str, platform: str, q
         for path in new_test_case_dir.rglob("*.py"):
             if match := re.fullmatch(r".*-py3(\d{1,2})", path.stem):
                 minor_version_required = int(match[1])
-                assert f"3.{minor_version_required}" in SUPPORTED_VERSIONS
+                assert f"3.{minor_version_required}" in CONFIG.tested_versions
                 if minor_version_required <= int(version.split(".")[1]):
                     flags.append(str(path))
             else:
@@ -177,7 +176,7 @@ def main() -> ReturnCode:
             parser.error("Cannot specify both --platform and --all")
         if args.versions_to_test:
             parser.error("Cannot specify both --python-version and --all")
-        platforms_to_test, versions_to_test = SUPPORTED_PLATFORMS, SUPPORTED_VERSIONS
+        platforms_to_test, versions_to_test = CONFIG.tested_platforms, CONFIG.tested_versions
     else:
         platforms_to_test = args.platforms_to_test or [sys.platform]
         versions_to_test = args.versions_to_test or [f"3.{sys.version_info[1]}"]

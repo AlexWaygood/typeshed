@@ -62,3 +62,7 @@ disable_all_dunder_policy = true
 
 [tool.typeshed]
 pyright_version = "1.1.278"
+tested_platforms = ["darwin", "linux", "win32"]
+# Some tests use a slightly different version matrix,
+# but this is the most common one across our tests
+tested_versions = ["3.7", "3.8", "3.9", "3.10", "3.11"]

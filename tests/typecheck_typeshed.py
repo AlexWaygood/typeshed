@@ -8,11 +8,11 @@ import sys
 from itertools import product
 from typing_extensions import TypeAlias
 
-from utils import colored, print_error
+from utils import colored, get_typeshed_config, print_error
 
 ReturnCode: TypeAlias = int
 
-SUPPORTED_PLATFORMS = ("linux", "darwin", "win32")
+SUPPORTED_PLATFORMS = get_typeshed_config().tested_platforms
 SUPPORTED_VERSIONS = ("3.11", "3.10", "3.9")
 DIRECTORIES_TO_TEST = ("scripts", "tests")
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+from dataclasses import dataclass
 from functools import cache
 from itertools import filterfalse
 from pathlib import Path
@@ -38,6 +39,23 @@ def print_error(error: str, end: str = "\n", fix_path: tuple[str, str] = ("", ""
 
 def print_success_msg() -> None:
     print(colored("success", "green"))
+
+
+# ====================================================================
+# Parsing config from our pyproject.toml file
+# ====================================================================
+
+
+@dataclass(frozen=True)
+class TypeshedConfig:
+    pyright_version: str
+    tested_platforms: list[str]
+    tested_versions: list[str]
+
+
+def get_typeshed_config() -> TypeshedConfig:
+    with open("pyproject.toml", "rb") as config:
+        return TypeshedConfig(**tomli.load(config)["tool"]["typeshed"])
 
 
 # ====================================================================

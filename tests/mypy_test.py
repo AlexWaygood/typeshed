@@ -26,6 +26,7 @@ from utils import (
     colored,
     get_gitignore_spec,
     get_recursive_requirements,
+    get_typeshed_config,
     print_error,
     print_success_msg,
     spec_matches_path,
@@ -38,14 +39,13 @@ except ImportError:
     print_error("Cannot import mypy. Did you install it?")
     sys.exit(1)
 
-SUPPORTED_VERSIONS = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-SUPPORTED_PLATFORMS = ("linux", "win32", "darwin")
+CONFIG = get_typeshed_config()
 DIRECTORIES_TO_TEST = [Path("stdlib"), Path("stubs")]
 
 ReturnCode: TypeAlias = int
-VersionString: TypeAlias = Annotated[str, "Must be one of the entries in SUPPORTED_VERSIONS"]
+VersionString: TypeAlias = Annotated[str, "Must be one of the entries in pyproject.toml's `tool.typeshed.tested_versions`"]
 VersionTuple: TypeAlias = tuple[int, int]
-Platform: TypeAlias = Annotated[str, "Must be one of the entries in SUPPORTED_PLATFORMS"]
+Platform: TypeAlias = Annotated[str, "Must be one of the entries in pyproject.toml's `tool.typeshed.tested_platforms`"]
 
 
 class CommandLineArgs(argparse.Namespace):
@@ -81,14 +81,14 @@ parser.add_argument(
     "-p",
     "--python-version",
     type=str,
-    choices=SUPPORTED_VERSIONS,
+    choices=CONFIG.tested_versions,
     nargs="*",
     action="extend",
     help="These versions only (major[.minor])",
 )
 parser.add_argument(
     "--platform",
-    choices=SUPPORTED_PLATFORMS,
+    choices=CONFIG.tested_platforms,
     nargs="*",
     action="extend",
     help="Run mypy for certain OS platforms (defaults to sys.platform only)",
@@ -394,7 +394,7 @@ def test_typeshed(code: int, args: TestConfig) -> TestResults:
 
 def main() -> None:
     args = parser.parse_args(namespace=CommandLineArgs())
-    versions = args.python_version or SUPPORTED_VERSIONS
+    versions = args.python_version or CONFIG.tested_versions
     platforms = args.platform or [sys.platform]
     filter = args.filter or DIRECTORIES_TO_TEST
     exclude = args.exclude or []
