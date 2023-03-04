@@ -31,9 +31,9 @@ if sys.version_info >= (3, 9):
 _T = TypeVar("_T")
 _S = TypeVar("_S")
 _PWrapped = ParamSpec("_PWrapped")
-_RWrapped = TypeVar("_RWrapped")
+_RWrapped = TypeVar("_RWrapped", covariant=True)
 _PWrapper = ParamSpec("_PWrapper")
-_RWapper = TypeVar("_RWapper")
+_RWapper = TypeVar("_RWapper", covariant=True)
 
 @overload
 def reduce(function: Callable[[_T, _S], _T], sequence: Iterable[_S], initial: _T) -> _T: ...
