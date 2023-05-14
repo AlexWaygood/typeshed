@@ -1,12 +1,13 @@
 import ssl
 import sys
 from _typeshed import FileDescriptorLike, ReadableBuffer, StrPath, Unused, WriteableBuffer
+from _typeshed.asyncio import ProtocolFactory, ExceptionHandlerContext, LoopExceptionHandler, SSLContext
 from abc import ABCMeta, abstractmethod
 from collections.abc import Awaitable, Callable, Coroutine, Generator, Sequence
 from contextvars import Context
 from socket import AddressFamily, SocketKind, _Address, _RetAddress, socket
 from typing import IO, Any, Protocol, TypeVar, overload
-from typing_extensions import Literal, Self, TypeAlias
+from typing_extensions import Literal, Self
 
 from .base_events import Server
 from .futures import Future
@@ -56,10 +57,6 @@ else:
 
 _T = TypeVar("_T")
 _ProtocolT = TypeVar("_ProtocolT", bound=BaseProtocol)
-_Context: TypeAlias = dict[str, Any]
-_ExceptionHandler: TypeAlias = Callable[[AbstractEventLoop, _Context], object]
-_ProtocolFactory: TypeAlias = Callable[[], BaseProtocol]
-_SSLContext: TypeAlias = bool | None | ssl.SSLContext
 
 class _TaskFactory(Protocol):
     def __call__(
@@ -212,7 +209,7 @@ class AbstractEventLoop:
             host: str = ...,
             port: int = ...,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -232,7 +229,7 @@ class AbstractEventLoop:
             host: None = None,
             port: None = None,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -253,7 +250,7 @@ class AbstractEventLoop:
             host: str = ...,
             port: int = ...,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -272,7 +269,7 @@ class AbstractEventLoop:
             host: None = None,
             port: None = None,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -292,7 +289,7 @@ class AbstractEventLoop:
             host: str = ...,
             port: int = ...,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -309,7 +306,7 @@ class AbstractEventLoop:
             host: None = None,
             port: None = None,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             family: int = 0,
             proto: int = 0,
             flags: int = 0,
@@ -323,7 +320,7 @@ class AbstractEventLoop:
         @abstractmethod
         async def create_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             host: str | Sequence[str] | None = None,
             port: int = ...,
             *,
@@ -331,7 +328,7 @@ class AbstractEventLoop:
             flags: int = ...,
             sock: None = None,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             reuse_address: bool | None = None,
             reuse_port: bool | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -342,7 +339,7 @@ class AbstractEventLoop:
         @abstractmethod
         async def create_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             host: None = None,
             port: None = None,
             *,
@@ -350,7 +347,7 @@ class AbstractEventLoop:
             flags: int = ...,
             sock: socket = ...,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             reuse_address: bool | None = None,
             reuse_port: bool | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -371,12 +368,12 @@ class AbstractEventLoop:
         ) -> Transport: ...
         async def create_unix_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             path: StrPath | None = None,
             *,
             sock: socket | None = None,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             ssl_handshake_timeout: float | None = None,
             ssl_shutdown_timeout: float | None = None,
             start_serving: bool = True,
@@ -386,7 +383,7 @@ class AbstractEventLoop:
         @abstractmethod
         async def create_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             host: str | Sequence[str] | None = None,
             port: int = ...,
             *,
@@ -394,7 +391,7 @@ class AbstractEventLoop:
             flags: int = ...,
             sock: None = None,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             reuse_address: bool | None = None,
             reuse_port: bool | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -404,7 +401,7 @@ class AbstractEventLoop:
         @abstractmethod
         async def create_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             host: None = None,
             port: None = None,
             *,
@@ -412,7 +409,7 @@ class AbstractEventLoop:
             flags: int = ...,
             sock: socket = ...,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             reuse_address: bool | None = None,
             reuse_port: bool | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -431,12 +428,12 @@ class AbstractEventLoop:
         ) -> Transport: ...
         async def create_unix_server(
             self,
-            protocol_factory: _ProtocolFactory,
+            protocol_factory: ProtocolFactory,
             path: StrPath | None = None,
             *,
             sock: socket | None = None,
             backlog: int = 100,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             ssl_handshake_timeout: float | None = None,
             start_serving: bool = True,
         ) -> Server: ...
@@ -446,7 +443,7 @@ class AbstractEventLoop:
             protocol_factory: Callable[[], _ProtocolT],
             sock: socket,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             ssl_handshake_timeout: float | None = None,
             ssl_shutdown_timeout: float | None = None,
         ) -> tuple[Transport, _ProtocolT]: ...
@@ -456,7 +453,7 @@ class AbstractEventLoop:
             protocol_factory: Callable[[], _ProtocolT],
             sock: socket,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             ssl_handshake_timeout: float | None = None,
         ) -> tuple[Transport, _ProtocolT]: ...
     if sys.version_info >= (3, 11):
@@ -465,7 +462,7 @@ class AbstractEventLoop:
             protocol_factory: Callable[[], _ProtocolT],
             path: str | None = None,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             sock: socket | None = None,
             server_hostname: str | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -477,7 +474,7 @@ class AbstractEventLoop:
             protocol_factory: Callable[[], _ProtocolT],
             path: str | None = None,
             *,
-            ssl: _SSLContext = None,
+            ssl: SSLContext = None,
             sock: socket | None = None,
             server_hostname: str | None = None,
             ssl_handshake_timeout: float | None = None,
@@ -581,13 +578,13 @@ class AbstractEventLoop:
     def remove_signal_handler(self, sig: int) -> bool: ...
     # Error handlers.
     @abstractmethod
-    def set_exception_handler(self, handler: _ExceptionHandler | None) -> None: ...
+    def set_exception_handler(self, handler: LoopExceptionHandler | None) -> None: ...
     @abstractmethod
-    def get_exception_handler(self) -> _ExceptionHandler | None: ...
+    def get_exception_handler(self) -> LoopExceptionHandler | None: ...
     @abstractmethod
-    def default_exception_handler(self, context: _Context) -> None: ...
+    def default_exception_handler(self, context: ExceptionHandlerContext) -> None: ...
     @abstractmethod
-    def call_exception_handler(self, context: _Context) -> None: ...
+    def call_exception_handler(self, context: ExceptionHandlerContext) -> None: ...
     # Debug flag management.
     @abstractmethod
     def get_debug(self) -> bool: ...
