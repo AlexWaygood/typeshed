@@ -1,3 +1,52 @@
+[project]
+name = "typeshed-tests"
+version = "0.0.1"
+python-requires = ">=3.7"
+
+[project.optional-dependencies]
+# lint dependencies can only be installed on py38+
+lint = [
+    "black==23.3.0",
+    "flake8==6.0.0",
+    "flake8-bugbear==23.5.9",
+    "flake8-noqa==1.3.1",
+    "flake8-pyi==23.5.0",
+    "isort==5.12.0",
+    "pre-commit-hooks==4.4.0",
+    "pycln==2.1.5",
+]
+mypy = ["mypy==1.3.0"]
+pytype = ["pytype==2023.6.2; platform_system != 'Windows'"]
+scripts = [
+    "aiohttp==3.8.4",
+    "packaging==23.1",
+    "pathspec>=0.11.1",
+    "pyyaml==6.0",
+    "stubdefaulter==0.1.0",
+    "termcolor>=2.3",
+    "tomli==2.0.1",
+    "tomlkit==0.11.8",
+    "typing-extensions"
+]
+typecheck = [
+    "types-pyyaml>=6.0.12.7",
+    "types-setuptools>=67.5.0.0"
+]
+all-tests = ["typeshed-tests[lint,mypy,pytype,scripts,typecheck] @ {root:uri}"]
+
+[tool.typeshed]
+pyright_version = "1.1.314"
+
+[build-system]
+requires = ["hatchling>=1.11.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.black]
 line_length = 130
 target_version = ["py310"]
@@ -60,6 +109,3 @@ known_first_party = ["utils", "parse_metadata"]
 [tool.pycln]
 all = true
 disable_all_dunder_policy = true
-
-[tool.typeshed]
-pyright_version = "1.1.314"

@@ -28,13 +28,13 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: requirements-tests.txt
+          cache-dependency-path: pyproject.toml
       - name: git config
         run: |
           git config --global user.name stubsabot
           git config --global user.email '<>'
       - name: Install dependencies
-        run: pip install -r requirements-tests.txt
+        run: pip install .[scripts]
       - name: Run stubsabot
         run: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} python scripts/stubsabot.py --action-level everything
 

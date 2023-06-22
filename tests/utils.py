@@ -9,10 +9,12 @@ import sys
 import venv
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, NamedTuple
-from typing_extensions import Annotated
+from typing import Any, Dict, List, NamedTuple
+from typing_extensions import Annotated, TypeAlias
 
 import pathspec
+import tomli
+from packaging.requirements import Requirement
 
 try:
     from termcolor import colored as colored  # pyright: ignore[reportGeneralTypeIssues]
@@ -78,10 +80,24 @@ def make_venv(venv_dir: Path) -> VenvInfo:
     return VenvInfo.of_existing_venv(venv_dir)
 
 
+DependencyGroupName: TypeAlias = str
+DependencyGroup: TypeAlias = List[Requirement]
+PyProjectDependencies: TypeAlias = Dict[DependencyGroupName, DependencyGroup]
+
+
+@cache
+def get_pyproject_requirements() -> PyProjectDependencies:
+    with open("pyproject.toml", "rb") as f:
+        requirement_groups: dict[str, dict[str, str]] = tomli.load(f)["project"]["optional-dependencies"]
+    parsed_dependencies: PyProjectDependencies = {}
+    for group_name, group in requirement_groups.items():
+        parsed_dependencies[group_name] = [Requirement(requirement_string.split("@")[0]) for requirement_string in group]
+    return parsed_dependencies
+
+
 @cache
 def get_mypy_req() -> str:
-    with open("requirements-tests.txt", encoding="UTF-8") as requirements_file:
-        return next(strip_comments(line) for line in requirements_file if "mypy" in line)
+    return str(get_pyproject_requirements()["mypy"][0])
 
 
 # ====================================================================

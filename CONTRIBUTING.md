@@ -59,7 +59,7 @@ terminal window:
 $ python3 -m venv .venv
 $ source .venv/bin/activate
 (.venv)$ pip install -U pip
-(.venv)$ pip install -r requirements-tests.txt
+(.venv)$ pip install .[all-tests]
 ```
 
 ### Windows
@@ -79,7 +79,7 @@ terminal to install all non-pytype requirements:
 > python -m venv .venv
 > .venv\scripts\activate
 (.venv) > pip install -U pip
-(.venv) > pip install -r "requirements-tests.txt"
+(.venv) > pip install .[all-tests]
 ```
 
 ## Code formatting
@@ -264,7 +264,7 @@ replacing `libraryname` with the name of the library below:
 When the script has finished running, it will print instructions telling you what to do next.
 
 If it has been a while since you set up the virtualenv, make sure you have
-the latest mypy (`pip install -r requirements-tests.txt`) before running the script.
+the latest mypy (`pip install .[all-tests]`) before running the script.
 
 ### Supported type system features
 
