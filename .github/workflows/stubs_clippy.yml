@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install flake8 flake8-pyi flake8-json
+        run: pip install flake8 flake8-json $(grep flake8-pyi== requirements-tests.txt)
       - name: Run stubs clippy
         run: python scripts/stubs_clippy.py upstream/main > stubs_clippy_errors.txt
       - name: Get the PR number
