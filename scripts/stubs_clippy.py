@@ -1,3 +1,5 @@
+"""Script to run flake8-pyi checks on a PR branch, and filter out any errors that weren't actually introduced by the PR."""
+
 import json
 import re
 import sys

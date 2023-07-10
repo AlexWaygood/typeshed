@@ -1,0 +1,39 @@
+name: Run stubs clippy
+
+on:
+  # Only run on PR, since we diff against main
+  pull_request:
+    paths:
+      - "**/*.pyi"
+      - ".github/workflows/stubs_clippy.yml"
+      - ".github/workflows/stubs_clippy_comment.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  stubs_clippy:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install flake8 flake8-pyi flake8-json
+      - name: Run stubs clippy
+        run: python scripts/stubs_clippy.py upstream/main > stubs_clippy_errors.txt
+      - name: Get the PR number
+        run: echo ${{ github.event.pull_request.number }} | tee pr_number.txt
+      - name: Upload errors found on changed lines
+        uses: actions/upload-artifact@v3
+        with:
+          name: stubs_clippy_errors
+          path: |
+            stubs_clippy_errors.txt
+            pr_number.txt
