@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install git+https://github.com/AlexWaygood/mypy_primer.git@optimise
+        run: pip install git+https://github.com/AlexWaygood/mypy_primer.git@optimise-2
       - name: Run mypy_primer
         shell: bash
         run: |
