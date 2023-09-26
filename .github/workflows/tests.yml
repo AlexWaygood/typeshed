@@ -119,6 +119,10 @@ jobs:
   regression-tests:
     name: Run mypy on the test cases
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: ["linux", "win32", "darwin"]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -127,7 +131,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-tests.txt
       - run: pip install -r requirements-tests.txt
-      - run: python ./tests/regr_test.py --all --verbosity QUIET
+      - run: python ./tests/regr_test.py -p 3.8 3.9 3.10 3.11 3.12 --platform=${{ matrix.platform }} --verbosity=QUIET
 
   pyright:
     name: Test typeshed with pyright
