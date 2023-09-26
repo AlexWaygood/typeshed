@@ -1,22 +1,38 @@
+from typing import Generic, TypeVar, overload
+
 from urllib3.exceptions import HTTPError as BaseHTTPError
 
 from .models import Request, Response
 from .sessions import PreparedRequest
 
+_ResponseT = TypeVar("_ResponseT", bound=Response)
+_ResponseOrNoneT = TypeVar("_ResponseOrNoneT", bound=Response | None)
+_RequestT = TypeVar("_RequestT", bound=Request | PreparedRequest)
+_RequestOrNoneT = TypeVar("_RequestOrNoneT", bound=Request | PreparedRequest | None)
+
 class RequestException(OSError):
     response: Response | None
     request: Request | PreparedRequest | None
     def __init__(
-        self, *args: object, request: Request | PreparedRequest | None = ..., response: Response | None = ...
+        self, *args: object, request: Request | PreparedRequest | None = None, response: Response | None = None
     ) -> None: ...
 
 class InvalidJSONError(RequestException): ...
 class JSONDecodeError(InvalidJSONError): ...
 
-class HTTPError(RequestException):
-    request: Request | PreparedRequest
-    response: Response
-    def __init__(self, *args: object, request: Request | PreparedRequest, response: Response) -> None: ...
+class HTTPError(RequestException, Generic[_ResponseOrNoneT, _RequestOrNoneT]):
+    request: _RequestOrNoneT
+    response: _ResponseOrNoneT
+    @overload
+    def __init__(self: HTTPError[None, None], *args: object, response: None = None, request: None = None) -> None: ...
+    @overload
+    def __init__(self: HTTPError[None, _RequestT], *args: object, request: _RequestT, response: None = None) -> None: ...
+    @overload
+    def __init__(
+        self: HTTPError[_ResponseT, Request | PreparedRequest | None], *args: object, response: _ResponseT, request: None = None
+    ) -> None: ...
+    @overload
+    def __init__(self: HTTPError[_ResponseT, _RequestT], *args: object, response: _ResponseT, request: _RequestT) -> None: ...
 
 class ConnectionError(RequestException): ...
 class ProxyError(ConnectionError): ...
