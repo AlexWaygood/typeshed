@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import enum
 import os
 import re
 import subprocess
@@ -305,34 +306,50 @@ def add_third_party_files(
         add_configuration(configurations, distribution)
 
 
-class TestResults(NamedTuple):
-    exit_code: int
+class TestOutcome(enum.IntEnum):
+    TEST_SUCCESS = 0    # the test succeeded
+    TEST_FAILURE = 1    # the test failed; there are errors in the stubs
+    TEST_ERROR = 2      # the test script itself failed somehow
+
+
+@dataclass
+class IndividualDistributionTestResults:
+    outcome: TestOutcome
     files_checked: int
+    code: int = 0                       # The error code returned by the mypy subprocess
+    test_error_description: str = ""    # Only relevant if outcome is TestOutcome.TEST_ERROR
+
+
+@dataclass
+class AggregatedTestResults:
+    outcome: TestOutcome
+    files_checked: int
+    code: int = 0
     packages_skipped: int = 0
 
 
-def test_third_party_distribution(
-    distribution: str, args: TestConfig, venv_info: VenvInfo, *, non_types_dependencies: bool
-) -> TestResults:
+def test_third_party_distribution(distribution: str, args: TestConfig) -> TestResults:
     """Test the stubs of a third-party distribution.
 
     Return a tuple, where the first element indicates mypy's return code
     and the second element is the number of checked files.
     """
+    venv_info = _DISTRIBUTION_TO_VENV_MAPPING[distribution]
+    non_types_dependencies = venv_info.python_exe != sys.executable
 
     files: list[Path] = []
     configurations: list[MypyDistConf] = []
     seen_dists: set[str] = set()
     add_third_party_files(distribution, files, args, configurations, seen_dists)
 
-    if not files and args.filter:
-        return TestResults(0, 0)
+    if not files
+        if args.filter:
+            return TestResults(TestOutcome.SUCCESS, 0)
 
     print(f"testing {distribution} ({len(files)} files)... ", end="", flush=True)
 
     if not files:
-        print_error("no files found")
-        sys.exit(1)
+        return TestResults(TestOutcome.TEST_ERROR, 0, error="no files found")
 
     mypypath = os.pathsep.join(str(Path("stubs", dist)) for dist in seen_dists)
     if args.verbose:
@@ -525,8 +542,6 @@ def test_third_party_stubs(code: int, args: TestConfig, tempdir: Path) -> TestRe
     assert _DISTRIBUTION_TO_VENV_MAPPING.keys() >= distributions_to_check.keys()
 
     for distribution in distributions_to_check:
-        venv_info = _DISTRIBUTION_TO_VENV_MAPPING[distribution]
-        non_types_dependencies = venv_info.python_exe != sys.executable
         this_code, checked, _ = test_third_party_distribution(
             distribution, args, venv_info=venv_info, non_types_dependencies=non_types_dependencies
         )
