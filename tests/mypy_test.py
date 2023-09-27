@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import enum
 import os
+import queue
 import re
 import subprocess
 import sys
@@ -124,9 +124,12 @@ class TestConfig:
     platform: Platform
 
 
+_PRINT_QUEUE: queue.SimpleQueue[str] = queue.SimpleQueue()
+
+
 def log(args: TestConfig, *varargs: object) -> None:
     if args.verbose >= 2:
-        print(colored(" ".join(map(str, varargs)), "blue"))
+        _PRINT_QUEUE.put(colored(" ".join(map(str, varargs)), "blue"))
 
 
 def match(path: Path, args: TestConfig) -> bool:
@@ -306,29 +309,20 @@ def add_third_party_files(
         add_configuration(configurations, distribution)
 
 
-class TestOutcome(enum.IntEnum):
-    TEST_SUCCESS = 0    # the test succeeded
-    TEST_FAILURE = 1    # the test failed; there are errors in the stubs
-    TEST_ERROR = 2      # the test script itself failed somehow
-
-
 @dataclass
-class IndividualDistributionTestResults:
-    outcome: TestOutcome
+class DistributionTestResults:
+    exit_code: int
     files_checked: int
-    code: int = 0                       # The error code returned by the mypy subprocess
-    test_error_description: str = ""    # Only relevant if outcome is TestOutcome.TEST_ERROR
 
 
 @dataclass
 class AggregatedTestResults:
-    outcome: TestOutcome
+    exit_code: int
     files_checked: int
-    code: int = 0
-    packages_skipped: int = 0
+    packages_skipped: int
 
 
-def test_third_party_distribution(distribution: str, args: TestConfig) -> TestResults:
+def test_third_party_distribution(distribution: str, args: TestConfig) -> DistributionTestResults:
     """Test the stubs of a third-party distribution.
 
     Return a tuple, where the first element indicates mypy's return code
@@ -342,16 +336,15 @@ def test_third_party_distribution(distribution: str, args: TestConfig) -> TestRe
     seen_dists: set[str] = set()
     add_third_party_files(distribution, files, args, configurations, seen_dists)
 
-    if not files
-        if args.filter:
-            return IndividualDistributionTestResults(TestOutcome.SUCCESS, files_checked=0)
-        return IndividualDistributionTestResults(TestOutcome.TEST_ERROR, files_checked=0, test_error_description="no files found")
-
-    print(f"testing {distribution} ({len(files)} files)... ", end="", flush=True)        
+    if not files:
+        return DistributionTestResults(2, 0)
 
     mypypath = os.pathsep.join(str(Path("stubs", dist)) for dist in seen_dists)
+
+    msg = f"testing {distribution} ({len(files)} files)... "
     if args.verbose:
-        print(colored(f"\nMYPYPATH={mypypath}", "blue"))
+        msg += colored(f"\nMYPYPATH={mypypath}", "blue")
+
     code = run_mypy(
         args,
         configurations,
@@ -361,7 +354,7 @@ def test_third_party_distribution(distribution: str, args: TestConfig) -> TestRe
         testing_stdlib=False,
         non_types_dependencies=non_types_dependencies,
     )
-    return IndividualDistributionTestResults(TestOutcome(bool(code)), files_checked=len(files), code=code)
+    return DistributionTestResults(code, len(files))
 
 
 def test_stdlib(code: int, args: TestConfig) -> TestResults:
