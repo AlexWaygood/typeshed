@@ -344,12 +344,10 @@ def test_third_party_distribution(distribution: str, args: TestConfig) -> TestRe
 
     if not files
         if args.filter:
-            return TestResults(TestOutcome.SUCCESS, 0)
+            return IndividualDistributionTestResults(TestOutcome.SUCCESS, files_checked=0)
+        return IndividualDistributionTestResults(TestOutcome.TEST_ERROR, files_checked=0, test_error_description="no files found")
 
-    print(f"testing {distribution} ({len(files)} files)... ", end="", flush=True)
-
-    if not files:
-        return TestResults(TestOutcome.TEST_ERROR, 0, error="no files found")
+    print(f"testing {distribution} ({len(files)} files)... ", end="", flush=True)        
 
     mypypath = os.pathsep.join(str(Path("stubs", dist)) for dist in seen_dists)
     if args.verbose:
@@ -363,7 +361,7 @@ def test_third_party_distribution(distribution: str, args: TestConfig) -> TestRe
         testing_stdlib=False,
         non_types_dependencies=non_types_dependencies,
     )
-    return TestResults(code, len(files))
+    return IndividualDistributionTestResults(TestOutcome(bool(code)), files_checked=len(files), code=code)
 
 
 def test_stdlib(code: int, args: TestConfig) -> TestResults:
