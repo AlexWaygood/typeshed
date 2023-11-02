@@ -1,7 +1,8 @@
 import abc
 import codecs
-import _multibytecodec as mbc
 from _typeshed import Incomplete
+
+import _multibytecodec as mbc
 
 codec: Incomplete
 
