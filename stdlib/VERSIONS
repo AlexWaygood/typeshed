@@ -38,6 +38,7 @@ _json: 2.7-
 _locale: 2.7-
 _markupbase: 2.7-
 _msi: 2.7-
+_multibytecodec: 2.7-
 _operator: 3.4-
 _osx_support: 2.7-
 _posixsubprocess: 3.2-
