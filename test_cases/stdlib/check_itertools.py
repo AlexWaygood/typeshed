@@ -458,7 +458,8 @@ if sys.version_info >= (3, 12):
         """
         # polynomial_from_roots([5, -4, 3]) --> [1, -4, -17, 60]
         factors = zip(repeat(1), map(operator.neg, roots))
-        return list(functools.reduce(convolve, factors, [1]))
+        it: Iterable[float] = functools.reduce(convolve, factors, [1])
+        return list(it)
 
     def polynomial_eval(coefficients: Sequence[int], x: float) -> float:
         """Evaluate a polynomial at a specific value.
