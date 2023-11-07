@@ -108,6 +108,15 @@ def quantify(iterable: Iterable[object], pred: Callable[[Any], bool] = bool) -> 
     return sum(map(pred, iterable))
 
 
+# Slightly adapted from the itertools docs recipe.
+# See https://github.com/python/typeshed/issues/10980#issuecomment-1794927596
+def all_equal(iterable: Iterable[object]) -> bool:
+    "Returns True if all the elements are equal to each other"
+    g = groupby(iterable)
+    next(g, True)
+    return not next(g, False)
+
+
 @overload
 def first_true(
     iterable: Iterable[_T], default: Literal[False] = False, pred: Callable[[_T], bool] | None = None
@@ -132,6 +141,30 @@ def first_true(iterable: Iterable[object], default: object = False, pred: Callab
 
 
 _ExceptionOrExceptionTuple: TypeAlias = Union[Type[BaseException], Tuple[Type[BaseException], ...]]
+
+
+# This one has an extra `assert isinstance(iterable, Sized)` call
+# compared to the itertools docs
+def iter_index(iterable: Iterable[_T], value: _T, start: int = 0, stop: int | None = None) -> Iterator[int]:
+    "Return indices where a value occurs in a sequence or iterable."
+    # iter_index('AABCADEAF', 'A') --> 0 1 4 7
+    seq_index = getattr(iterable, "index", None)
+    if seq_index is None:
+        # Slow path for general iterables
+        it = islice(iterable, start, stop)
+        for i, element in enumerate(it, start):
+            if element is value or element == value:
+                yield i
+    else:
+        # Fast path for sequences
+        assert isinstance(iterable, Sized)
+        stop = len(iterable) if stop is None else stop
+        i = start - 1
+        try:
+            while True:
+                yield (i := seq_index(value, i + 1, stop))
+        except ValueError:
+            pass
 
 
 @overload
@@ -298,6 +331,36 @@ def polynomial_derivative(coefficients: Sequence[float]) -> list[float]:
     return list(map(operator.mul, coefficients, powers))
 
 
+def sieve(n: int) -> Iterator[int]:
+    "Primes less than n."
+    # sieve(30) --> 2 3 5 7 11 13 17 19 23 29
+    if n > 2:
+        yield 2
+    start = 3
+    data = bytearray((0, 1)) * (n // 2)
+    limit = math.isqrt(n) + 1
+    for p in iter_index(data, 1, start, limit):
+        yield from iter_index(data, 1, start, p * p)
+        data[p * p : n : p + p] = bytes(len(range(p * p, n, p + p)))
+        start = p * p
+    yield from iter_index(data, 1, start)
+
+
+def factor(n: int) -> Iterator[int]:
+    "Prime factors of n."
+    # factor(99) --> 3 3 11
+    # factor(1_000_000_000_000_007) --> 47 59 360620266859
+    # factor(1_000_000_000_000_403) --> 1000000000000403
+    for prime in sieve(math.isqrt(n) + 1):
+        while not n % prime:
+            yield prime
+            n //= prime
+            if n == 1:
+                return
+    if n > 1:
+        yield n
+
+
 if sys.version_info >= (3, 8):
 
     def nth_combination(iterable: Iterable[_T], r: int, index: int) -> tuple[_T, ...]:
@@ -363,6 +426,7 @@ if sys.version_info >= (3, 10):
 
 
 if sys.version_info >= (3, 12):
+    from itertools import batched
 
     def sum_of_squares(it: Iterable[float]) -> float:
         "Add up the squares of the input values."
@@ -388,6 +452,16 @@ if sys.version_info >= (3, 12):
         windowed_signal = sliding_window(padded_signal, n)
         return map(math.sumprod, repeat(kernel), windowed_signal)
 
+    def polynomial_from_roots(roots: Iterable[int]) -> list[float]:
+        """Compute a polynomial's coefficients from its roots.
+
+        (x - 5) (x + 4) (x - 3)  expands to:   x³ -4x² -17x + 60
+        """
+        # polynomial_from_roots([5, -4, 3]) --> [1, -4, -17, 60]
+        factors = zip(repeat(1), map(operator.neg, roots))
+        it: Iterable[float] = functools.reduce(convolve, factors, [1])
+        return list(it)
+
     def polynomial_eval(coefficients: Sequence[float], x: float) -> float:
         """Evaluate a polynomial at a specific value.
         Computes with better numeric stability than Horner's method.
@@ -399,3 +473,12 @@ if sys.version_info >= (3, 12):
             return type(x)(0)
         powers = map(pow, repeat(x), reversed(range(n)))
         return math.sumprod(coefficients, powers)
+
+    # Slightly adapted from the itertools docs,
+    # to make things a little easier for pyright
+    def matmul(m1: Sequence[Collection[float]], m2: Sequence[Collection[float]]) -> Iterator[tuple[float, ...]]:
+        "Multiply two matrices."
+        # matmul([(7, 5), (3, 5)], [(2, 5), (7, 9)]) --> (49, 80), (41, 60)
+        n = len(m2[0])
+        it: Iterator[float] = starmap(math.sumprod, product(m1, transpose(m2)))
+        return batched(it, n)
