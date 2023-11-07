@@ -7,7 +7,9 @@ if sys.version_info >= (3, 9):
     from types import GenericAlias
 
 _T = TypeVar("_T")
+_T_co = TypeVar("_T_co", covariant=True)
 _S = TypeVar("_S")
+_S_co = TypeVar("_S_co", covariant=True)
 _N = TypeVar("_N", int, float, SupportsFloat, SupportsInt, SupportsIndex, SupportsComplex)
 _T_co = TypeVar("_T_co", covariant=True)
 _S_co = TypeVar("_S_co", covariant=True)
