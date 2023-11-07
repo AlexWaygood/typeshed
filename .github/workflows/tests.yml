@@ -173,6 +173,7 @@ jobs:
           no-comments: ${{ matrix.python-version != '3.11' || matrix.python-platform != 'Linux' }} # Having each job create the same comment is too noisy.
           project: ./pyrightconfig.stricter.json
       - name: Run pyright on the test cases
+        if: ${{ matrix.python-version != '3.7' }}
         uses: jakebailey/pyright-action@v1
         with:
           version: ${{ steps.pyright_version.outputs.value }}
