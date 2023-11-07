@@ -307,8 +307,7 @@ def unique_justseen(iterable: Iterable[_T], key: Callable[[_T], bool] | None = N
     "List unique elements, preserving order. Remember only the element just seen."
     # unique_justseen('AAAABBBCCDAABBB') --> A B C D A B
     # unique_justseen('ABBcCAD', str.lower) --> A B c A D
-    g: groupby[_T, _T | bool] = groupby(iterable, key)
-    return map(next, map(operator.itemgetter(1), g))
+    return map(next, map(operator.itemgetter(1), groupby(iterable, key)))
 
 
 def powerset(iterable: Iterable[_T]) -> Iterator[tuple[_T, ...]]:
