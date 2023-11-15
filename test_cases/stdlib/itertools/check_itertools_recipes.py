@@ -6,11 +6,12 @@ so they should all type-check without error.
 from __future__ import annotations
 
 import collections
+import functools
 import math
 import operator
 import sys
-from itertools import chain, combinations, count, cycle, filterfalse, groupby, islice, repeat, starmap, tee, zip_longest
-from typing import Any, Callable, Hashable, Iterable, Iterator, Sequence, Tuple, Type, TypeVar, Union, overload
+from itertools import chain, combinations, count, cycle, filterfalse, groupby, islice, product, repeat, starmap, tee, zip_longest
+from typing import Any, Callable, Collection, Hashable, Iterable, Iterator, Sequence, Sized, Tuple, Type, TypeVar, Union, overload
 from typing_extensions import Literal, TypeAlias, TypeVarTuple, Unpack
 
 _T = TypeVar("_T")
