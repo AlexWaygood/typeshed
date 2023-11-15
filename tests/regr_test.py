@@ -177,7 +177,6 @@ def run_testcases(
         platform,
         "--strict",
         "--pretty",
-        "--new-type-inference",
     ]
 
     if package.is_stdlib:
