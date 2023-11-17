@@ -6,11 +6,12 @@ so they should all type-check without error.
 from __future__ import annotations
 
 import collections
+import functools
 import math
 import operator
 import sys
-from itertools import chain, combinations, count, cycle, filterfalse, groupby, islice, repeat, starmap, tee, zip_longest
-from typing import Any, Callable, Hashable, Iterable, Iterator, Sequence, Tuple, Type, TypeVar, Union, overload
+from itertools import chain, combinations, count, cycle, filterfalse, groupby, islice, product, repeat, starmap, tee, zip_longest
+from typing import Any, Callable, Collection, Hashable, Iterable, Iterator, Sequence, Tuple, Type, TypeVar, Union, overload
 from typing_extensions import Literal, TypeAlias, TypeVarTuple, Unpack
 
 _T = TypeVar("_T")
@@ -106,6 +107,15 @@ def quantify(iterable: Iterable[_T], pred: Callable[[_T], bool]) -> int:
 def quantify(iterable: Iterable[object], pred: Callable[[Any], bool] = bool) -> int:
     "Given a predicate that returns True or False, count the True results."
     return sum(map(pred, iterable))
+
+
+# Slightly adapted from the itertools docs recipe, to make things easier for mypy.
+# See https://github.com/python/typeshed/issues/10980#issuecomment-1794927596
+def all_equal(iterable: Iterable[object]) -> bool:
+    "Returns True if all the elements are equal to each other"
+    g = groupby(iterable)
+    next(g, True)
+    return not next(g, False)
 
 
 @overload
@@ -363,6 +373,7 @@ if sys.version_info >= (3, 10):
 
 
 if sys.version_info >= (3, 12):
+    from itertools import batched
 
     def sum_of_squares(it: Iterable[float]) -> float:
         "Add up the squares of the input values."
@@ -388,6 +399,17 @@ if sys.version_info >= (3, 12):
         windowed_signal = sliding_window(padded_signal, n)
         return map(math.sumprod, repeat(kernel), windowed_signal)
 
+    # A three-liner instead of the two-liner in the docs,
+    # to make things a little easier for mypy
+    def polynomial_from_roots(roots: Iterable[float]) -> list[float]:
+        """Compute a polynomial's coefficients from its roots.
+        (x - 5) (x + 4) (x - 3)  expands to:   x³ -4x² -17x + 60
+        """
+        # polynomial_from_roots([5, -4, 3]) --> [1, -4, -17, 60]
+        factors = zip(repeat(1), map(operator.neg, roots))
+        it: Iterable[float] = functools.reduce(convolve, factors, [1])
+        return list(it)
+
     def polynomial_eval(coefficients: Sequence[float], x: float) -> float:
         """Evaluate a polynomial at a specific value.
         Computes with better numeric stability than Horner's method.
@@ -399,3 +421,12 @@ if sys.version_info >= (3, 12):
             return type(x)(0)
         powers = map(pow, repeat(x), reversed(range(n)))
         return math.sumprod(coefficients, powers)
+
+    # Slightly adapted from the itertools docs,
+    # to make things a little easier for pyright
+    def matmul(m1: Sequence[Collection[float]], m2: Sequence[Collection[float]]) -> Iterator[tuple[float, ...]]:
+        "Multiply two matrices."
+        # matmul([(7, 5), (3, 5)], [(2, 5), (7, 9)]) --> (49, 80), (41, 60)
+        n = len(m2[0])
+        it: Iterator[float] = starmap(math.sumprod, product(m1, transpose(m2)))
+        return batched(it, n)
