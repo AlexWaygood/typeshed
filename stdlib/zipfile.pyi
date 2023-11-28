@@ -1,6 +1,5 @@
-from collections.abc import Iterator
 from io import TextIOWrapper
-from typing import IO, overload
+from typing import IO, Iterator, overload
 from typing_extensions import Literal, Self, TypeAlias
 
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
