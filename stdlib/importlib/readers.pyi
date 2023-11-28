@@ -2,7 +2,6 @@
 # and re-exported here,
 # but doing it this way leads to less code duplication for us
 
-import pathlib
 import sys
 import zipfile
 from _typeshed import Incomplete, StrPath
@@ -26,10 +25,9 @@ if sys.version_info >= (3, 10):
         def remove_duplicates(items: Iterable[_T]) -> Iterator[_T]: ...
 
     class FileReader(abc.TraversableResources):
-        path: pathlib.Path
         def __init__(self, loader) -> None: ...
         def resource_path(self, resource: StrPath) -> str: ...
-        def files(self) -> pathlib.Path: ...
+        def files(self) -> abc.Traversable: ...
 
     class ZipReader(abc.TraversableResources):
         prefix: str
