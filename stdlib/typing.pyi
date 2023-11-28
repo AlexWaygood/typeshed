@@ -1,38 +1,12 @@
-import collections  # noqa
+import collections  # noqa: F401
 from abc import ABCMeta, abstractmethod
 
-# This itself is only available during type checking
 def type_check_only(func_or_cls: _F) -> _F: ...
 
 Any = object()
 
-class TypeVar:
-    @property
-    def __name__(self) -> str: ...
-    @property
-    def __bound__(self) -> Any | None: ...
-    @property
-    def __constraints__(self) -> tuple[Any, ...]: ...
-    @property
-    def __covariant__(self) -> bool: ...
-    @property
-    def __contravariant__(self) -> bool: ...
-    def __init__(
-        self,
-        name: str,
-        *constraints: Any,
-        bound: Any | None = None,
-        covariant: bool = False,
-        contravariant: bool = False,
-        infer_variance: bool = False,
-    ) -> None: ...
-
-# Used for an undocumented mypy feature. Does not exist at runtime.
-_promote = object()
-
-# N.B. Keep this definition in sync with typing_extensions._SpecialForm
-class _SpecialForm:
-    def __getitem__(self, parameters: Any) -> object: ...
+class TypeVar: ...
+class _SpecialForm: ...
 
 _F = TypeVar("_F", bound=Callable[..., Any])
 _T = TypeVar("_T")
@@ -41,13 +15,11 @@ def overload(func: _F) -> _F: ...
 
 Union: _SpecialForm
 Generic: _SpecialForm
-# Protocol is only present in 3.8 and later, but mypy needs it unconditionally
 Protocol: _SpecialForm
 Callable: _SpecialForm
 Type: _SpecialForm
 NoReturn: _SpecialForm
 ClassVar: _SpecialForm
-
 Optional: _SpecialForm
 Tuple: _SpecialForm
 Final: _SpecialForm
@@ -55,9 +27,7 @@ Final: _SpecialForm
 def final(f: _T) -> _T: ...
 
 Literal: _SpecialForm
-# TypedDict is a (non-subscriptable) special form.
 TypedDict: object
-
 Self: _SpecialForm
 Never: _SpecialForm
 Unpack: _SpecialForm
@@ -65,50 +35,8 @@ Required: _SpecialForm
 NotRequired: _SpecialForm
 LiteralString: _SpecialForm
 
-class TypeVarTuple:
-    @property
-    def __name__(self) -> str: ...
-    def __init__(self, name: str) -> None: ...
-    def __iter__(self) -> Any: ...
-    def __typing_subst__(self, arg: Never) -> Never: ...
-    def __typing_prepare_subst__(self, alias: Any, args: Any) -> Any: ...
-
-class ParamSpecArgs:
-    @property
-    def __origin__(self) -> ParamSpec: ...
-    def __init__(self, origin: ParamSpec) -> None: ...
-    def __eq__(self, other: object) -> bool: ...
-
-class ParamSpecKwargs:
-    @property
-    def __origin__(self) -> ParamSpec: ...
-    def __init__(self, origin: ParamSpec) -> None: ...
-    def __eq__(self, other: object) -> bool: ...
-
-class ParamSpec:
-    @property
-    def __name__(self) -> str: ...
-    @property
-    def __bound__(self) -> Any | None: ...
-    @property
-    def __covariant__(self) -> bool: ...
-    @property
-    def __contravariant__(self) -> bool: ...
-    def __init__(
-        self,
-        name: str,
-        *,
-        bound: Any | None = None,
-        contravariant: bool = False,
-        covariant: bool = False,
-        infer_variance: bool = False,
-    ) -> None: ...
-    @property
-    def args(self) -> ParamSpecArgs: ...
-    @property
-    def kwargs(self) -> ParamSpecKwargs: ...
-    def __or__(self, right: Any) -> _SpecialForm: ...
-    def __ror__(self, left: Any) -> _SpecialForm: ...
+class TypeVarTuple: ...
+class ParamSpec: ...
 
 Concatenate: _SpecialForm
 TypeAlias: _SpecialForm
@@ -121,7 +49,6 @@ class NewType:
     def __ror__(self, other: Any) -> _SpecialForm: ...
     __supertype__: type
 
-# These type variables are used by the container types.
 _S = TypeVar("_S")
 _KT = TypeVar("_KT")  # Key type.
 _VT = TypeVar("_VT")  # Value type.
@@ -132,21 +59,13 @@ _TC = TypeVar("_TC", bound=Type[object])
 
 def no_type_check(arg: _F) -> _F: ...
 
-# Type aliases and type constructors
-
 class _Alias:
-    # Class for defining generic aliases for library types.
     def __getitem__(self, typeargs: Any) -> Any: ...
 
-# Predefined type variables.
 AnyStr = TypeVar("AnyStr", str, bytes)  # noqa: Y001
 
-# Technically in 3.7 this inherited from GenericMeta. But let's not reflect that, since
-# type checkers tend to assume that Protocols all have the ABCMeta metaclass.
 class _ProtocolMeta(ABCMeta):
     def __init__(cls, *args: Any, **kwargs: Any) -> None: ...
-
-# Abstract base classes.
 
 def runtime_checkable(cls: _TC) -> _TC: ...
 @runtime_checkable
@@ -190,9 +109,6 @@ class Sized(Protocol, metaclass=ABCMeta):
 
 @runtime_checkable
 class Hashable(Protocol, metaclass=ABCMeta):
-    # TODO: This is special, in that a subclass of a hashable class may not be hashable
-    #   (for example, list vs. object). It's not obvious how to represent this. This class
-    #   is currently mostly useless for static checking.
     @abstractmethod
     def __hash__(self) -> int: ...
 
@@ -231,8 +147,6 @@ class Awaitable(Protocol[_T_co]):
 class Coroutine(Awaitable[_ReturnT_co], Generic[_YieldT_co, _SendT_contra, _ReturnT_co]):
     def __await__(self) -> Generator[Any, None, _T_co]: ...
 
-# NOTE: This type does not exist in typing.py or PEP 484 but mypy needs it to exist.
-# The parameters correspond to Generator, but the 4th is the original type.
 @type_check_only
 class AwaitableGenerator(
     Awaitable[_ReturnT_co],
@@ -257,13 +171,11 @@ class AsyncGenerator(AsyncIterator[_YieldT_co], Generic[_YieldT_co, _SendT_contr
 
 @runtime_checkable
 class Container(Protocol[_T_co]):
-    # This is generic more on vibes than anything else
     @abstractmethod
     def __contains__(self, __x: object) -> bool: ...
 
 @runtime_checkable
 class Collection(Iterable[_T_co], Container[_T_co], Protocol[_T_co]):
-    # Implement Sized (but don't have it as a base class).
     @abstractmethod
     def __len__(self) -> int: ...
 
@@ -274,7 +186,6 @@ class Sequence(Collection[_T_co], Reversible[_T_co]):
     @overload
     @abstractmethod
     def __getitem__(self, index: slice) -> Sequence[_T_co]: ...
-    # Mixin methods
     def index(self, value: Any, start: int = 0, stop: int = ...) -> int: ...
     def count(self, value: Any) -> int: ...
     def __contains__(self, value: object) -> bool: ...
@@ -302,7 +213,6 @@ class MutableSequence(Sequence[_T]):
     @overload
     @abstractmethod
     def __delitem__(self, index: slice) -> None: ...
-    # Mixin methods
     def append(self, value: _T) -> None: ...
     def clear(self) -> None: ...
     def extend(self, values: Iterable[_T]) -> None: ...
@@ -314,7 +224,6 @@ class AbstractSet(Collection[_T_co]):
     @abstractmethod
     def __contains__(self, x: object) -> bool: ...
     def _hash(self) -> int: ...
-    # Mixin methods
     def __le__(self, other: AbstractSet[Any]) -> bool: ...
     def __lt__(self, other: AbstractSet[Any]) -> bool: ...
     def __gt__(self, other: AbstractSet[Any]) -> bool: ...
@@ -331,7 +240,6 @@ class MutableSet(AbstractSet[_T]):
     def add(self, value: _T) -> None: ...
     @abstractmethod
     def discard(self, value: _T) -> None: ...
-    # Mixin methods
     def clear(self) -> None: ...
     def pop(self) -> _T: ...
     def remove(self, value: _T) -> None: ...
@@ -372,11 +280,8 @@ class ValuesView(MappingView, Collection[_VT_co]):
     def __iter__(self) -> Iterator[_VT_co]: ...
 
 class Mapping(Collection[_KT], Generic[_KT, _VT_co]):
-    # TODO: We wish the key type could also be covariant, but that doesn't work,
-    # see discussion in https://github.com/python/typing/pull/273.
     @abstractmethod
     def __getitem__(self, __key: _KT) -> _VT_co: ...
-    # Mixin methods
     @overload
     def get(self, __key: _KT) -> _VT_co | None: ...
     @overload
@@ -400,36 +305,10 @@ class MutableMapping(Mapping[_KT, _VT]):
     @overload
     def pop(self, __key: _KT, default: _T) -> _VT | _T: ...
     def popitem(self) -> tuple[_KT, _VT]: ...
-    # This overload should be allowed only if the value type is compatible with None.
-    #
-    # Keep the following methods in line with MutableMapping.setdefault, modulo positional-only differences:
-    # -- collections.OrderedDict.setdefault
-    # -- collections.ChainMap.setdefault
-    # -- weakref.WeakKeyDictionary.setdefault
     @overload
     def setdefault(self: MutableMapping[_KT, _T | None], __key: _KT, __default: None = None) -> _T | None: ...
     @overload
     def setdefault(self, __key: _KT, __default: _VT) -> _VT: ...
-    # 'update' used to take a Union, but using overloading is better.
-    # The second overloaded type here is a bit too general, because
-    # Mapping[tuple[_KT, _VT], W] is a subclass of Iterable[tuple[_KT, _VT]],
-    # but will always have the behavior of the first overloaded type
-    # at runtime, leading to keys of a mix of types _KT and tuple[_KT, _VT].
-    # We don't currently have any way of forcing all Mappings to use
-    # the first overload, but by using overloading rather than a Union,
-    # mypy will commit to using the first overload when the argument is
-    # known to be a Mapping with unknown type parameters, which is closer
-    # to the behavior we want. See mypy issue  #1430.
-    #
-    # Various mapping classes have __ior__ methods that should be kept roughly in line with .update():
-    # -- dict.__ior__
-    # -- os._Environ.__ior__
-    # -- collections.UserDict.__ior__
-    # -- collections.ChainMap.__ior__
-    # -- peewee.attrdict.__add__
-    # -- peewee.attrdict.__iadd__
-    # -- weakref.WeakValueDictionary.__ior__
-    # -- weakref.WeakKeyDictionary.__ior__
     @overload
     def update(self, __m: Mapping[_KT, _VT], **kwargs: _VT) -> None: ...
     @overload
@@ -437,21 +316,11 @@ class MutableMapping(Mapping[_KT, _VT]):
     @overload
     def update(self, **kwargs: _VT) -> None: ...
 
-Text = str
-
 TYPE_CHECKING: bool
 
-# In stubs, the arguments of the IO class are marked as positional-only.
-# This differs from runtime, but better reflects the fact that in reality
-# classes deriving from IO use different names for the arguments.
 class IO(Iterator[AnyStr]):
-    # At runtime these are all abstract properties,
-    # but making them abstract in the stub is hugely disruptive, for not much gain.
-    # See #8726
     @property
     def mode(self) -> str: ...
-    # Usually str, but may be bytes if a bytes path was passed to open(). See #10737.
-    # If PEP 696 becomes available, we may want to use a defaulted TypeVar here.
     @property
     def name(self) -> str | Any: ...
     @abstractmethod
@@ -490,7 +359,6 @@ class IO(Iterator[AnyStr]):
 class BinaryIO: ...
 
 class TextIO:
-    # See comment regarding the @properties in the `IO` class
     @property
     def buffer(self) -> BinaryIO: ...
     @property
@@ -511,8 +379,6 @@ def cast(typ: str, val: Any) -> Any: ...
 @overload
 def cast(typ: object, val: Any) -> Any: ...
 
-# Type constructors
-
 class NamedTuple(tuple[Any, ...]):
     _field_defaults: ClassVar[dict[str, Any]]
     _fields: ClassVar[tuple[str, ...]]
@@ -527,12 +393,7 @@ class NamedTuple(tuple[Any, ...]):
 
 class _TypedDict(Mapping[str, object], metaclass=ABCMeta):
     __total__: ClassVar[bool]
-    # __orig_bases__ sometimes exists on <3.12, but not consistently,
-    # so we only add it to the stub on 3.12+
-    # Using Never so that only calls using mypy plugin hook that specialize the signature
-    # can go through.
     def setdefault(self, k: NoReturn, default: object) -> object: ...
-    # Mypy plugin hook for 'pop' expects that 'default' has a type variable type.
     def pop(self, k: NoReturn, default: _T = ...) -> object: ...  # pyright: ignore[reportInvalidTypeVarUse]
     def update(self: _T, __m: _T) -> None: ...
     def __delitem__(self, k: NoReturn) -> None: ...
