@@ -3,7 +3,6 @@ import sys
 from _typeshed import SizedBuffer, StrOrBytesPath, StrPath
 from collections.abc import Callable, Iterable, Iterator
 from io import TextIOWrapper
-from types import TracebackType
 from typing import IO, Protocol, overload
 from typing_extensions import Literal, Self, TypeAlias
 
@@ -149,11 +148,6 @@ class ZipFile:
             allowZip64: bool = True,
             compresslevel: int | None = None,
         ) -> None: ...
-
-    def __enter__(self) -> Self: ...
-    def __exit__(
-        self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
-    ) -> None: ...
     def close(self) -> None: ...
     def getinfo(self, name: str) -> ZipInfo: ...
     def infolist(self) -> list[ZipInfo]: ...
