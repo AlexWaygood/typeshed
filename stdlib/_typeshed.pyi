@@ -2,8 +2,7 @@
 #
 # See the README.md file in this directory for more information.
 
-from collections.abc import Awaitable, Callable, Iterable, Sequence, Set as AbstractSet, Sized
-from types import FrameType, TracebackType
+from collections.abc import Awaitable, Iterable, Sequence, Set as AbstractSet, Sized
 from typing import Any, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
 from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias
 
@@ -264,9 +263,6 @@ class SizedBuffer(Sized, Buffer, Protocol): ...
 # for compatibility with third-party stubs that may use this
 _BufferWithLen: TypeAlias = SizedBuffer  # not stable  # noqa: Y047
 
-ExcInfo: TypeAlias = tuple[type[BaseException], BaseException, TracebackType]
-OptExcInfo: TypeAlias = ExcInfo | tuple[None, None, None]
-
 # This is an internal CPython type that is like, but subtly different from, a NamedTuple
 # Subclasses of this type are found in multiple modules.
 # In typeshed, `structseq` is only ever used as a mixin in combination with a fixed-length `Tuple`
@@ -290,12 +286,6 @@ AnyOrLiteralStr = TypeVar("AnyOrLiteralStr", str, bytes, LiteralString)  # noqa:
 # Represents when str or LiteralStr is acceptable. Useful for string processing
 # APIs where literalness of return value depends on literalness of inputs
 StrOrLiteralStr = TypeVar("StrOrLiteralStr", LiteralString, str)  # noqa: Y001
-
-# Objects suitable to be passed to sys.setprofile, threading.setprofile, and similar
-ProfileFunction: TypeAlias = Callable[[FrameType, str, Any], object]
-
-# Objects suitable to be passed to sys.settrace, threading.settrace, and similar
-TraceFunction: TypeAlias = Callable[[FrameType, str, Any], TraceFunction | None]
 
 # Anything that can be passed to the int/float constructors
 ConvertibleToInt: TypeAlias = str | ReadableBuffer | SupportsInt | SupportsIndex | SupportsTrunc
