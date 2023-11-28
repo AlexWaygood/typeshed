@@ -1,6 +1,5 @@
 import collections.abc  # noqa: F401
 import typing_extensions  # noqa: F401
-from typing import TypeVar
 
 class object: ...
 class staticmethod: ...
