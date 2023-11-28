@@ -1,4 +1,3 @@
-import types
 from _typeshed import (
     ConvertibleToFloat,
     ConvertibleToInt,
@@ -98,8 +97,6 @@ class type:
     __bases__: tuple[type, ...]
     @property
     def __basicsize__(self) -> int: ...
-    @property
-    def __dict__(self) -> types.MappingProxyType[str, Any]: ...  # type: ignore[override]
     @property
     def __dictoffset__(self) -> int: ...
     @property
@@ -816,7 +813,7 @@ class property:
     def __set__(self, __instance: Any, __value: Any) -> None: ...
     def __delete__(self, __instance: Any) -> None: ...
 
-_ClassInfo: TypeAlias = type | types.UnionType | tuple[_ClassInfo, ...]
+_ClassInfo: TypeAlias = type | tuple[_ClassInfo, ...]
 
 def isinstance(__obj: object, __class_or_tuple: _ClassInfo) -> bool: ...
 def issubclass(__cls: type, __class_or_tuple: _ClassInfo) -> bool: ...
