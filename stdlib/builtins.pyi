@@ -29,7 +29,6 @@ from _typeshed import (
 )
 from collections.abc import Awaitable, Callable, Iterable, Iterator, MutableSet, Reversible, Set as AbstractSet, Sized
 from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper
-from types import CodeType, TracebackType, _Cell
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
 from typing import (  # noqa: Y022
@@ -862,10 +861,6 @@ class memoryview(Sequence[int]):
     @property
     def nbytes(self) -> int: ...
     def __new__(cls, obj: ReadableBuffer) -> Self: ...
-    def __enter__(self) -> Self: ...
-    def __exit__(
-        self, __exc_type: type[BaseException] | None, __exc_val: BaseException | None, __exc_tb: TracebackType | None
-    ) -> None: ...
     def cast(self, format: str, shape: list[int] | tuple[int, ...] = ...) -> memoryview: ...
     @overload
     def __getitem__(self, __key: SupportsIndex) -> int: ...
@@ -977,9 +972,6 @@ class tuple(Sequence[_T_co]):
 @type_check_only
 class function:
     # Make sure this class definition stays roughly in line with `types.FunctionType`
-    @property
-    def __closure__(self) -> tuple[_Cell, ...] | None: ...
-    __code__: CodeType
     __defaults__: tuple[Any, ...] | None
     __dict__: dict[str, Any]
     @property
@@ -1262,7 +1254,7 @@ if sys.version_info >= (3, 8):
         optimize: int = -1,
         *,
         _feature_version: int = -1,
-    ) -> CodeType: ...
+    ) -> None: ...
     @overload
     def compile(
         source: str | ReadableBuffer,
@@ -1272,7 +1264,7 @@ if sys.version_info >= (3, 8):
         dont_inherit: bool = False,
         optimize: int = -1,
         _feature_version: int = -1,
-    ) -> CodeType: ...
+    ) -> None: ...
     @overload
     def compile(
         source: str | ReadableBuffer,
@@ -1305,7 +1297,7 @@ else:
         flags: Literal[0],
         dont_inherit: bool = False,
         optimize: int = -1,
-    ) -> CodeType: ...
+    ) -> None: ...
     @overload
     def compile(
         source: str | ReadableBuffer,
@@ -1314,7 +1306,7 @@ else:
         *,
         dont_inherit: bool = False,
         optimize: int = -1,
-    ) -> CodeType: ...
+    ) -> None: ...
     @overload
     def compile(
         source: str | ReadableBuffer,
@@ -1342,33 +1334,6 @@ def dir(__o: object = ...) -> list[str]: ...
 def divmod(__x: SupportsDivMod[_T_contra, _T_co], __y: _T_contra) -> _T_co: ...
 @overload
 def divmod(__x: _T_contra, __y: SupportsRDivMod[_T_contra, _T_co]) -> _T_co: ...
-
-# The `globals` argument to `eval` has to be `dict[str, Any]` rather than `dict[str, object]` due to invariance.
-# (The `globals` argument has to be a "real dict", rather than any old mapping, unlike the `locals` argument.)
-def eval(
-    __source: str | ReadableBuffer | CodeType,
-    __globals: dict[str, Any] | None = None,
-    __locals: Mapping[str, object] | None = None,
-) -> Any: ...
-
-# Comment above regarding `eval` applies to `exec` as well
-if sys.version_info >= (3, 11):
-    def exec(
-        __source: str | ReadableBuffer | CodeType,
-        __globals: dict[str, Any] | None = None,
-        __locals: Mapping[str, object] | None = None,
-        *,
-        closure: tuple[_Cell, ...] | None = None,
-    ) -> None: ...
-
-else:
-    def exec(
-        __source: str | ReadableBuffer | CodeType,
-        __globals: dict[str, Any] | None = None,
-        __locals: Mapping[str, object] | None = None,
-    ) -> None: ...
-
-def exit(code: sys._ExitCode = None) -> NoReturn: ...
 
 class filter(Iterator[_T]):
     @overload
@@ -1865,7 +1830,6 @@ def __import__(
     fromlist: Sequence[str] = (),
     level: int = 0,
 ) -> types.ModuleType: ...
-def __build_class__(__func: Callable[[], _Cell | Any], __name: str, *bases: Any, metaclass: Any = ..., **kwds: Any) -> Any: ...
 
 if sys.version_info >= (3, 10):
     # In Python 3.10, EllipsisType is exposed publicly in the types module.
@@ -1886,10 +1850,8 @@ class BaseException:
     __cause__: BaseException | None
     __context__: BaseException | None
     __suppress_context__: bool
-    __traceback__: TracebackType | None
     def __init__(self, *args: object) -> None: ...
     def __setstate__(self, __state: dict[str, Any] | None) -> None: ...
-    def with_traceback(self, __tb: TracebackType | None) -> Self: ...
     if sys.version_info >= (3, 11):
         # only present after add_note() is called
         __notes__: list[str]
