@@ -4,7 +4,6 @@ import typing_extensions
 from _collections_abc import dict_items, dict_keys, dict_values
 from _typeshed import IdentityFunction, Incomplete, ReadableBuffer, SupportsKeysAndGetItem
 from abc import ABCMeta, abstractmethod
-from contextlib import AbstractAsyncContextManager, AbstractContextManager
 from types import (
     BuiltinFunctionType,
     CodeType,
@@ -127,9 +126,6 @@ if sys.version_info >= (3, 11):
 
 if sys.version_info >= (3, 12):
     __all__ += ["TypeAliasType", "override"]
-
-ContextManager = AbstractContextManager
-AsyncContextManager = AbstractAsyncContextManager
 
 # This itself is only available during type checking
 def type_check_only(func_or_cls: _F) -> _F: ...
