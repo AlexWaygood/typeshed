@@ -1,6 +1,5 @@
 import abc
 import builtins
-import codecs
 import sys
 from _typeshed import FileDescriptorOrPath, ReadableBuffer, WriteableBuffer
 from collections.abc import Callable, Iterable, Iterator
@@ -189,13 +188,6 @@ class StringIO(TextIOWrapper):
     # as a read-only property on IO[].
     name: Any
     def getvalue(self) -> str: ...
-
-class IncrementalNewlineDecoder(codecs.IncrementalDecoder):
-    def __init__(self, decoder: codecs.IncrementalDecoder | None, translate: bool, errors: str = ...) -> None: ...
-    def decode(self, input: ReadableBuffer | str, final: bool = False) -> str: ...
-    @property
-    def newlines(self) -> str | tuple[str, ...] | None: ...
-    def setstate(self, __state: tuple[bytes, int]) -> None: ...
 
 if sys.version_info >= (3, 10):
     @overload
