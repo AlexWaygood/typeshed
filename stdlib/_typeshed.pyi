@@ -2,9 +2,9 @@
 #
 # See the README.md file in this directory for more information.
 
-from collections.abc import Iterable, Sequence, Sized
-from typing import Any, Generic, Protocol, TypeVar, overload
-from typing_extensions import Buffer, Final, Literal, TypeAlias
+from collections.abc import Iterable
+from typing import Any, Protocol, TypeVar
+from typing_extensions import Buffer, Literal, TypeAlias
 
 _T = TypeVar("_T")
 _KT = TypeVar("_KT")
@@ -181,38 +181,3 @@ ReadOnlyBuffer: TypeAlias = Buffer  # stable
 WriteableBuffer: TypeAlias = Buffer
 # Same as WriteableBuffer, but also includes read-only buffer types (like bytes).
 ReadableBuffer: TypeAlias = Buffer  # stable
-
-class SliceableBuffer(Buffer, Protocol):
-    def __getitem__(self, __slice: slice) -> Sequence[int]: ...
-
-class IndexableBuffer(Buffer, Protocol):
-    def __getitem__(self, __i: int) -> int: ...
-
-class SupportsGetItemBuffer(SliceableBuffer, IndexableBuffer, Protocol):
-    def __contains__(self, __x: Any) -> bool: ...
-    @overload
-    def __getitem__(self, __slice: slice) -> Sequence[int]: ...
-    @overload
-    def __getitem__(self, __i: int) -> int: ...
-
-class SizedBuffer(Sized, Buffer, Protocol): ...
-
-# for compatibility with third-party stubs that may use this
-_BufferWithLen: TypeAlias = SizedBuffer  # not stable  # noqa: Y047
-
-# This is an internal CPython type that is like, but subtly different from, a NamedTuple
-# Subclasses of this type are found in multiple modules.
-# In typeshed, `structseq` is only ever used as a mixin in combination with a fixed-length `Tuple`
-# See discussion at #6546 & #6560
-# `structseq` classes are unsubclassable, so are all decorated with `@final`.
-class structseq(Generic[_T_co]):
-    n_fields: Final[int]
-    n_unnamed_fields: Final[int]
-    n_sequence_fields: Final[int]
-    # The first parameter will generally only take an iterable of a specific length.
-    # E.g. `os.uname_result` takes any iterable of length exactly 5.
-    #
-    # The second parameter will accept a dict of any kind without raising an exception,
-    # but only has any meaning if you supply it a dict where the keys are strings.
-    # https://github.com/python/typeshed/pull/6560#discussion_r767149830
-    def __new__(cls: type[Self], sequence: Iterable[_T_co], dict: dict[str, Any] = ...) -> Self: ...
