@@ -15,60 +15,19 @@ Union: _SpecialForm
 Generic: _SpecialForm
 Protocol: _SpecialForm
 Callable: _SpecialForm
-Type: _SpecialForm
-NoReturn: _SpecialForm
-ClassVar: _SpecialForm
-Optional: _SpecialForm
-Tuple: _SpecialForm
-Final: _SpecialForm
 Literal: _SpecialForm
-TypedDict: object
-Self: _SpecialForm
-Never: _SpecialForm
-Unpack: _SpecialForm
-Required: _SpecialForm
-NotRequired: _SpecialForm
-LiteralString: _SpecialForm
-Concatenate: _SpecialForm
 TypeAlias: _SpecialForm
-TypeGuard: _SpecialForm
 
 _KT = TypeVar("_KT")  # Key type.
 _VT = TypeVar("_VT")  # Value type.
 _T_co = TypeVar("_T_co", covariant=True)  # Any type covariant containers.
 _KT_co = TypeVar("_KT_co", covariant=True)  # Key type covariant containers.
 _VT_co = TypeVar("_VT_co", covariant=True)  # Value type covariant containers.
-_TC = TypeVar("_TC", bound=Type[object])
-
-def no_type_check(arg: _F) -> _F: ...
 
 class _Alias:
     def __getitem__(self, typeargs: Any) -> Any: ...
 
 AnyStr = TypeVar("AnyStr", str, bytes)  # noqa: Y001
-
-def runtime_checkable(cls: _TC) -> _TC: ...
-
-class SupportsInt(Protocol):
-    def __int__(self) -> int: ...
-
-class SupportsFloat(Protocol):
-    def __float__(self) -> float: ...
-
-class SupportsBytes(Protocol):
-    def __bytes__(self) -> bytes: ...
-
-class SupportsIndex(Protocol):
-    def __index__(self) -> int: ...
-
-class SupportsAbs(Protocol[_T_co]):
-    def __abs__(self) -> _T_co: ...
-
-class SupportsRound(Protocol[_T_co]):
-    @overload
-    def __round__(self) -> int: ...
-    @overload
-    def __round__(self, __ndigits: int) -> _T_co: ...
 
 class Sized(Protocol):
     def __len__(self) -> int: ...
