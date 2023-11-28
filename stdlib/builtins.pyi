@@ -12,16 +12,13 @@ from _typeshed import (
     OpenBinaryModeWriting,
     OpenTextMode,
     ReadableBuffer,
-    SupportsAnext,
-    SupportsFlush,
     SupportsIter,
     SupportsKeysAndGetItem,
     SupportsNext,
     SupportsRichComparison,
     SupportsRichComparisonT,
-    SupportsWrite,
 )
-from collections.abc import Awaitable, Callable, Iterable, Iterator, MutableSet, Set as AbstractSet, Sized
+from collections.abc import Callable, Iterable, Iterator, MutableSet, Set as AbstractSet, Sized
 from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
@@ -49,7 +46,6 @@ from typing_extensions import Concatenate, Literal, LiteralString, ParamSpec, Se
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
-_T_contra = TypeVar("_T_contra", contravariant=True)
 _R_co = TypeVar("_R_co", covariant=True)
 _KT = TypeVar("_KT")
 _VT = TypeVar("_VT")
@@ -60,9 +56,6 @@ _T3 = TypeVar("_T3")
 _T4 = TypeVar("_T4")
 _T5 = TypeVar("_T5")
 _SupportsNextT = TypeVar("_SupportsNextT", bound=SupportsNext[Any], covariant=True)
-_SupportsAnextT = TypeVar("_SupportsAnextT", bound=SupportsAnext[Any], covariant=True)
-_AwaitableT = TypeVar("_AwaitableT", bound=Awaitable[Any])
-_AwaitableT_co = TypeVar("_AwaitableT_co", bound=Awaitable[Any], covariant=True)
 _P = ParamSpec("_P")
 
 class object:
@@ -1103,109 +1096,6 @@ def open(
     closefd: bool = True,
     opener: _Opener | None = None,
 ) -> IO[Any]: ...
-
-class _SupportsWriteAndFlush(SupportsWrite[_T_contra], SupportsFlush, Protocol[_T_contra]): ...
-
-@overload
-def print(
-    *values: object,
-    sep: str | None = " ",
-    end: str | None = "\n",
-    file: SupportsWrite[str] | None = None,
-    flush: Literal[False] = False,
-) -> None: ...
-@overload
-def print(
-    *values: object, sep: str | None = " ", end: str | None = "\n", file: _SupportsWriteAndFlush[str] | None = None, flush: bool
-) -> None: ...
-
-_E = TypeVar("_E", contravariant=True)
-_M = TypeVar("_M", contravariant=True)
-
-class _SupportsPow2(Protocol[_E, _T_co]):
-    def __pow__(self, __other: _E) -> _T_co: ...
-
-class _SupportsPow3NoneOnly(Protocol[_E, _T_co]):
-    def __pow__(self, __other: _E, __modulo: None = None) -> _T_co: ...
-
-class _SupportsPow3(Protocol[_E, _M, _T_co]):
-    def __pow__(self, __other: _E, __modulo: _M) -> _T_co: ...
-
-_SupportsSomeKindOfPow = (  # noqa: Y026  # TODO: Use TypeAlias once mypy bugs are fixed
-    _SupportsPow2[Any, Any] | _SupportsPow3NoneOnly[Any, Any] | _SupportsPow3[Any, Any, Any]
-)
-
-if sys.version_info >= (3, 8):
-    # TODO: `pow(int, int, Literal[0])` fails at runtime,
-    # but adding a `NoReturn` overload isn't a good solution for expressing that (see #8566).
-    @overload
-    def pow(base: int, exp: int, mod: int) -> int: ...
-    @overload
-    def pow(base: int, exp: Literal[0], mod: None = None) -> Literal[1]: ...
-    @overload
-    def pow(base: int, exp: _PositiveInteger, mod: None = None) -> int: ...
-    @overload
-    def pow(base: int, exp: _NegativeInteger, mod: None = None) -> float: ...
-    # int base & positive-int exp -> int; int base & negative-int exp -> float
-    # return type must be Any as `int | float` causes too many false-positive errors
-    @overload
-    def pow(base: int, exp: int, mod: None = None) -> Any: ...
-    @overload
-    def pow(base: _PositiveInteger, exp: float, mod: None = None) -> float: ...
-    @overload
-    def pow(base: _NegativeInteger, exp: float, mod: None = None) -> complex: ...
-    @overload
-    def pow(base: float, exp: int, mod: None = None) -> float: ...
-    # float base & float exp could return float or complex
-    # return type must be Any (same as complex base, complex exp),
-    # as `float | complex` causes too many false-positive errors
-    @overload
-    def pow(base: float, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -> Any: ...
-    @overload
-    def pow(base: complex, exp: complex | _SupportsSomeKindOfPow, mod: None = None) -> complex: ...
-    @overload
-    def pow(base: _SupportsPow2[_E, _T_co], exp: _E, mod: None = None) -> _T_co: ...
-    @overload
-    def pow(base: _SupportsPow3NoneOnly[_E, _T_co], exp: _E, mod: None = None) -> _T_co: ...
-    @overload
-    def pow(base: _SupportsPow3[_E, _M, _T_co], exp: _E, mod: _M) -> _T_co: ...
-    @overload
-    def pow(base: _SupportsSomeKindOfPow, exp: float, mod: None = None) -> Any: ...
-    @overload
-    def pow(base: _SupportsSomeKindOfPow, exp: complex, mod: None = None) -> complex: ...
-
-else:
-    @overload
-    def pow(__x: int, __y: int, __z: int) -> int: ...
-    @overload
-    def pow(__x: int, __y: Literal[0], __z: None = None) -> Literal[1]: ...
-    @overload
-    def pow(__x: int, __y: _PositiveInteger, __z: None = None) -> int: ...
-    @overload
-    def pow(__x: int, __y: _NegativeInteger, __z: None = None) -> float: ...
-    @overload
-    def pow(__x: int, __y: int, __z: None = None) -> Any: ...
-    @overload
-    def pow(__x: _PositiveInteger, __y: float, __z: None = None) -> float: ...
-    @overload
-    def pow(__x: _NegativeInteger, __y: float, __z: None = None) -> complex: ...
-    @overload
-    def pow(__x: float, __y: int, __z: None = None) -> float: ...
-    @overload
-    def pow(__x: float, __y: complex | _SupportsSomeKindOfPow, __z: None = None) -> Any: ...
-    @overload
-    def pow(__x: complex, __y: complex | _SupportsSomeKindOfPow, __z: None = None) -> complex: ...
-    @overload
-    def pow(__x: _SupportsPow2[_E, _T_co], __y: _E, __z: None = None) -> _T_co: ...
-    @overload
-    def pow(__x: _SupportsPow3NoneOnly[_E, _T_co], __y: _E, __z: None = None) -> _T_co: ...
-    @overload
-    def pow(__x: _SupportsPow3[_E, _M, _T_co], __y: _E, __z: _M) -> _T_co: ...
-    @overload
-    def pow(__x: _SupportsSomeKindOfPow, __y: float, __z: None = None) -> Any: ...
-    @overload
-    def pow(__x: _SupportsSomeKindOfPow, __y: complex, __z: None = None) -> complex: ...
-
 
 class ellipsis: ...
 Ellipsis: ellipsis
