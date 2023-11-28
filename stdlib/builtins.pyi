@@ -1,4 +1,4 @@
-from _typeshed import SupportsKeysAndGetItem, SupportsRichComparison, SupportsRichComparisonT
+from _typeshed import SupportsRichComparison, SupportsRichComparisonT
 from collections.abc import Callable, Iterable, Iterator, MutableSet
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
@@ -8,6 +8,7 @@ from typing import (  # noqa: Y022
     ClassVar,
     ItemsView,
     KeysView,
+    Mapping,
     MutableMapping,
     MutableSequence,
     Sequence,
@@ -253,9 +254,9 @@ class dict(MutableMapping[_KT, _VT]):
     @overload
     def __init__(self: dict[str, _VT], **kwargs: _VT) -> None: ...
     @overload
-    def __init__(self, __map: SupportsKeysAndGetItem[_KT, _VT]) -> None: ...
+    def __init__(self, __map: Mapping[_KT, _VT]) -> None: ...
     @overload
-    def __init__(self: dict[str, _VT], __map: SupportsKeysAndGetItem[str, _VT], **kwargs: _VT) -> None: ...
+    def __init__(self: dict[str, _VT], __map: Mapping[str, _VT], **kwargs: _VT) -> None: ...
     @overload
     def __init__(self, __iterable: Iterable[tuple[_KT, _VT]]) -> None: ...
     @overload

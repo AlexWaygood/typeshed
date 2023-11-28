@@ -1,8 +1,6 @@
-from typing import Any, Iterable, Protocol, TypeVar
+from typing import Any, Protocol, TypeVar
 from typing_extensions import TypeAlias
 
-_KT = TypeVar("_KT")
-_VT_co = TypeVar("_VT_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
 class SupportsDunderLT(Protocol[_T_contra]):
@@ -19,7 +17,3 @@ class SupportsDunderGE(Protocol[_T_contra]):
 
 SupportsRichComparison: TypeAlias = SupportsDunderLT[Any] | SupportsDunderGT[Any]
 SupportsRichComparisonT = TypeVar("SupportsRichComparisonT", bound=SupportsRichComparison)  # noqa: Y001
-
-class SupportsKeysAndGetItem(Protocol[_KT, _VT_co]):
-    def keys(self) -> Iterable[_KT]: ...
-    def __getitem__(self, __key: _KT) -> _VT_co: ...
