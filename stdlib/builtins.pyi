@@ -1,8 +1,9 @@
 from _typeshed import ReadableBuffer, SupportsKeysAndGetItem, SupportsRichComparison, SupportsRichComparisonT
-from collections.abc import Callable, Iterable, Iterator, MutableSet, Set as AbstractSet
+from collections.abc import Callable, Iterable, Iterator, MutableSet
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
 from typing import (  # noqa: Y022
+    AbstractSet,
     Any,
     ClassVar,
     ItemsView,

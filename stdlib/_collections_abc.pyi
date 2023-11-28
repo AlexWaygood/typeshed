@@ -1,7 +1,4 @@
-import sys
-from abc import abstractmethod
-from typing import (  # noqa: Y022,Y038,Y057
-    AbstractSet as Set,
+from typing import (  # noqa: Y022,Y057
     AsyncGenerator as AsyncGenerator,
     AsyncIterable as AsyncIterable,
     AsyncIterator as AsyncIterator,
@@ -27,41 +24,7 @@ from typing import (  # noqa: Y022,Y038,Y057
     Sequence as Sequence,
     Sized as Sized,
     ValuesView as ValuesView,
-    runtime_checkable,
 )
 
-__all__ = [
-    "Awaitable",
-    "Coroutine",
-    "AsyncIterable",
-    "AsyncIterator",
-    "AsyncGenerator",
-    "Hashable",
-    "Iterable",
-    "Iterator",
-    "Generator",
-    "Reversible",
-    "Sized",
-    "Container",
-    "Callable",
-    "Collection",
-    "Set",
-    "MutableSet",
-    "Mapping",
-    "MutableMapping",
-    "MappingView",
-    "KeysView",
-    "ItemsView",
-    "ValuesView",
-    "Sequence",
-    "MutableSequence",
-    "ByteString",
-]
-if sys.version_info >= (3, 12):
-    __all__ += ["Buffer"]
-
-if sys.version_info >= (3, 12):
-    @runtime_checkable
-    class Buffer(Protocol):
-        @abstractmethod
-        def __buffer__(self, __flags: int) -> bytes: ...
+class Buffer(Protocol):
+    def __buffer__(self, __flags: int) -> bytes: ...
