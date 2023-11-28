@@ -31,9 +31,6 @@ AnyStr = TypeVar("AnyStr", str, bytes)  # noqa: Y001
 class Sized(Protocol):
     def __len__(self) -> int: ...
 
-class Hashable(Protocol):
-    def __hash__(self) -> int: ...
-
 class Iterable(Protocol[_T_co]):
     def __iter__(self) -> Iterator[_T_co]: ...
 

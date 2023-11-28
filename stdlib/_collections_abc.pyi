@@ -3,7 +3,6 @@ from typing import (  # noqa: Y022
     Collection as Collection,
     Container as Container,
     Generator as Generator,
-    Hashable as Hashable,
     ItemsView as ItemsView,
     Iterable as Iterable,
     Iterator as Iterator,
