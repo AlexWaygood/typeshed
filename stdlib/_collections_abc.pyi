@@ -12,8 +12,6 @@ from typing import (  # noqa: Y022
     MappingView as MappingView,
     MutableMapping as MutableMapping,
     MutableSequence as MutableSequence,
-    MutableSet as MutableSet,
-    Reversible as Reversible,
     Sequence as Sequence,
     Sized as Sized,
     ValuesView as ValuesView,
