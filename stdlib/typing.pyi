@@ -33,7 +33,6 @@ Concatenate: _SpecialForm
 TypeAlias: _SpecialForm
 TypeGuard: _SpecialForm
 
-_S = TypeVar("_S")
 _KT = TypeVar("_KT")  # Key type.
 _VT = TypeVar("_VT")  # Value type.
 _T_co = TypeVar("_T_co", covariant=True)  # Any type covariant containers.

@@ -1,4 +1,4 @@
-from typing import (  # noqa: Y022,Y057
+from typing import (  # noqa: Y022
     AsyncGenerator as AsyncGenerator,
     AsyncIterable as AsyncIterable,
     AsyncIterator as AsyncIterator,
