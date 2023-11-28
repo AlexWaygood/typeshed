@@ -1,95 +1,15 @@
 import sys
 from _typeshed import structseq
-from builtins import object as _object
-from collections.abc import AsyncGenerator, Callable, Coroutine, Sequence
-from importlib.abc import PathEntryFinder
-from importlib.machinery import ModuleSpec
-from io import TextIOWrapper
-from types import ModuleType, TracebackType
-from typing import Any, NoReturn, Protocol, TextIO
-from typing_extensions import Final, Literal, TypeAlias, final
-
-# Intentionally omits one deprecated and one optional method of `importlib.abc.MetaPathFinder`
-class _MetaPathFinder(Protocol):
-    def find_spec(
-        self, __fullname: str, __path: Sequence[str] | None, __target: ModuleType | None = ...
-    ) -> ModuleSpec | None: ...
-
-# ----- sys variables -----
-if sys.platform != "win32":
-    abiflags: str
-argv: list[str]
-base_exec_prefix: str
-base_prefix: str
-byteorder: Literal["little", "big"]
-builtin_module_names: Sequence[str]  # actually a tuple of strings
-copyright: str
-if sys.platform == "win32":
-    dllhandle: int
-dont_write_bytecode: bool
-displayhook: Callable[[object], Any]
-excepthook: Callable[[type[BaseException], BaseException, TracebackType | None], Any]
-exec_prefix: str
-executable: str
-float_repr_style: Literal["short", "legacy"]
-hexversion: int
-last_type: type[BaseException] | None
-last_value: BaseException | None
-last_traceback: TracebackType | None
-maxsize: int
-maxunicode: int
-meta_path: list[_MetaPathFinder]
-modules: dict[str, ModuleType]
-if sys.version_info >= (3, 10):
-    orig_argv: list[str]
-path: list[str]
-path_hooks: list[Callable[[str], PathEntryFinder]]
-path_importer_cache: dict[str, PathEntryFinder | None]
-platform: str
-if sys.version_info >= (3, 9):
-    platlibdir: str
-prefix: str
-if sys.version_info >= (3, 8):
-    pycache_prefix: str | None
-ps1: object
-ps2: object
-
-# TextIO is used instead of more specific types for the standard streams,
-# since they are often monkeypatched at runtime. At startup, the objects
-# are initialized to instances of TextIOWrapper.
-#
-# To use methods from TextIOWrapper, use an isinstance check to ensure that
-# the streams have not been overridden:
-#
-# if isinstance(sys.stdout, io.TextIOWrapper):
-#    sys.stdout.reconfigure(...)
-stdin: TextIO
-stdout: TextIO
-stderr: TextIO
-
-__stdin__: Final[TextIOWrapper]  # Contains the original value of stdin
-__stdout__: Final[TextIOWrapper]  # Contains the original value of stdout
-__stderr__: Final[TextIOWrapper]  # Contains the original value of stderr
-tracebacklimit: int
-version: str
-api_version: int
-warnoptions: Any
-#  Each entry is a tuple of the form (action, message, category, module,
-#    lineno)
-if sys.platform == "win32":
-    winver: str
-_xoptions: dict[Any, Any]
+from collections.abc import AsyncGenerator, Callable
+from typing import Any
+from typing_extensions import Literal, TypeAlias, final
 
 # Type alias used as a mixin for structseq classes that cannot be instantiated at runtime
 # This can't be represented in the type system, so we just use `structseq[Any]`
 _UninstantiableStructseq: TypeAlias = structseq[Any]
 
 flags: _flags
-
-if sys.version_info >= (3, 10):
-    _FlagTuple: TypeAlias = tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, bool, int, int]
-else:
-    _FlagTuple: TypeAlias = tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, bool, int]
+_FlagTuple: TypeAlias = tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, bool, int, int]
 
 @final
 class _flags(_UninstantiableStructseq, _FlagTuple):
@@ -235,67 +155,6 @@ class _version_info(_UninstantiableStructseq, tuple[int, int, int, _ReleaseLevel
 
 version_info: _version_info
 
-if sys.platform == "win32":
-    # A tuple of length 5, even though it has more than 5 attributes.
-    @final
-    class _WinVersion(_UninstantiableStructseq, tuple[int, int, int, int, str]):
-        @property
-        def major(self) -> int: ...
-        @property
-        def minor(self) -> int: ...
-        @property
-        def build(self) -> int: ...
-        @property
-        def platform(self) -> int: ...
-        @property
-        def service_pack(self) -> str: ...
-        @property
-        def service_pack_minor(self) -> int: ...
-        @property
-        def service_pack_major(self) -> int: ...
-        @property
-        def suite_mask(self) -> int: ...
-        @property
-        def product_type(self) -> int: ...
-        @property
-        def platform_version(self) -> tuple[int, int, int]: ...
-
-    def getwindowsversion() -> _WinVersion: ...
-
-def intern(__string: str) -> str: ...
-def is_finalizing() -> bool: ...
-def breakpointhook(*args: Any, **kwargs: Any) -> Any: ...
-
-__breakpointhook__ = breakpointhook  # Contains the original value of breakpointhook
-
-if sys.platform != "win32":
-    def setdlopenflags(__flags: int) -> None: ...
-
-def setrecursionlimit(__limit: int) -> None: ...
-def setswitchinterval(__interval: float) -> None: ...
-def gettotalrefcount() -> int: ...  # Debug builds only
-
-if sys.version_info < (3, 9):
-    def getcheckinterval() -> int: ...  # deprecated
-    def setcheckinterval(__n: int) -> None: ...  # deprecated
-
-if sys.version_info < (3, 9):
-    # An 11-tuple or None
-    def callstats() -> tuple[int, int, int, int, int, int, int, int, int, int, int] | None: ...
-
-if sys.version_info >= (3, 8):
-    # Doesn't exist at runtime, but exported in the stubs so pytest etc. can annotate their code more easily.
-    class UnraisableHookArgs(Protocol):
-        exc_type: type[BaseException]
-        exc_value: BaseException | None
-        exc_traceback: TracebackType | None
-        err_msg: str | None
-        object: _object
-    unraisablehook: Callable[[UnraisableHookArgs], Any]
-    def __unraisablehook__(__unraisable: UnraisableHookArgs) -> Any: ...
-    def addaudithook(hook: Callable[[str, tuple[Any, ...]], Any]) -> None: ...
-    def audit(__event: str, *args: Any) -> None: ...
-
 _AsyncgenHook: TypeAlias = Callable[[AsyncGenerator[Any, Any]], None] | None
 
 @final
@@ -304,32 +163,3 @@ class _asyncgen_hooks(structseq[_AsyncgenHook], tuple[_AsyncgenHook, _AsyncgenHo
     def firstiter(self) -> _AsyncgenHook: ...
     @property
     def finalizer(self) -> _AsyncgenHook: ...
-
-def get_asyncgen_hooks() -> _asyncgen_hooks: ...
-def set_asyncgen_hooks(firstiter: _AsyncgenHook = ..., finalizer: _AsyncgenHook = ...) -> None: ...
-
-if sys.platform == "win32":
-    def _enablelegacywindowsfsencoding() -> None: ...
-
-def get_coroutine_origin_tracking_depth() -> int: ...
-def set_coroutine_origin_tracking_depth(depth: int) -> None: ...
-
-if sys.version_info < (3, 8):
-    _CoroWrapper: TypeAlias = Callable[[Coroutine[Any, Any, Any]], Any]
-    def set_coroutine_wrapper(__wrapper: _CoroWrapper) -> None: ...
-    def get_coroutine_wrapper() -> _CoroWrapper: ...
-
-# The following two functions were added in 3.11.0, 3.10.7, 3.9.14, 3.8.14, & 3.7.14,
-# as part of the response to CVE-2020-10735
-def set_int_max_str_digits(maxdigits: int) -> None: ...
-def get_int_max_str_digits() -> int: ...
-
-if sys.version_info >= (3, 12):
-    def getunicodeinternedsize() -> int: ...
-    def deactivate_stack_trampoline() -> None: ...
-    def is_stack_trampoline_active() -> bool: ...
-    # It always exists, but raises on non-linux platforms:
-    if sys.platform == "linux":
-        def activate_stack_trampoline(__backend: str) -> None: ...
-    else:
-        def activate_stack_trampoline(__backend: str) -> NoReturn: ...
