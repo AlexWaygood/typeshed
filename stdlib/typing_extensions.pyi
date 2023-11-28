@@ -1,7 +1,7 @@
 import abc
 import typing
 from collections.abc import Buffer as Buffer
-from types import GenericAlias, UnionType, get_original_bases as get_original_bases
+from types import get_original_bases as get_original_bases
 from typing import (  # noqa: Y022,Y038
     IO as IO,
     TYPE_CHECKING as TYPE_CHECKING,
@@ -22,7 +22,6 @@ from typing import (  # noqa: Y022,Y038
     TypeGuard as TypeGuard,
     Unpack as Unpack,
     ValuesView,
-    overload,
 )
 
 _T = typing.TypeVar("_T")
@@ -55,12 +54,4 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
     def __delitem__(self, k: Never) -> None: ...
 
 TypedDict: object
-
-@overload
-def get_origin(tp: UnionType) -> type[UnionType]: ...
-@overload
-def get_origin(tp: GenericAlias) -> type: ...
-@overload
-def get_origin(tp: Any) -> Any | None: ...
-
 Annotated: _SpecialForm
