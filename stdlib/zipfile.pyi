@@ -7,54 +7,8 @@ from typing_extensions import Literal, Self, TypeAlias
 
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
 _ReadWriteBinaryMode: TypeAlias = Literal["r", "w", "rb", "wb"]
-_ZipFileMode: TypeAlias = Literal["r", "w", "x", "a"]
 
-class ZipFile:
-    if sys.version_info >= (3, 11):
-        @overload
-        def __init__(
-            self,
-            file: StrPath | IO[bytes],
-            mode: Literal["r"] = "r",
-            compression: int = 0,
-            allowZip64: bool = True,
-            compresslevel: int | None = None,
-            *,
-            strict_timestamps: bool = True,
-            metadata_encoding: str | None,
-        ) -> None: ...
-        @overload
-        def __init__(
-            self,
-            file: StrPath | IO[bytes],
-            mode: _ZipFileMode = "r",
-            compression: int = 0,
-            allowZip64: bool = True,
-            compresslevel: int | None = None,
-            *,
-            strict_timestamps: bool = True,
-            metadata_encoding: None = None,
-        ) -> None: ...
-    elif sys.version_info >= (3, 8):
-        def __init__(
-            self,
-            file: StrPath | IO[bytes],
-            mode: _ZipFileMode = "r",
-            compression: int = 0,
-            allowZip64: bool = True,
-            compresslevel: int | None = None,
-            *,
-            strict_timestamps: bool = True,
-        ) -> None: ...
-    else:
-        def __init__(
-            self,
-            file: StrPath | IO[bytes],
-            mode: _ZipFileMode = "r",
-            compression: int = 0,
-            allowZip64: bool = True,
-            compresslevel: int | None = None,
-        ) -> None: ...
+class ZipFile: ...
 
 class ZipInfo:
     date_time: _DateTuple
