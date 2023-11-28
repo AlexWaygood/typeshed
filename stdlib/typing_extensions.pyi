@@ -440,8 +440,6 @@ class TypeVarTuple:
     def __init__(self, name: str, *, default: Any | None = None) -> None: ...
     def __iter__(self) -> Any: ...  # Unpack[Self]
 
-def deprecated(__msg: str, *, category: type[Warning] | None = ..., stacklevel: int = 1) -> Callable[[_T], _T]: ...
-
 if sys.version_info >= (3, 12):
     from collections.abc import Buffer as Buffer
     from types import get_original_bases as get_original_bases
