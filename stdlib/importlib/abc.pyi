@@ -1,4 +1,3 @@
-import _ast
 import sys
 import types
 from _typeshed import ReadableBuffer, StrPath
@@ -49,7 +48,7 @@ class InspectLoader(Loader):
     def exec_module(self, module: types.ModuleType) -> None: ...
     @staticmethod
     def source_to_code(
-        data: ReadableBuffer | str | _ast.Module | _ast.Expression | _ast.Interactive, path: ReadableBuffer | StrPath = "<string>"
+        data: ReadableBuffer | str, path: ReadableBuffer | StrPath = "<string>"
     ) -> types.CodeType: ...
 
 class ExecutionLoader(InspectLoader):
