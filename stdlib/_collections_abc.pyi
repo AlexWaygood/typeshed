@@ -1,1 +1,1 @@
-from typing import Callable as Callable, Mapping as Mapping, Sequence as Sequence  # noqa: Y022
+from typing import Callable as Callable  # noqa: Y022
