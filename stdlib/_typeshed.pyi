@@ -3,8 +3,8 @@
 # See the README.md file in this directory for more information.
 
 from collections.abc import Awaitable, Iterable, Sequence, Set as AbstractSet, Sized
-from typing import Any, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
-from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias
+from typing import Any, Generic, Protocol, TypeVar, overload
+from typing_extensions import Buffer, Final, Literal, TypeAlias
 
 _KT = TypeVar("_KT")
 _KT_co = TypeVar("_KT_co", covariant=True)
@@ -279,14 +279,3 @@ class structseq(Generic[_T_co]):
     # but only has any meaning if you supply it a dict where the keys are strings.
     # https://github.com/python/typeshed/pull/6560#discussion_r767149830
     def __new__(cls: type[Self], sequence: Iterable[_T_co], dict: dict[str, Any] = ...) -> Self: ...
-
-# Superset of typing.AnyStr that also includes LiteralString
-AnyOrLiteralStr = TypeVar("AnyOrLiteralStr", str, bytes, LiteralString)  # noqa: Y001
-
-# Represents when str or LiteralStr is acceptable. Useful for string processing
-# APIs where literalness of return value depends on literalness of inputs
-StrOrLiteralStr = TypeVar("StrOrLiteralStr", LiteralString, str)  # noqa: Y001
-
-# Anything that can be passed to the int/float constructors
-ConvertibleToInt: TypeAlias = str | ReadableBuffer | SupportsInt | SupportsIndex | SupportsTrunc
-ConvertibleToFloat: TypeAlias = str | ReadableBuffer | SupportsFloat | SupportsIndex
