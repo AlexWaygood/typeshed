@@ -1,12 +1,7 @@
 from typing import (  # noqa: Y022
-    AsyncGenerator as AsyncGenerator,
-    AsyncIterable as AsyncIterable,
-    AsyncIterator as AsyncIterator,
-    Awaitable as Awaitable,
     Callable as Callable,
     Collection as Collection,
     Container as Container,
-    Coroutine as Coroutine,
     Generator as Generator,
     Hashable as Hashable,
     ItemsView as ItemsView,
