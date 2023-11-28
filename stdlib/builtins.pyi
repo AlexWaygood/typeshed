@@ -1379,30 +1379,9 @@ def __import__(
     level: int = 0,
 ) -> types.ModuleType: ...
 
-if sys.version_info >= (3, 10):
-    # In Python 3.10, EllipsisType is exposed publicly in the types module.
-    @final
-    class ellipsis: ...
-
-else:
-    # Actually the type of Ellipsis is <type 'ellipsis'>, but since it's
-    # not exposed anywhere under that name, we make it private here.
-    @final
-    @type_check_only
-    class ellipsis: ...
-
+class ellipsis: ...
 Ellipsis: ellipsis
 
-class BaseException:
-    args: tuple[Any, ...]
-    __cause__: BaseException | None
-    __context__: BaseException | None
-    __suppress_context__: bool
-    def __init__(self, *args: object) -> None: ...
-    def __setstate__(self, __state: dict[str, Any] | None) -> None: ...
-    if sys.version_info >= (3, 11):
-        # only present after add_note() is called
-        __notes__: list[str]
-        def add_note(self, __note: str) -> None: ...
+class BaseException: ...
 
 
