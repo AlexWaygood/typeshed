@@ -12,7 +12,6 @@ from typing import (  # noqa: Y022,Y038,Y057
     Container as Container,
     Coroutine as Coroutine,
     Generator as Generator,
-    Generic,
     Hashable as Hashable,
     ItemsView as ItemsView,
     Iterable as Iterable,
@@ -27,7 +26,6 @@ from typing import (  # noqa: Y022,Y038,Y057
     Reversible as Reversible,
     Sequence as Sequence,
     Sized as Sized,
-    TypeVar,
     ValuesView as ValuesView,
     runtime_checkable,
 )

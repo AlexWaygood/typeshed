@@ -104,7 +104,6 @@ if sys.version_info >= (3, 10) and sys.version_info < (3, 12):
             extras: list[str] = ...,
         ) -> EntryPoints: ...
 
-
 class FileHash:
     mode: str
     value: str

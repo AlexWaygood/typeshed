@@ -1,7 +1,7 @@
 import sys
 from collections.abc import Iterator
 from types import ModuleType
-from typing import Any, BinaryIO, TextIO
+from typing import BinaryIO, TextIO
 from typing_extensions import TypeAlias
 
 if sys.version_info >= (3, 9):

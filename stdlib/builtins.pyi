@@ -38,6 +38,8 @@ from typing import (  # noqa: Y022
     BinaryIO,
     ClassVar,
     Generic,
+    ItemsView,
+    KeysView,
     Mapping,
     MutableMapping,
     MutableSequence,
@@ -49,11 +51,9 @@ from typing import (  # noqa: Y022
     SupportsComplex,
     SupportsFloat,
     TypeVar,
+    ValuesView,
     overload,
     type_check_only,
-    KeysView,
-    ValuesView,
-    ItemsView
 )
 from typing_extensions import (
     Concatenate,

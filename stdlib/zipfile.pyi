@@ -1,28 +1,9 @@
-import io
 import sys
-from _typeshed import SizedBuffer, StrOrBytesPath, StrPath
+from _typeshed import SizedBuffer, StrPath
 from collections.abc import Callable, Iterable, Iterator
 from io import TextIOWrapper
 from typing import IO, Protocol, overload
 from typing_extensions import Literal, Self, TypeAlias
-
-__all__ = [
-    "BadZipFile",
-    "BadZipfile",
-    "error",
-    "ZIP_STORED",
-    "ZIP_DEFLATED",
-    "ZIP_BZIP2",
-    "ZIP_LZMA",
-    "is_zipfile",
-    "ZipInfo",
-    "ZipFile",
-    "PyZipFile",
-    "LargeZipFile",
-]
-
-if sys.version_info >= (3, 8):
-    __all__ += ["Path"]
 
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
 _ReadWriteMode: TypeAlias = Literal["r", "w"]
@@ -35,15 +16,6 @@ class _ZipStream(Protocol):
     # def seekable(self) -> bool: ...
     # def tell(self) -> int: ...
     # def seek(self, __n: int) -> object: ...
-
-# Stream shape as required by _EndRecData() and _EndRecData64().
-class _SupportsReadSeekTell(Protocol):
-    def read(self, __n: int = ...) -> bytes: ...
-    def seek(self, __cookie: int, __whence: int) -> object: ...
-    def tell(self) -> int: ...
-
-class _ClosableZipStream(_ZipStream, Protocol):
-    def close(self) -> object: ...
 
 class _Writer(Protocol):
     def write(self, __s: str) -> object: ...
@@ -105,6 +77,7 @@ class ZipFile:
             allowZip64: bool = True,
             compresslevel: int | None = None,
         ) -> None: ...
+
     def close(self) -> None: ...
     def getinfo(self, name: str) -> ZipInfo: ...
     def infolist(self) -> list[ZipInfo]: ...

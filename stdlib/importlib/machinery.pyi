@@ -1,7 +1,7 @@
 import importlib.abc
 import sys
 import types
-from _typeshed import Incomplete, ReadableBuffer
+from _typeshed import ReadableBuffer
 from collections.abc import Callable, Iterable, MutableSequence, Sequence
 from typing import Any
 from typing_extensions import Literal

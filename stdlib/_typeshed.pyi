@@ -5,7 +5,7 @@
 import sys
 from collections.abc import Awaitable, Callable, Iterable, Sequence, Set as AbstractSet, Sized
 from types import FrameType, TracebackType
-from typing import Any, AnyStr, ClassVar, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
+from typing import Any, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
 from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias, final
 
 _KT = TypeVar("_KT")
@@ -140,7 +140,7 @@ class SupportsItemAccess(SupportsGetItem[_KT_contra, _VT], Protocol[_KT_contra, 
 
 StrPath: TypeAlias = str  # stable
 BytesPath: TypeAlias = bytes  # stable
-StrOrBytesPath: TypeAlias = str | bytes # stable
+StrOrBytesPath: TypeAlias = str | bytes  # stable
 
 OpenTextModeUpdating: TypeAlias = Literal[
     "r+",
