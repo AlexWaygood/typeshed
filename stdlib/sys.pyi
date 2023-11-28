@@ -1,15 +1,1 @@
-from _typeshed import structseq
-
-class _version_info(structseq[int], tuple[int, int, int, str, int]):
-    @property
-    def major(self) -> int: ...
-    @property
-    def minor(self) -> int: ...
-    @property
-    def micro(self) -> int: ...
-    @property
-    def releaselevel(self) -> str: ...
-    @property
-    def serial(self) -> int: ...
-
-version_info: _version_info
+version_info: tuple[int, int, int, str, int]
