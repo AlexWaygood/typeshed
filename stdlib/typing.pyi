@@ -21,9 +21,6 @@ ClassVar: _SpecialForm
 Optional: _SpecialForm
 Tuple: _SpecialForm
 Final: _SpecialForm
-
-def final(f: _T) -> _T: ...
-
 Literal: _SpecialForm
 TypedDict: object
 Self: _SpecialForm
@@ -32,20 +29,9 @@ Unpack: _SpecialForm
 Required: _SpecialForm
 NotRequired: _SpecialForm
 LiteralString: _SpecialForm
-
-class TypeVarTuple: ...
-class ParamSpec: ...
-
 Concatenate: _SpecialForm
 TypeAlias: _SpecialForm
 TypeGuard: _SpecialForm
-
-class NewType:
-    def __init__(self, name: str, tp: Any) -> None: ...
-    def __call__(self, __x: _T) -> _T: ...
-    def __or__(self, other: Any) -> _SpecialForm: ...
-    def __ror__(self, other: Any) -> _SpecialForm: ...
-    __supertype__: type
 
 _S = TypeVar("_S")
 _KT = TypeVar("_KT")  # Key type.
@@ -116,12 +102,6 @@ class Awaitable(Protocol[_T_co]):
 
 class Coroutine(Awaitable[_ReturnT_co], Generic[_YieldT_co, _SendT_contra, _ReturnT_co]):
     def __await__(self) -> Generator[Any, None, _T_co]: ...
-
-class AwaitableGenerator(
-    Awaitable[_ReturnT_co],
-    Generator[_YieldT_co, _SendT_contra, _ReturnT_co],
-    Generic[_YieldT_co, _SendT_contra, _ReturnT_co, _S],
-): ...
 
 class AsyncIterable(Protocol[_T_co]):
     def __aiter__(self) -> AsyncIterator[_T_co]: ...
@@ -261,8 +241,6 @@ class MutableMapping(Mapping[_KT, _VT]):
     @overload
     def update(self, **kwargs: _VT) -> None: ...
 
-TYPE_CHECKING: bool
-
 class IO(Iterator[AnyStr]):
     @property
     def mode(self) -> str: ...
@@ -299,40 +277,3 @@ class TextIO:
     def line_buffering(self) -> int: ...  # int on PyPy, bool on CPython
     @property
     def newlines(self) -> Any: ...  # None, str or tuple
-
-ByteString = bytes
-
-@overload
-def cast(typ: Type[_T], val: Any) -> _T: ...
-@overload
-def cast(typ: str, val: Any) -> Any: ...
-@overload
-def cast(typ: object, val: Any) -> Any: ...
-
-class NamedTuple(tuple[Any, ...]):
-    _field_defaults: ClassVar[dict[str, Any]]
-    _fields: ClassVar[tuple[str, ...]]
-    @overload
-    def __init__(self, __typename: str, __fields: Iterable[tuple[str, Any]]) -> None: ...
-    @overload
-    def __init__(self, __typename: str, __fields: None = None, **kwargs: Any) -> None: ...
-    @classmethod
-    def _make(cls, iterable: Iterable[Any]) -> NamedTuple: ...
-    def _asdict(self) -> dict[str, Any]: ...
-    def _replace(self, **kwargs: Any) -> NamedTuple: ...
-
-class _TypedDict(Mapping[str, object]):
-    __total__: ClassVar[bool]
-    def setdefault(self, k: NoReturn, default: object) -> object: ...
-    def pop(self, k: NoReturn, default: _T = ...) -> object: ...  # pyright: ignore[reportInvalidTypeVarUse]
-    def update(self: _T, __m: _T) -> None: ...
-    def __delitem__(self, k: NoReturn) -> None: ...
-    def items(self) -> ItemsView[str, object]: ...
-    def keys(self) -> KeysView[str]: ...
-    def values(self) -> ValuesView[object]: ...
-
-class ForwardRef:
-    def __init__(self, arg: str, is_argument: bool = True, module: Any | None = None, *, is_class: bool = False) -> None: ...
-    def _evaluate(
-        self, globalns: dict[str, Any] | None, localns: dict[str, Any] | None, recursive_guard: AbstractSet[str]
-    ) -> Any | None: ...
