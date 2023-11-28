@@ -3,7 +3,6 @@ import pathlib
 import sys
 from _typeshed import StrPath
 from collections.abc import Iterable, Mapping
-from email.message import Message
 from importlib.abc import MetaPathFinder
 from os import PathLike
 from pathlib import Path
@@ -149,7 +148,7 @@ class Distribution:
         def entry_points(self) -> EntryPoints: ...
     else:
         @property
-        def metadata(self) -> Message: ...
+        def metadata(self) -> Any: ...
         @property
         def entry_points(self) -> list[EntryPoint]: ...
 
@@ -198,7 +197,7 @@ if sys.version_info >= (3, 10):
     def metadata(distribution_name: str) -> PackageMetadata: ...
 
 else:
-    def metadata(distribution_name: str) -> Message: ...
+    def metadata(distribution_name: str) -> Any: ...
 
 if sys.version_info >= (3, 12):
     def entry_points(
