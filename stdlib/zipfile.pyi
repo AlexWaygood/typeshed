@@ -29,13 +29,6 @@ _ReadWriteMode: TypeAlias = Literal["r", "w"]
 _ReadWriteBinaryMode: TypeAlias = Literal["r", "w", "rb", "wb"]
 _ZipFileMode: TypeAlias = Literal["r", "w", "x", "a"]
 
-class BadZipFile(Exception): ...
-
-BadZipfile = BadZipFile
-error = BadZipfile
-
-class LargeZipFile(Exception): ...
-
 class _ZipStream(Protocol):
     def read(self, __n: int) -> bytes: ...
     # The following methods are optional:
@@ -51,42 +44,6 @@ class _SupportsReadSeekTell(Protocol):
 
 class _ClosableZipStream(_ZipStream, Protocol):
     def close(self) -> object: ...
-
-class ZipExtFile(io.BufferedIOBase):
-    MAX_N: int
-    MIN_READ_SIZE: int
-    MAX_SEEK_READ: int
-    newlines: list[bytes] | None
-    mode: _ReadWriteMode
-    name: str
-    @overload
-    def __init__(
-        self, fileobj: _ClosableZipStream, mode: _ReadWriteMode, zipinfo: ZipInfo, pwd: bytes | None, close_fileobj: Literal[True]
-    ) -> None: ...
-    @overload
-    def __init__(
-        self,
-        fileobj: _ClosableZipStream,
-        mode: _ReadWriteMode,
-        zipinfo: ZipInfo,
-        pwd: bytes | None = None,
-        *,
-        close_fileobj: Literal[True],
-    ) -> None: ...
-    @overload
-    def __init__(
-        self,
-        fileobj: _ZipStream,
-        mode: _ReadWriteMode,
-        zipinfo: ZipInfo,
-        pwd: bytes | None = None,
-        close_fileobj: Literal[False] = False,
-    ) -> None: ...
-    def read(self, n: int | None = -1) -> bytes: ...
-    def readline(self, limit: int = -1) -> bytes: ...  # type: ignore[override]
-    def peek(self, n: int = 1) -> bytes: ...
-    def read1(self, n: int | None) -> bytes: ...  # type: ignore[override]
-    def seek(self, offset: int, whence: int = 0) -> int: ...
 
 class _Writer(Protocol):
     def write(self, __s: str) -> object: ...
@@ -219,17 +176,7 @@ class ZipInfo:
     def FileHeader(self, zip64: bool | None = None) -> bytes: ...
 
 if sys.version_info >= (3, 8):
-    class CompleteDirs(ZipFile):
-        def resolve_dir(self, name: str) -> str: ...
-        @overload
-        @classmethod
-        def make(cls, source: ZipFile) -> CompleteDirs: ...
-        @overload
-        @classmethod
-        def make(cls, source: StrPath | IO[bytes]) -> Self: ...
-
     class Path:
-        root: CompleteDirs
         def __init__(self, root: ZipFile | StrPath | IO[bytes], at: str = "") -> None: ...
         @property
         def name(self) -> str: ...
@@ -292,13 +239,3 @@ if sys.version_info >= (3, 8):
             def __hash__(self) -> int: ...
 
         def __truediv__(self, add: StrPath) -> Path: ...
-
-def is_zipfile(filename: StrOrBytesPath | _SupportsReadSeekTell) -> bool: ...
-
-ZIP_STORED: int
-ZIP_DEFLATED: int
-ZIP64_LIMIT: int
-ZIP_FILECOUNT_LIMIT: int
-ZIP_MAX_COMMENT: int
-ZIP_BZIP2: int
-ZIP_LZMA: int
