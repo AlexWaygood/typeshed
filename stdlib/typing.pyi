@@ -6,10 +6,7 @@ Any = object()
 class TypeVar: ...
 class _SpecialForm: ...
 
-_F = TypeVar("_F", bound=Callable[..., Any])
 _T = TypeVar("_T")
-
-def overload(func: _F) -> _F: ...
 
 Generic: _SpecialForm
 Protocol: _SpecialForm
