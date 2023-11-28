@@ -21,17 +21,6 @@ class _Writer(Protocol):
     def write(self, __s: str) -> object: ...
 
 class ZipFile:
-    filename: str | None
-    debug: int
-    comment: bytes
-    filelist: list[ZipInfo]
-    fp: IO[bytes] | None
-    NameToInfo: dict[str, ZipInfo]
-    start_dir: int  # undocumented
-    compression: int  # undocumented
-    compresslevel: int | None  # undocumented
-    mode: _ZipFileMode  # undocumented
-    pwd: bytes | None  # undocumented
     if sys.version_info >= (3, 11):
         @overload
         def __init__(
@@ -78,65 +67,8 @@ class ZipFile:
             compresslevel: int | None = None,
         ) -> None: ...
 
-    def close(self) -> None: ...
-    def getinfo(self, name: str) -> ZipInfo: ...
-    def infolist(self) -> list[ZipInfo]: ...
-    def namelist(self) -> list[str]: ...
-    def open(
-        self, name: str | ZipInfo, mode: _ReadWriteMode = "r", pwd: bytes | None = None, *, force_zip64: bool = False
-    ) -> IO[bytes]: ...
-    def extract(self, member: str | ZipInfo, path: StrPath | None = None, pwd: bytes | None = None) -> str: ...
-    def extractall(
-        self, path: StrPath | None = None, members: Iterable[str | ZipInfo] | None = None, pwd: bytes | None = None
-    ) -> None: ...
-    def printdir(self, file: _Writer | None = None) -> None: ...
-    def setpassword(self, pwd: bytes) -> None: ...
-    def read(self, name: str | ZipInfo, pwd: bytes | None = None) -> bytes: ...
-    def testzip(self) -> str | None: ...
-    def write(
-        self,
-        filename: StrPath,
-        arcname: StrPath | None = None,
-        compress_type: int | None = None,
-        compresslevel: int | None = None,
-    ) -> None: ...
-    def writestr(
-        self,
-        zinfo_or_arcname: str | ZipInfo,
-        data: SizedBuffer | str,
-        compress_type: int | None = None,
-        compresslevel: int | None = None,
-    ) -> None: ...
-    if sys.version_info >= (3, 11):
-        def mkdir(self, zinfo_or_directory_name: str | ZipInfo, mode: int = 0o777) -> None: ...
-
-    def __del__(self) -> None: ...
-
-class PyZipFile(ZipFile):
-    def __init__(
-        self, file: str | IO[bytes], mode: _ZipFileMode = "r", compression: int = 0, allowZip64: bool = True, optimize: int = -1
-    ) -> None: ...
-    def writepy(self, pathname: str, basename: str = "", filterfunc: Callable[[str], bool] | None = None) -> None: ...
-
 class ZipInfo:
-    filename: str
     date_time: _DateTuple
-    compress_type: int
-    comment: bytes
-    extra: bytes
-    create_system: int
-    create_version: int
-    extract_version: int
-    reserved: int
-    flag_bits: int
-    volume: int
-    internal_attr: int
-    external_attr: int
-    header_offset: int
-    CRC: int
-    compress_size: int
-    file_size: int
-    orig_filename: str  # undocumented
     def __init__(self, filename: str = "NoName", date_time: _DateTuple = (1980, 1, 1, 0, 0, 0)) -> None: ...
     if sys.version_info >= (3, 8):
         @classmethod
@@ -144,9 +76,6 @@ class ZipInfo:
     else:
         @classmethod
         def from_file(cls, filename: StrPath, arcname: StrPath | None = None) -> Self: ...
-
-    def is_dir(self) -> bool: ...
-    def FileHeader(self, zip64: bool | None = None) -> bytes: ...
 
 if sys.version_info >= (3, 8):
     class Path:
