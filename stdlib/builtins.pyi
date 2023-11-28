@@ -1,7 +1,6 @@
 import _typeshed
 import sys
 import types
-from _collections_abc import dict_items, dict_keys, dict_values
 from _typeshed import (
     AnyStr_co,
     ConvertibleToFloat,
@@ -52,6 +51,9 @@ from typing import (  # noqa: Y022
     TypeVar,
     overload,
     type_check_only,
+    KeysView,
+    ValuesView,
+    ItemsView
 )
 from typing_extensions import (
     Concatenate,
@@ -1087,9 +1089,9 @@ class dict(MutableMapping[_KT, _VT]):
     def __init__(self: dict[bytes, bytes], __iterable: Iterable[list[bytes]]) -> None: ...
     def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
     def copy(self) -> dict[_KT, _VT]: ...
-    def keys(self) -> dict_keys[_KT, _VT]: ...
-    def values(self) -> dict_values[_KT, _VT]: ...
-    def items(self) -> dict_items[_KT, _VT]: ...
+    def keys(self) -> KeysView[_KT]: ...
+    def values(self) -> ValuesView[_VT]: ...
+    def items(self) -> ItemsView[_KT, _VT]: ...
     # Signature of `dict.fromkeys` should be kept identical to `fromkeys` methods of `OrderedDict`/`ChainMap`/`UserDict` in `collections`
     # TODO: the true signature of `dict.fromkeys` is not expressible in the current type system.
     # See #3800 & https://github.com/python/typing/issues/548#issuecomment-683336963.
