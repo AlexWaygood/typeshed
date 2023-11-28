@@ -1,15 +1,6 @@
 from _typeshed import structseq
-from typing import Any
-from typing_extensions import Literal, TypeAlias, final
 
-# Type alias used as a mixin for structseq classes that cannot be instantiated at runtime
-# This can't be represented in the type system, so we just use `structseq[Any]`
-_UninstantiableStructseq: TypeAlias = structseq[Any]
-
-_ReleaseLevel: TypeAlias = Literal["alpha", "beta", "candidate", "final"]
-
-@final
-class _version_info(_UninstantiableStructseq, tuple[int, int, int, _ReleaseLevel, int]):
+class _version_info(structseq[int], tuple[int, int, int, str, int]):
     @property
     def major(self) -> int: ...
     @property
@@ -17,7 +8,7 @@ class _version_info(_UninstantiableStructseq, tuple[int, int, int, _ReleaseLevel
     @property
     def micro(self) -> int: ...
     @property
-    def releaselevel(self) -> _ReleaseLevel: ...
+    def releaselevel(self) -> str: ...
     @property
     def serial(self) -> int: ...
 
