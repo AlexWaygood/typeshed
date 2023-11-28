@@ -1,5 +1,5 @@
 from typing import Any, Iterable, Protocol, TypeVar
-from typing_extensions import Buffer, Literal, TypeAlias
+from typing_extensions import Buffer, TypeAlias
 
 _T = TypeVar("_T")
 _KT = TypeVar("_KT")
@@ -20,10 +20,6 @@ class SupportsDunderLE(Protocol[_T_contra]):
 class SupportsDunderGE(Protocol[_T_contra]):
     def __ge__(self, __other: _T_contra) -> bool: ...
 
-class SupportsAllComparisons(
-    SupportsDunderLT[Any], SupportsDunderGT[Any], SupportsDunderLE[Any], SupportsDunderGE[Any], Protocol
-): ...
-
 SupportsRichComparison: TypeAlias = SupportsDunderLT[Any] | SupportsDunderGT[Any]
 SupportsRichComparisonT = TypeVar("SupportsRichComparisonT", bound=SupportsRichComparison)  # noqa: Y001
 
@@ -37,36 +33,5 @@ class IdentityFunction(Protocol):
 StrPath: TypeAlias = str  # stable
 BytesPath: TypeAlias = bytes  # stable
 StrOrBytesPath: TypeAlias = str | bytes  # stable
-
-OpenBinaryModeUpdating: TypeAlias = Literal[
-    "rb+",
-    "r+b",
-    "+rb",
-    "br+",
-    "b+r",
-    "+br",
-    "wb+",
-    "w+b",
-    "+wb",
-    "bw+",
-    "b+w",
-    "+bw",
-    "ab+",
-    "a+b",
-    "+ab",
-    "ba+",
-    "b+a",
-    "+ba",
-    "xb+",
-    "x+b",
-    "+xb",
-    "bx+",
-    "b+x",
-    "+bx",
-]
-OpenBinaryModeWriting: TypeAlias = Literal["wb", "bw", "ab", "ba", "xb", "bx"]
-OpenBinaryModeReading: TypeAlias = Literal["rb", "br", "rbU", "rUb", "Urb", "brU", "bUr", "Ubr"]
-OpenBinaryMode: TypeAlias = OpenBinaryModeUpdating | OpenBinaryModeReading | OpenBinaryModeWriting
-
 WriteableBuffer: TypeAlias = Buffer
 ReadableBuffer: TypeAlias = Buffer  # stable
