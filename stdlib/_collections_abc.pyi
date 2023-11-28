@@ -19,12 +19,8 @@ from typing import (  # noqa: Y022,Y057
     MutableMapping as MutableMapping,
     MutableSequence as MutableSequence,
     MutableSet as MutableSet,
-    Protocol,
     Reversible as Reversible,
     Sequence as Sequence,
     Sized as Sized,
     ValuesView as ValuesView,
 )
-
-class Buffer(Protocol):
-    def __buffer__(self, __flags: int) -> bytes: ...
