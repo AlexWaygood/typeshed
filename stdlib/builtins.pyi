@@ -1,8 +1,6 @@
 import _typeshed
-import sys
 import types
 from _typeshed import (
-    AnyStr_co,
     ConvertibleToFloat,
     ConvertibleToInt,
     ReadableBuffer,
@@ -820,16 +818,7 @@ class property:
     def __set__(self, __instance: Any, __value: Any) -> None: ...
     def __delete__(self, __instance: Any) -> None: ...
 
-# We define this here instead of using os.PathLike to avoid import cycle issues.
-# See https://github.com/python/typeshed/pull/991#issuecomment-288160993
-class _PathLike(Protocol[AnyStr_co]):
-    def __fspath__(self) -> AnyStr_co: ...
-
-# Keep this alias in sync with unittest.case._ClassInfo
-if sys.version_info >= (3, 10):
-    _ClassInfo: TypeAlias = type | types.UnionType | tuple[_ClassInfo, ...]
-else:
-    _ClassInfo: TypeAlias = type | tuple[_ClassInfo, ...]
+_ClassInfo: TypeAlias = type | types.UnionType | tuple[_ClassInfo, ...]
 
 def isinstance(__obj: object, __class_or_tuple: _ClassInfo) -> bool: ...
 def issubclass(__cls: type, __class_or_tuple: _ClassInfo) -> bool: ...
