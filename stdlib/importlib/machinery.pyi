@@ -161,6 +161,8 @@ class ExtensionFileLoader(importlib.abc.ExecutionLoader):
     def __hash__(self) -> int: ...
 
 if sys.version_info >= (3, 11):
+    import importlib.readers
+
     class NamespaceLoader(importlib.abc.InspectLoader):
         def __init__(
             self, name: str, path: MutableSequence[str], path_finder: Callable[[str, tuple[str, ...]], ModuleSpec]
@@ -171,7 +173,7 @@ if sys.version_info >= (3, 11):
         # Actually get_resource_reader() returns importlib.readers.NamespaceReader.
         # Unfortunately, importing from importlib.readers in importlib.machinery
         # appears to break mypy's brain a little (probably due to a massive import cycle)?
-        def get_resource_reader(self, module: types.ModuleType) -> Incomplete: ...
+        def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
         if sys.version_info < (3, 12):
             @staticmethod
             def module_repr(module: types.ModuleType) -> str: ...
