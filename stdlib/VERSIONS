@@ -169,6 +169,8 @@ linecache: 2.7-
 locale: 2.7-
 logging: 2.7-
 lzma: 3.3-
+machinery: 2.7-
+readers: 2.7-
 macpath: 2.7-3.7
 mailbox: 2.7-
 mailcap: 2.7-

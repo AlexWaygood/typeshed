@@ -13,7 +13,7 @@ from collections.abc import (
     MutableSequence,
     ValuesView,
 )
-from importlib.machinery import ModuleSpec
+from machinery import ModuleSpec
 
 # pytype crashes if types.MappingProxyType inherits from collections.abc.Mapping instead of typing.Mapping
 from typing import Any, ClassVar, Mapping, Protocol, TypeVar, overload  # noqa: Y022
