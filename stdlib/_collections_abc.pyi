@@ -1,16 +1,10 @@
 from typing import (  # noqa: Y022
     Callable as Callable,
     Collection as Collection,
-    Generator as Generator,
-    ItemsView as ItemsView,
     Iterable as Iterable,
     Iterator as Iterator,
-    KeysView as KeysView,
     Mapping as Mapping,
-    MappingView as MappingView,
     MutableMapping as MutableMapping,
-    MutableSequence as MutableSequence,
     Sequence as Sequence,
     Sized as Sized,
-    ValuesView as ValuesView,
 )
