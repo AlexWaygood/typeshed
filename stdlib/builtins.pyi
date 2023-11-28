@@ -54,17 +54,7 @@ from typing import (  # noqa: Y022
     overload,
     type_check_only,
 )
-from typing_extensions import (
-    Concatenate,
-    Literal,
-    LiteralString,
-    ParamSpec,
-    Self,
-    SupportsIndex,
-    TypeAlias,
-    TypeGuard,
-    final,
-)
+from typing_extensions import Concatenate, Literal, LiteralString, ParamSpec, Self, SupportsIndex, TypeAlias, TypeGuard, final
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
