@@ -52,8 +52,6 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     ValuesView as ValuesView,
     _Alias,
     cast as cast,
-    no_type_check as no_type_check,
-    no_type_check_decorator as no_type_check_decorator,
     overload as overload,
     type_check_only,
 )
