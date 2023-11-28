@@ -99,13 +99,7 @@ class object:
     # return type of pickle methods is rather hard to express in the current type system
     # see #6661 and https://docs.python.org/3/library/pickle.html#object.__reduce__
     def __reduce__(self) -> str | tuple[Any, ...]: ...
-    if sys.version_info >= (3, 8):
-        def __reduce_ex__(self, __protocol: SupportsIndex) -> str | tuple[Any, ...]: ...
-    else:
-        def __reduce_ex__(self, __protocol: int) -> str | tuple[Any, ...]: ...
-    if sys.version_info >= (3, 11):
-        def __getstate__(self) -> object: ...
-
+    def __reduce_ex__(self, __protocol: SupportsIndex) -> str | tuple[Any, ...]: ...
     def __dir__(self) -> Iterable[str]: ...
     def __init_subclass__(cls) -> None: ...
     @classmethod
@@ -121,12 +115,6 @@ class staticmethod(Generic[_P, _R_co]):
     def __get__(self, __instance: None, __owner: type) -> Callable[_P, _R_co]: ...
     @overload
     def __get__(self, __instance: _T, __owner: type[_T] | None = None) -> Callable[_P, _R_co]: ...
-    if sys.version_info >= (3, 10):
-        __name__: str
-        __qualname__: str
-        @property
-        def __wrapped__(self) -> Callable[_P, _R_co]: ...
-        def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R_co: ...
 
 class classmethod(Generic[_T, _P, _R_co]):
     @property
@@ -138,11 +126,6 @@ class classmethod(Generic[_T, _P, _R_co]):
     def __get__(self, __instance: _T, __owner: type[_T] | None = None) -> Callable[_P, _R_co]: ...
     @overload
     def __get__(self, __instance: None, __owner: type[_T]) -> Callable[_P, _R_co]: ...
-    if sys.version_info >= (3, 10):
-        __name__: str
-        __qualname__: str
-        @property
-        def __wrapped__(self) -> Callable[Concatenate[type[_T], _P], _R_co]: ...
 
 class type:
     # object.__base__ is None. Otherwise, it would be a type.
@@ -197,9 +180,6 @@ class int:
     def __new__(cls, __x: ConvertibleToInt = ...) -> Self: ...
     @overload
     def __new__(cls, __x: str | bytes , base: SupportsIndex) -> Self: ...
-    if sys.version_info >= (3, 8):
-        def as_integer_ratio(self) -> tuple[int, Literal[1]]: ...
-
     @property
     def real(self) -> int: ...
     @property
@@ -210,35 +190,17 @@ class int:
     def denominator(self) -> Literal[1]: ...
     def conjugate(self) -> int: ...
     def bit_length(self) -> int: ...
-    if sys.version_info >= (3, 10):
-        def bit_count(self) -> int: ...
-
-    if sys.version_info >= (3, 11):
-        def to_bytes(
-            self, length: SupportsIndex = 1, byteorder: Literal["little", "big"] = "big", *, signed: bool = False
-        ) -> bytes: ...
-        @classmethod
-        def from_bytes(
-            cls,
-            bytes: Iterable[SupportsIndex] | SupportsBytes | ReadableBuffer,
-            byteorder: Literal["little", "big"] = "big",
-            *,
-            signed: bool = False,
-        ) -> Self: ...
-    else:
-        def to_bytes(self, length: SupportsIndex, byteorder: Literal["little", "big"], *, signed: bool = False) -> bytes: ...
-        @classmethod
-        def from_bytes(
-            cls,
-            bytes: Iterable[SupportsIndex] | SupportsBytes | ReadableBuffer,
-            byteorder: Literal["little", "big"],
-            *,
-            signed: bool = False,
-        ) -> Self: ...
-
-    if sys.version_info >= (3, 12):
-        def is_integer(self) -> Literal[True]: ...
-
+    def to_bytes(
+        self, length: SupportsIndex = 1, byteorder: Literal["little", "big"] = "big", *, signed: bool = False
+    ) -> bytes: ...
+    @classmethod
+    def from_bytes(
+        cls,
+        bytes: Iterable[SupportsIndex] | SupportsBytes | ReadableBuffer,
+        byteorder: Literal["little", "big"] = "big",
+        *,
+        signed: bool = False,
+    ) -> Self: ...
     def __add__(self, __value: int) -> int: ...
     def __sub__(self, __value: int) -> int: ...
     def __mul__(self, __value: int) -> int: ...
@@ -720,7 +682,7 @@ class tuple(Sequence[_T_co]):
     def __mul__(self, __value: SupportsIndex) -> tuple[_T_co, ...]: ...
     def __rmul__(self, __value: SupportsIndex) -> tuple[_T_co, ...]: ...
     def count(self, __value: Any) -> int: ...
-    def index(self, __value: Any, __start: SupportsIndex = 0, __stop: SupportsIndex = sys.maxsize) -> int: ...
+    def index(self, __value: Any, __start: SupportsIndex = 0, __stop: SupportsIndex = ...) -> int: ...
 
 # Doesn't exist at runtime, but deleting this breaks mypy. See #2999
 class function:
@@ -748,7 +710,7 @@ class list(MutableSequence[_T]):
     def pop(self, __index: SupportsIndex = -1) -> _T: ...
     # Signature of `list.index` should be kept in line with `collections.UserList.index()`
     # and multiprocessing.managers.ListProxy.index()
-    def index(self, __value: _T, __start: SupportsIndex = 0, __stop: SupportsIndex = sys.maxsize) -> int: ...
+    def index(self, __value: _T, __start: SupportsIndex = 0, __stop: SupportsIndex = ...) -> int: ...
     def count(self, __value: _T) -> int: ...
     def insert(self, __index: SupportsIndex, __object: _T) -> None: ...
     def remove(self, __value: _T) -> None: ...
@@ -935,113 +897,6 @@ class property:
 class _PathLike(Protocol[AnyStr_co]):
     def __fspath__(self) -> AnyStr_co: ...
 
-
-# compile() returns a CodeType, unless the flags argument includes PyCF_ONLY_AST (=1024),
-# in which case it returns ast.AST. We have overloads for flag 0 (the default) and for
-# explicitly passing PyCF_ONLY_AST. We fall back to Any for other values of flags.
-if sys.version_info >= (3, 8):
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: Literal[0],
-        dont_inherit: bool = False,
-        optimize: int = -1,
-        *,
-        _feature_version: int = -1,
-    ) -> None: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        *,
-        dont_inherit: bool = False,
-        optimize: int = -1,
-        _feature_version: int = -1,
-    ) -> None: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: Literal[1024],
-        dont_inherit: bool = False,
-        optimize: int = -1,
-        *,
-        _feature_version: int = -1,
-    ) -> Any: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: int,
-        dont_inherit: bool = False,
-        optimize: int = -1,
-        *,
-        _feature_version: int = -1,
-    ) -> Any: ...
-
-else:
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: Literal[0],
-        dont_inherit: bool = False,
-        optimize: int = -1,
-    ) -> None: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        *,
-        dont_inherit: bool = False,
-        optimize: int = -1,
-    ) -> None: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: Literal[1024],
-        dont_inherit: bool = False,
-        optimize: int = -1,
-    ) -> Any: ...
-    @overload
-    def compile(
-        source: str | ReadableBuffer,
-        filename: str | ReadableBuffer | _PathLike[Any],
-        mode: str,
-        flags: int,
-        dont_inherit: bool = False,
-        optimize: int = -1,
-    ) -> Any: ...
-
-def copyright() -> None: ...
-def credits() -> None: ...
-def delattr(__obj: object, __name: str) -> None: ...
-def dir(__o: object = ...) -> list[str]: ...
-@overload
-def divmod(__x: SupportsDivMod[_T_contra, _T_co], __y: _T_contra) -> _T_co: ...
-@overload
-def divmod(__x: _T_contra, __y: SupportsRDivMod[_T_contra, _T_co]) -> _T_co: ...
-
-class filter(Iterator[_T]):
-    @overload
-    def __new__(cls, __function: None, __iterable: Iterable[_T | None]) -> Self: ...
-    @overload
-    def __new__(cls, __function: Callable[[_S], TypeGuard[_T]], __iterable: Iterable[_S]) -> Self: ...
-    @overload
-    def __new__(cls, __function: Callable[[_T], Any], __iterable: Iterable[_T]) -> Self: ...
-    def __iter__(self) -> Self: ...
-    def __next__(self) -> _T: ...
-
-def format(__value: object, __format_spec: str = "") -> str: ...
 @overload
 def getattr(__o: object, __name: str) -> Any: ...
 
