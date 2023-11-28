@@ -1,9 +1,8 @@
-import abc
 from _typeshed import ReadableBuffer, WriteableBuffer
 from collections.abc import Callable, Iterable, Iterator
 from typing import IO, Any, BinaryIO, TextIO
 
-class IOBase(metaclass=abc.ABCMeta):
+class IOBase:
     def __iter__(self) -> Iterator[bytes]: ...
     def __next__(self) -> bytes: ...
     def close(self) -> None: ...
