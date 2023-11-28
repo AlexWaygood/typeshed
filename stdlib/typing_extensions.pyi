@@ -1,8 +1,7 @@
 import abc
-import collections
 import sys
 import typing
-from _typeshed import IdentityFunction, Incomplete
+from _typeshed import Incomplete
 from typing import (  # noqa: Y022,Y037,Y038,Y039
     IO as IO,
     TYPE_CHECKING as TYPE_CHECKING,
