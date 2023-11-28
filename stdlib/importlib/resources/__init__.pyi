@@ -1,4 +1,3 @@
-import os
 import sys
 from collections.abc import Iterator
 from types import ModuleType
@@ -17,11 +16,7 @@ if sys.version_info >= (3, 10):
     __all__ += ["ResourceReader"]
 
 Package: TypeAlias = str | ModuleType
-
-if sys.version_info >= (3, 11):
-    Resource: TypeAlias = str
-else:
-    Resource: TypeAlias = str | os.PathLike[Any]
+Resource: TypeAlias = str
 
 def open_binary(package: Package, resource: Resource) -> BinaryIO: ...
 def open_text(package: Package, resource: Resource, encoding: str = "utf-8", errors: str = "strict") -> TextIO: ...

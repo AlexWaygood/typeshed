@@ -3,7 +3,6 @@ import sys
 from _typeshed import StrPath
 from collections.abc import Iterable, Mapping
 from importlib.abc import MetaPathFinder
-from os import PathLike
 from typing import Any, ClassVar, NamedTuple, overload
 from typing_extensions import Self
 
@@ -114,8 +113,6 @@ class FileHash:
 class Distribution:
     @abc.abstractmethod
     def read_text(self, filename: str) -> str | None: ...
-    @abc.abstractmethod
-    def locate_file(self, path: StrPath) -> PathLike[str]: ...
     @classmethod
     def from_name(cls, name: str) -> Distribution: ...
     @overload
@@ -170,7 +167,6 @@ class MetadataPathFinder(DistributionFinder):
 class PathDistribution(Distribution):
     def __init__(self, path: str) -> None: ...
     def read_text(self, filename: StrPath) -> str: ...
-    def locate_file(self, path: StrPath) -> PathLike[str]: ...
 
 def distribution(distribution_name: str) -> Distribution: ...
 @overload

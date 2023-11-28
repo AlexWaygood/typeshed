@@ -3,7 +3,6 @@ import builtins
 import sys
 from _typeshed import FileDescriptorOrPath, ReadableBuffer, WriteableBuffer
 from collections.abc import Callable, Iterable, Iterator
-from os import _Opener
 from types import TracebackType
 from typing import IO, Any, BinaryIO, TextIO, TypeVar, overload
 from typing_extensions import Literal, Self
@@ -95,7 +94,7 @@ class FileIO(RawIOBase, BinaryIO):  # type: ignore[misc]  # incompatible definit
     mode: str
     name: FileDescriptorOrPath
     def __init__(
-        self, file: FileDescriptorOrPath, mode: str = ..., closefd: bool = ..., opener: _Opener | None = ...
+        self, file: FileDescriptorOrPath, mode: str = ..., closefd: bool = ...,
     ) -> None: ...
     @property
     def closefd(self) -> bool: ...

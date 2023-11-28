@@ -4,7 +4,6 @@
 
 import sys
 from collections.abc import Awaitable, Callable, Iterable, Sequence, Set as AbstractSet, Sized
-from os import PathLike
 from types import FrameType, TracebackType
 from typing import Any, AnyStr, ClassVar, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
 from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias, final
@@ -139,10 +138,9 @@ class SupportsItemAccess(SupportsGetItem[_KT_contra, _VT], Protocol[_KT_contra, 
     def __setitem__(self, __key: _KT_contra, __value: _VT) -> None: ...
     def __delitem__(self, __key: _KT_contra) -> None: ...
 
-StrPath: TypeAlias = str | PathLike[str]  # stable
-BytesPath: TypeAlias = bytes | PathLike[bytes]  # stable
-GenericPath: TypeAlias = AnyStr | PathLike[AnyStr]
-StrOrBytesPath: TypeAlias = str | bytes | PathLike[str] | PathLike[bytes]  # stable
+StrPath: TypeAlias = str  # stable
+BytesPath: TypeAlias = bytes  # stable
+StrOrBytesPath: TypeAlias = str | bytes # stable
 
 OpenTextModeUpdating: TypeAlias = Literal[
     "r+",

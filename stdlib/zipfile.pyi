@@ -3,7 +3,6 @@ import sys
 from _typeshed import SizedBuffer, StrOrBytesPath, StrPath
 from collections.abc import Callable, Iterable, Iterator
 from io import TextIOWrapper
-from os import PathLike
 from types import TracebackType
 from typing import IO, Protocol, overload
 from typing_extensions import Literal, Self, TypeAlias
@@ -240,11 +239,6 @@ if sys.version_info >= (3, 8):
         def __init__(self, root: ZipFile | StrPath | IO[bytes], at: str = "") -> None: ...
         @property
         def name(self) -> str: ...
-        @property
-        def parent(self) -> PathLike[str]: ...  # undocumented
-        if sys.version_info >= (3, 10):
-            @property
-            def filename(self) -> PathLike[str]: ...  # undocumented
         if sys.version_info >= (3, 11):
             @property
             def suffix(self) -> str: ...
