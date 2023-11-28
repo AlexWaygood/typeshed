@@ -1,4 +1,5 @@
-import abc, collections  # noqa: F401
+import abc  # noqa: F401
+import collections  # noqa: F401
 
 Any = object()
 
