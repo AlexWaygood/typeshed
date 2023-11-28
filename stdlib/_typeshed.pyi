@@ -11,13 +11,6 @@ _VT_co = TypeVar("_VT_co", covariant=True)
 _T_co = TypeVar("_T_co", covariant=True)
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
-# Use for "self" annotations:
-#   def __enter__(self: Self) -> Self: ...
-Self = TypeVar("Self")  # noqa: Y001
-
-# covariant version of typing.AnyStr, useful for protocols
-AnyStr_co = TypeVar("AnyStr_co", str, bytes, covariant=True)  # noqa: Y001
-
 # For partially known annotations. Usually, fields where type annotations
 # haven't been added are left unannotated, but in some situations this
 # isn't possible or a type is already partially known. In cases like these,
@@ -27,19 +20,6 @@ Incomplete: TypeAlias = Any
 
 # To describe a function parameter that is unused and will work with anything.
 Unused: TypeAlias = object
-
-# Used to mark arguments that default to a sentinel value. This prevents
-# stubtest from complaining about the default value not matching.
-#
-# def foo(x: int | None = sentinel) -> None: ...
-#
-# In cases where the sentinel object is exported and can be used by user code,
-# a construct like this is better:
-#
-# _SentinelType = NewType("_SentinelType", object)
-# sentinel: _SentinelType
-# def foo(x: int | None | _SentinelType = ...) -> None: ...
-sentinel: Any
 
 # Comparison protocols
 
