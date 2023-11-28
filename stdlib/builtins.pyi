@@ -12,19 +12,16 @@ from _typeshed import (
     OpenBinaryModeWriting,
     OpenTextMode,
     ReadableBuffer,
-    SupportsAdd,
     SupportsAnext,
     SupportsFlush,
     SupportsIter,
     SupportsKeysAndGetItem,
-    SupportsLenAndGetItem,
     SupportsNext,
-    SupportsRAdd,
     SupportsRichComparison,
     SupportsRichComparisonT,
     SupportsWrite,
 )
-from collections.abc import Awaitable, Callable, Iterable, Iterator, MutableSet, Reversible, Set as AbstractSet, Sized
+from collections.abc import Awaitable, Callable, Iterable, Iterator, MutableSet, Set as AbstractSet, Sized
 from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
@@ -39,7 +36,6 @@ from typing import (  # noqa: Y022
     Mapping,
     MutableMapping,
     MutableSequence,
-    NoReturn,
     Protocol,
     Sequence,
     SupportsBytes,
@@ -48,7 +44,6 @@ from typing import (  # noqa: Y022
     TypeVar,
     ValuesView,
     overload,
-    type_check_only,
 )
 from typing_extensions import Concatenate, Literal, LiteralString, ParamSpec, Self, SupportsIndex, TypeAlias, final
 
