@@ -6,7 +6,6 @@ from collections.abc import Iterable, Mapping
 from importlib.abc import MetaPathFinder
 from os import PathLike
 from pathlib import Path
-from re import Pattern
 from typing import Any, ClassVar, NamedTuple, overload
 from typing_extensions import Self
 
@@ -40,7 +39,6 @@ class _EntryPointBase(NamedTuple):
     group: str
 
 class EntryPoint(_EntryPointBase):
-    pattern: ClassVar[Pattern[str]]
     if sys.version_info >= (3, 11):
         def __init__(self, name: str, value: str, group: str) -> None: ...
 
