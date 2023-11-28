@@ -24,7 +24,6 @@ from builtins import OSError
 from collections.abc import Callable, Iterable, Iterator, Mapping, MutableMapping, Sequence
 from contextlib import AbstractContextManager
 from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper as _TextIOWrapper
-from subprocess import Popen
 from typing import IO, Any, AnyStr, BinaryIO, Generic, NoReturn, Protocol, TypeVar, overload, runtime_checkable
 from typing_extensions import Final, Literal, Self, TypeAlias, final
 
@@ -888,7 +887,7 @@ if sys.platform != "win32":
         def plock(__op: int) -> None: ...  # ???op is int?
 
 class _wrap_close(_TextIOWrapper):
-    def __init__(self, stream: _TextIOWrapper, proc: Popen[str]) -> None: ...
+    def __init__(self, stream: _TextIOWrapper, proc: Any) -> None: ...
     def close(self) -> int | None: ...  # type: ignore[override]
 
 def popen(cmd: str, mode: str = "r", buffering: int = -1) -> _wrap_close: ...
