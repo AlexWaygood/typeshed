@@ -22,109 +22,6 @@ if sys.version_info >= (3, 10):
 if sys.version_info >= (3, 9):
     from types import GenericAlias
 
-__all__ = [
-    "AbstractSet",
-    "Any",
-    "AnyStr",
-    "AsyncContextManager",
-    "AsyncGenerator",
-    "AsyncIterable",
-    "AsyncIterator",
-    "Awaitable",
-    "ByteString",
-    "Callable",
-    "ChainMap",
-    "ClassVar",
-    "Collection",
-    "Container",
-    "ContextManager",
-    "Coroutine",
-    "Counter",
-    "DefaultDict",
-    "Deque",
-    "Dict",
-    "FrozenSet",
-    "Generator",
-    "Generic",
-    "Hashable",
-    "ItemsView",
-    "Iterable",
-    "Iterator",
-    "KeysView",
-    "List",
-    "Mapping",
-    "MappingView",
-    "MutableMapping",
-    "MutableSequence",
-    "MutableSet",
-    "NamedTuple",
-    "NewType",
-    "Optional",
-    "Reversible",
-    "Sequence",
-    "Set",
-    "Sized",
-    "SupportsAbs",
-    "SupportsBytes",
-    "SupportsComplex",
-    "SupportsFloat",
-    "SupportsInt",
-    "SupportsRound",
-    "Text",
-    "Tuple",
-    "Type",
-    "TypeVar",
-    "Union",
-    "ValuesView",
-    "TYPE_CHECKING",
-    "cast",
-    "get_type_hints",
-    "no_type_check",
-    "no_type_check_decorator",
-    "overload",
-    "ForwardRef",
-    "NoReturn",
-    "OrderedDict",
-]
-
-if sys.version_info >= (3, 8):
-    __all__ += [
-        "Final",
-        "Literal",
-        "Protocol",
-        "SupportsIndex",
-        "TypedDict",
-        "final",
-        "get_args",
-        "get_origin",
-        "runtime_checkable",
-    ]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["Annotated", "BinaryIO", "IO", "Match", "Pattern", "TextIO"]
-
-if sys.version_info >= (3, 10):
-    __all__ += ["Concatenate", "ParamSpec", "ParamSpecArgs", "ParamSpecKwargs", "TypeAlias", "TypeGuard", "is_typeddict"]
-
-if sys.version_info >= (3, 11):
-    __all__ += [
-        "LiteralString",
-        "Never",
-        "NotRequired",
-        "Required",
-        "Self",
-        "TypeVarTuple",
-        "Unpack",
-        "assert_never",
-        "assert_type",
-        "clear_overloads",
-        "dataclass_transform",
-        "get_overloads",
-        "reveal_type",
-    ]
-
-if sys.version_info >= (3, 12):
-    __all__ += ["TypeAliasType", "override"]
 
 # This itself is only available during type checking
 def type_check_only(func_or_cls: _F) -> _F: ...
@@ -303,14 +200,7 @@ class _Alias:
 
 List = _Alias()
 Dict = _Alias()
-DefaultDict = _Alias()
 Set = _Alias()
-FrozenSet = _Alias()
-Counter = _Alias()
-Deque = _Alias()
-ChainMap = _Alias()
-
-OrderedDict = _Alias()
 
 if sys.version_info >= (3, 9):
     Annotated: _SpecialForm
@@ -877,9 +767,6 @@ class NamedTuple(tuple[Any, ...]):
 @type_check_only
 class _TypedDict(Mapping[str, object], metaclass=ABCMeta):
     __total__: ClassVar[bool]
-    if sys.version_info >= (3, 9):
-        __required_keys__: ClassVar[frozenset[str]]
-        __optional_keys__: ClassVar[frozenset[str]]
     # __orig_bases__ sometimes exists on <3.12, but not consistently,
     # so we only add it to the stub on 3.12+
     if sys.version_info >= (3, 12):
@@ -924,7 +811,7 @@ class ForwardRef:
 
     if sys.version_info >= (3, 9):
         def _evaluate(
-            self, globalns: dict[str, Any] | None, localns: dict[str, Any] | None, recursive_guard: frozenset[str]
+            self, globalns: dict[str, Any] | None, localns: dict[str, Any] | None, recursive_guard: AbstractSet[str]
         ) -> Any | None: ...
     else:
         def _evaluate(self, globalns: dict[str, Any] | None, localns: dict[str, Any] | None) -> Any | None: ...
@@ -962,7 +849,3 @@ if sys.version_info >= (3, 12):
         if sys.version_info >= (3, 10):
             def __or__(self, right: Any) -> _SpecialForm: ...
             def __ror__(self, left: Any) -> _SpecialForm: ...
-
-if sys.version_info >= (3, 13):
-    def is_protocol(__tp: type) -> bool: ...
-    def get_protocol_members(__tp: type) -> frozenset[str]: ...

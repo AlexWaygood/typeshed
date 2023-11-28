@@ -73,9 +73,6 @@ stdin: TextIO
 stdout: TextIO
 stderr: TextIO
 
-if sys.version_info >= (3, 10):
-    stdlib_module_names: frozenset[str]
-
 __stdin__: Final[TextIOWrapper]  # Contains the original value of stdin
 __stdout__: Final[TextIOWrapper]  # Contains the original value of stdout
 __stderr__: Final[TextIOWrapper]  # Contains the original value of stderr

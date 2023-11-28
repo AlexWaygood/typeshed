@@ -21,7 +21,6 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     Coroutine as Coroutine,
     Dict as Dict,
     ForwardRef as ForwardRef,
-    FrozenSet as FrozenSet,
     Generator as Generator,
     Generic as Generic,
     Hashable as Hashable,
@@ -99,8 +98,6 @@ def IntVar(name: str) -> Any: ...  # returns a new TypeVar
 # N.B. Keep this mostly in sync with typing._TypedDict/mypy_extensions._TypedDict
 @type_check_only
 class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
-    __required_keys__: ClassVar[frozenset[str]]
-    __optional_keys__: ClassVar[frozenset[str]]
     __total__: ClassVar[bool]
     __orig_bases__: ClassVar[tuple[Any, ...]]
     def copy(self) -> Self: ...
@@ -363,12 +360,6 @@ else:
         # Not actually a Protocol at runtime; see
         # https://github.com/python/typeshed/issues/10224 for why we're defining it this way
         def __buffer__(self, __flags: int) -> memoryview: ...
-
-if sys.version_info >= (3, 13):
-    from typing import get_protocol_members as get_protocol_members, is_protocol as is_protocol
-else:
-    def is_protocol(__tp: type) -> bool: ...
-    def get_protocol_members(__tp: type) -> frozenset[str]: ...
 
 class Doc:
     documentation: str
