@@ -1,31 +1,11 @@
-import importlib.abc
 import importlib.readers
 import types
-from typing import Any, Callable, MutableSequence, Sequence
+from typing import Callable, MutableSequence, Sequence
 from typing_extensions import Literal
 
-class ModuleSpec:
-    def __init__(
-        self,
-        name: str,
-        loader: importlib.abc.Loader | None,
-        *,
-        origin: str | None = None,
-        loader_state: Any = None,
-        is_package: bool | None = None,
-    ) -> None: ...
-    name: str
-    loader: importlib.abc.Loader | None
-    origin: str | None
-    submodule_search_locations: list[str] | None
-    loader_state: Any
-    cached: str | None
-    @property
-    def parent(self) -> str | None: ...
-    has_location: bool
-    def __eq__(self, other: object) -> bool: ...
+class ModuleSpec: ...
 
-class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
+class BuiltinImporter:
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
@@ -44,7 +24,7 @@ class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader)
     @staticmethod
     def exec_module(module: types.ModuleType) -> None: ...
 
-class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
+class FrozenImporter:
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
@@ -63,23 +43,16 @@ class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
     @staticmethod
     def exec_module(module: types.ModuleType) -> None: ...
 
-class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
+class WindowsRegistryFinder:
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
     ) -> ModuleSpec | None: ...
 
-class FileFinder(importlib.abc.PathEntryFinder):
-    path: str
-    def __init__(self, path: str, *loader_details: tuple[type[importlib.abc.Loader], list[str]]) -> None: ...
-    @classmethod
-    def path_hook(
-        cls, *loader_details: tuple[type[importlib.abc.Loader], list[str]]
-    ) -> Callable[[str], importlib.abc.PathEntryFinder]: ...
+class FileFinder: ...
+class SourcelessFileLoader: ...
 
-class SourcelessFileLoader(importlib.abc.FileLoader, importlib.abc.SourceLoader): ...
-
-class ExtensionFileLoader(importlib.abc.ExecutionLoader):
+class ExtensionFileLoader:
     def __init__(self, name: str, path: str) -> None: ...
     def get_filename(self, name: str | None = None) -> str: ...
     def get_source(self, fullname: str) -> None: ...
@@ -89,7 +62,7 @@ class ExtensionFileLoader(importlib.abc.ExecutionLoader):
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
 
-class NamespaceLoader(importlib.abc.InspectLoader):
+class NamespaceLoader:
     def __init__(
         self, name: str, path: MutableSequence[str], path_finder: Callable[[str, tuple[str, ...]], ModuleSpec]
     ) -> None: ...
