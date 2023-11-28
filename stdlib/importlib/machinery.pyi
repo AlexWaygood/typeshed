@@ -1,7 +1,7 @@
 import importlib.abc
+import importlib.metadata
 import importlib.readers
 import types
-from importlib.metadata import DistributionFinder, PathDistribution
 from typing import Any, Callable, Iterable, MutableSequence, Sequence
 from typing_extensions import Literal
 
@@ -72,7 +72,7 @@ class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
 
 class PathFinder:
     @staticmethod
-    def find_distributions(context: DistributionFinder.Context = ...) -> Iterable[PathDistribution]: ...
+    def find_distributions(context: importlib.metadata.DistributionFinder.Context = ...) -> Iterable[importlib.metadata.PathDistribution]: ...
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
