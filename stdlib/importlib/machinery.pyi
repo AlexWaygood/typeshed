@@ -1,7 +1,6 @@
 import importlib.abc
 import sys
 import types
-from _typeshed import ReadableBuffer
 from collections.abc import Callable, Iterable, MutableSequence, Sequence
 from typing import Any
 from typing_extensions import Literal
@@ -144,9 +143,6 @@ class FileFinder(importlib.abc.PathEntryFinder):
     def path_hook(
         cls, *loader_details: tuple[type[importlib.abc.Loader], list[str]]
     ) -> Callable[[str], importlib.abc.PathEntryFinder]: ...
-
-class SourceFileLoader(importlib.abc.FileLoader, importlib.abc.SourceLoader):
-    def set_data(self, path: str, data: ReadableBuffer, *, _mode: int = 0o666) -> None: ...
 
 class SourcelessFileLoader(importlib.abc.FileLoader, importlib.abc.SourceLoader): ...
 

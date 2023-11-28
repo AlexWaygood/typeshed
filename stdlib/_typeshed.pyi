@@ -2,11 +2,10 @@
 #
 # See the README.md file in this directory for more information.
 
-import sys
 from collections.abc import Awaitable, Callable, Iterable, Sequence, Set as AbstractSet, Sized
 from types import FrameType, TracebackType
 from typing import Any, Generic, Protocol, SupportsFloat, SupportsInt, TypeVar, overload
-from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias, final
+from typing_extensions import Buffer, Final, Literal, LiteralString, SupportsIndex, TypeAlias
 
 _KT = TypeVar("_KT")
 _KT_co = TypeVar("_KT_co", covariant=True)
@@ -267,15 +266,6 @@ _BufferWithLen: TypeAlias = SizedBuffer  # not stable  # noqa: Y047
 
 ExcInfo: TypeAlias = tuple[type[BaseException], BaseException, TracebackType]
 OptExcInfo: TypeAlias = ExcInfo | tuple[None, None, None]
-
-# stable
-if sys.version_info >= (3, 10):
-    from types import NoneType as NoneType
-else:
-    # Used by type checkers for checks involving None (does not exist at runtime)
-    @final
-    class NoneType:
-        def __bool__(self) -> Literal[False]: ...
 
 # This is an internal CPython type that is like, but subtly different from, a NamedTuple
 # Subclasses of this type are found in multiple modules.

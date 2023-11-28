@@ -783,7 +783,7 @@ class TextIO(IO[str]):
     @abstractmethod
     def __enter__(self) -> TextIO: ...
 
-ByteString: typing_extensions.TypeAlias = bytes | bytearray | memoryview
+ByteString: typing_extensions.TypeAlias = bytes
 
 # Functions
 
