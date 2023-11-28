@@ -1,6 +1,5 @@
 from _typeshed import ReadableBuffer, WriteableBuffer
-from collections.abc import Callable, Iterable, Iterator
-from typing import IO, Any, BinaryIO, TextIO
+from typing import IO, Any, BinaryIO, Callable, Iterable, Iterator, TextIO
 
 class IOBase:
     def __iter__(self) -> Iterator[bytes]: ...
