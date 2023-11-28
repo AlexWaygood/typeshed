@@ -1,14 +1,9 @@
-import abc
-import sys
-from _typeshed import StrPath
-from collections.abc import Iterable
 from importlib.abc import MetaPathFinder
-from typing import Any, overload
+from typing import Any, Iterable, overload
 
 class EntryPoints(list[Any]): ...
 
 class Distribution:
-    @abc.abstractmethod
     def read_text(self, filename: str) -> str | None: ...
     @classmethod
     def from_name(cls, name: str) -> Distribution: ...
@@ -20,8 +15,6 @@ class Distribution:
     def discover(
         cls, *, context: None = None, name: str | None = ..., path: list[str] = ..., **kwargs: Any
     ) -> Iterable[Distribution]: ...
-    @staticmethod
-    def at(path: StrPath) -> PathDistribution: ...
     @property
     def metadata(self) -> Any: ...
     @property
@@ -38,19 +31,14 @@ class DistributionFinder(MetaPathFinder):
         @property
         def path(self) -> list[str]: ...
 
-    @abc.abstractmethod
     def find_distributions(self, context: DistributionFinder.Context = ...) -> Iterable[Distribution]: ...
 
 class MetadataPathFinder(DistributionFinder):
     @classmethod
     def find_distributions(cls, context: DistributionFinder.Context = ...) -> Iterable[PathDistribution]: ...
-    if sys.version_info >= (3, 10):
-        # Yes, this is an instance method that has argumend named "cls"
-        def invalidate_caches(cls) -> None: ...
 
 class PathDistribution(Distribution):
     def __init__(self, path: str) -> None: ...
-    def read_text(self, filename: StrPath) -> str: ...
 
 def distribution(distribution_name: str) -> Distribution: ...
 @overload
