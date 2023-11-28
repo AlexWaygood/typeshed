@@ -1,24 +1,13 @@
 import sys
-from _typeshed import SizedBuffer, StrPath
-from collections.abc import Callable, Iterable, Iterator
+from _typeshed import StrPath
+from collections.abc import Iterator
 from io import TextIOWrapper
-from typing import IO, Protocol, overload
+from typing import IO, overload
 from typing_extensions import Literal, Self, TypeAlias
 
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
-_ReadWriteMode: TypeAlias = Literal["r", "w"]
 _ReadWriteBinaryMode: TypeAlias = Literal["r", "w", "rb", "wb"]
 _ZipFileMode: TypeAlias = Literal["r", "w", "x", "a"]
-
-class _ZipStream(Protocol):
-    def read(self, __n: int) -> bytes: ...
-    # The following methods are optional:
-    # def seekable(self) -> bool: ...
-    # def tell(self) -> int: ...
-    # def seek(self, __n: int) -> object: ...
-
-class _Writer(Protocol):
-    def write(self, __s: str) -> object: ...
 
 class ZipFile:
     if sys.version_info >= (3, 11):
