@@ -5,12 +5,6 @@ from _typeshed import (
     AnyStr_co,
     ConvertibleToFloat,
     ConvertibleToInt,
-    FileDescriptorOrPath,
-    OpenBinaryMode,
-    OpenBinaryModeReading,
-    OpenBinaryModeUpdating,
-    OpenBinaryModeWriting,
-    OpenTextMode,
     ReadableBuffer,
     SupportsIter,
     SupportsKeysAndGetItem,
@@ -19,13 +13,10 @@ from _typeshed import (
     SupportsRichComparisonT,
 )
 from collections.abc import Callable, Iterable, Iterator, MutableSet, Set as AbstractSet, Sized
-from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWrapper
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
 from typing import (  # noqa: Y022
-    IO,
     Any,
-    BinaryIO,
     ClassVar,
     Generic,
     ItemsView,
@@ -1007,95 +998,6 @@ def next(__i: SupportsNext[_T]) -> _T: ...
 @overload
 def next(__i: SupportsNext[_T], __default: _VT) -> _T | _VT: ...
 def oct(__number: int | SupportsIndex) -> str: ...
-
-_Opener: TypeAlias = Callable[[str, int], int]
-
-# Text mode: always returns a TextIOWrapper
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenTextMode = "r",
-    buffering: int = -1,
-    encoding: str | None = None,
-    errors: str | None = None,
-    newline: str | None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> TextIOWrapper: ...
-
-# Unbuffered binary mode: returns a FileIO
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenBinaryMode,
-    buffering: Literal[0],
-    encoding: None = None,
-    errors: None = None,
-    newline: None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> FileIO: ...
-
-# Buffering is on: return BufferedRandom, BufferedReader, or BufferedWriter
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenBinaryModeUpdating,
-    buffering: Literal[-1, 1] = -1,
-    encoding: None = None,
-    errors: None = None,
-    newline: None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> BufferedRandom: ...
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenBinaryModeWriting,
-    buffering: Literal[-1, 1] = -1,
-    encoding: None = None,
-    errors: None = None,
-    newline: None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> BufferedWriter: ...
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenBinaryModeReading,
-    buffering: Literal[-1, 1] = -1,
-    encoding: None = None,
-    errors: None = None,
-    newline: None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> BufferedReader: ...
-
-# Buffering cannot be determined: fall back to BinaryIO
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: OpenBinaryMode,
-    buffering: int = -1,
-    encoding: None = None,
-    errors: None = None,
-    newline: None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> BinaryIO: ...
-
-# Fallback if mode is not specified
-@overload
-def open(
-    file: FileDescriptorOrPath,
-    mode: str,
-    buffering: int = -1,
-    encoding: str | None = None,
-    errors: str | None = None,
-    newline: str | None = None,
-    closefd: bool = True,
-    opener: _Opener | None = None,
-) -> IO[Any]: ...
 
 class ellipsis: ...
 Ellipsis: ellipsis
