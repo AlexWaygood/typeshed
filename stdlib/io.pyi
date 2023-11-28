@@ -7,46 +7,7 @@ from types import TracebackType
 from typing import IO, Any, BinaryIO, TextIO, TypeVar, overload
 from typing_extensions import Literal, Self
 
-__all__ = [
-    "BlockingIOError",
-    "open",
-    "IOBase",
-    "RawIOBase",
-    "FileIO",
-    "BytesIO",
-    "StringIO",
-    "BufferedIOBase",
-    "BufferedReader",
-    "BufferedWriter",
-    "BufferedRWPair",
-    "BufferedRandom",
-    "TextIOBase",
-    "TextIOWrapper",
-    "UnsupportedOperation",
-    "SEEK_SET",
-    "SEEK_CUR",
-    "SEEK_END",
-]
-
-if sys.version_info >= (3, 8):
-    __all__ += ["open_code"]
-
 _T = TypeVar("_T")
-
-DEFAULT_BUFFER_SIZE: Literal[8192]
-
-SEEK_SET: Literal[0]
-SEEK_CUR: Literal[1]
-SEEK_END: Literal[2]
-
-open = builtins.open
-
-if sys.version_info >= (3, 8):
-    def open_code(path: str) -> IO[bytes]: ...
-
-BlockingIOError = builtins.BlockingIOError
-
-class UnsupportedOperation(OSError, ValueError): ...
 
 class IOBase(metaclass=abc.ABCMeta):
     def __iter__(self) -> Iterator[bytes]: ...

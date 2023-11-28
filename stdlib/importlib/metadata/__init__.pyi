@@ -6,30 +6,6 @@ from importlib.abc import MetaPathFinder
 from typing import Any, ClassVar, NamedTuple, overload
 from typing_extensions import Self
 
-__all__ = [
-    "Distribution",
-    "DistributionFinder",
-    "PackageNotFoundError",
-    "distribution",
-    "distributions",
-    "entry_points",
-    "files",
-    "metadata",
-    "requires",
-    "version",
-]
-
-if sys.version_info >= (3, 10):
-    __all__ += ["PackageMetadata", "packages_distributions"]
-
-if sys.version_info >= (3, 10):
-    from importlib.metadata._meta import PackageMetadata as PackageMetadata
-    def packages_distributions() -> Mapping[str, list[str]]: ...
-
-class PackageNotFoundError(ModuleNotFoundError):
-    @property
-    def name(self) -> str: ...  # type: ignore[override]
-
 class _EntryPointBase(NamedTuple):
     name: str
     value: str
@@ -124,18 +100,10 @@ class Distribution:
     ) -> Iterable[Distribution]: ...
     @staticmethod
     def at(path: StrPath) -> PathDistribution: ...
-
-    if sys.version_info >= (3, 10):
-        @property
-        def metadata(self) -> PackageMetadata: ...
-        @property
-        def entry_points(self) -> EntryPoints: ...
-    else:
-        @property
-        def metadata(self) -> Any: ...
-        @property
-        def entry_points(self) -> list[EntryPoint]: ...
-
+    @property
+    def metadata(self) -> Any: ...
+    @property
+    def entry_points(self) -> list[EntryPoint]: ...
     @property
     def version(self) -> str: ...
     @property
@@ -175,28 +143,6 @@ def distributions(
     *, context: None = None, name: str | None = ..., path: list[str] = ..., **kwargs: Any
 ) -> Iterable[Distribution]: ...
 
-if sys.version_info >= (3, 10):
-    def metadata(distribution_name: str) -> PackageMetadata: ...
-
-else:
-    def metadata(distribution_name: str) -> Any: ...
-
-if sys.version_info >= (3, 12):
-    def entry_points(
-        *, name: str = ..., value: str = ..., group: str = ..., module: str = ..., attr: str = ..., extras: list[str] = ...
-    ) -> EntryPoints: ...
-
-elif sys.version_info >= (3, 10):
-    @overload
-    def entry_points() -> SelectableGroups: ...  # type: ignore[overload-overlap]
-    @overload
-    def entry_points(
-        *, name: str = ..., value: str = ..., group: str = ..., module: str = ..., attr: str = ..., extras: list[str] = ...
-    ) -> EntryPoints: ...
-
-else:
-    def entry_points() -> dict[str, list[EntryPoint]]: ...
-
-def version(distribution_name: str) -> str: ...
-def files(distribution_name: str) -> None: ...
-def requires(distribution_name: str) -> list[str] | None: ...
+def entry_points(
+    *, name: str = ..., value: str = ..., group: str = ..., module: str = ..., attr: str = ..., extras: list[str] = ...
+) -> EntryPoints: ...
