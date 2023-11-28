@@ -12,13 +12,6 @@ class ZipFile: ...
 
 class ZipInfo:
     date_time: _DateTuple
-    def __init__(self, filename: str = "NoName", date_time: _DateTuple = (1980, 1, 1, 0, 0, 0)) -> None: ...
-    if sys.version_info >= (3, 8):
-        @classmethod
-        def from_file(cls, filename: StrPath, arcname: StrPath | None = None, *, strict_timestamps: bool = True) -> Self: ...
-    else:
-        @classmethod
-        def from_file(cls, filename: StrPath, arcname: StrPath | None = None) -> Self: ...
 
 if sys.version_info >= (3, 8):
     class Path:
