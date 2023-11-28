@@ -1,7 +1,6 @@
 from typing import (  # noqa: Y022
     Callable as Callable,
     Collection as Collection,
-    Container as Container,
     Generator as Generator,
     ItemsView as ItemsView,
     Iterable as Iterable,
