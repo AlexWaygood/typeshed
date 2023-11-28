@@ -1,5 +1,4 @@
 from typing import Any, Protocol, TypeVar
-from typing_extensions import TypeAlias
 
 _T_contra = TypeVar("_T_contra", contravariant=True)
 
@@ -15,5 +14,5 @@ class SupportsDunderLE(Protocol[_T_contra]):
 class SupportsDunderGE(Protocol[_T_contra]):
     def __ge__(self, __other: _T_contra) -> bool: ...
 
-SupportsRichComparison: TypeAlias = SupportsDunderLT[Any] | SupportsDunderGT[Any]
+SupportsRichComparison = SupportsDunderLT[Any] | SupportsDunderGT[Any]
 SupportsRichComparisonT = TypeVar("SupportsRichComparisonT", bound=SupportsRichComparison)  # noqa: Y001
