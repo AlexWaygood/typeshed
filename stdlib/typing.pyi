@@ -338,11 +338,6 @@ class SupportsFloat(Protocol, metaclass=ABCMeta):
     def __float__(self) -> float: ...
 
 @runtime_checkable
-class SupportsComplex(Protocol, metaclass=ABCMeta):
-    @abstractmethod
-    def __complex__(self) -> complex: ...
-
-@runtime_checkable
 class SupportsBytes(Protocol, metaclass=ABCMeta):
     @abstractmethod
     def __bytes__(self) -> bytes: ...
