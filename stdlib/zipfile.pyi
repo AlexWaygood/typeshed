@@ -1,4 +1,3 @@
-from io import TextIOWrapper
 from typing import IO, Iterator, overload
 from typing_extensions import Literal, Self, TypeAlias
 
@@ -20,7 +19,7 @@ class Path:
         write_through: bool = ...,
         *,
         pwd: bytes | None = None,
-    ) -> TextIOWrapper: ...
+    ) -> IO[str]: ...
     @overload
     def open(self, mode: Literal["rb", "wb"], *, pwd: bytes | None = None) -> IO[bytes]: ...
     def iterdir(self) -> Iterator[Self]: ...
