@@ -1,4 +1,3 @@
-import sys
 from _typeshed import StrPath
 from collections.abc import Iterator
 from io import TextIOWrapper
@@ -8,13 +7,10 @@ from typing_extensions import Literal, Self, TypeAlias
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
 _ReadWriteBinaryMode: TypeAlias = Literal["r", "w", "rb", "wb"]
 
-class ZipFile: ...
-
-class ZipInfo:
-    date_time: _DateTuple
+date_time: _DateTuple
 
 class Path:
-    def __init__(self, root: ZipFile | StrPath | IO[bytes], at: str = "") -> None: ...
+    def __init__(self, root: StrPath | IO[bytes]) -> None: ...
     @property
     def name(self) -> str: ...
     @overload
