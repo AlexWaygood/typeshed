@@ -1,12 +1,9 @@
 import importlib.abc
-import sys
+import importlib.readers
 import types
-from collections.abc import Callable, Iterable, MutableSequence, Sequence
-from typing import Any
+from importlib.metadata import DistributionFinder, PathDistribution
+from typing import Any, Callable, Iterable, MutableSequence, Sequence
 from typing_extensions import Literal
-
-if sys.version_info >= (3, 8):
-    from importlib.metadata import DistributionFinder, PathDistribution
 
 class ModuleSpec:
     def __init__(
@@ -30,11 +27,6 @@ class ModuleSpec:
     def __eq__(self, other: object) -> bool: ...
 
 class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
-    # MetaPathFinder
-    if sys.version_info < (3, 12):
-        @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
-
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
@@ -48,27 +40,12 @@ class BuiltinImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader)
     def get_code(cls, fullname: str) -> None: ...
     @classmethod
     def get_source(cls, fullname: str) -> None: ...
-    # Loader
-    if sys.version_info < (3, 12):
-        @staticmethod
-        def module_repr(module: types.ModuleType) -> str: ...
-    if sys.version_info >= (3, 10):
-        @staticmethod
-        def create_module(spec: ModuleSpec) -> types.ModuleType | None: ...
-        @staticmethod
-        def exec_module(module: types.ModuleType) -> None: ...
-    else:
-        @classmethod
-        def create_module(cls, spec: ModuleSpec) -> types.ModuleType | None: ...
-        @classmethod
-        def exec_module(cls, module: types.ModuleType) -> None: ...
+    @staticmethod
+    def create_module(spec: ModuleSpec) -> types.ModuleType | None: ...
+    @staticmethod
+    def exec_module(module: types.ModuleType) -> None: ...
 
 class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
-    # MetaPathFinder
-    if sys.version_info < (3, 12):
-        @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
-
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
@@ -82,59 +59,24 @@ class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
     def get_code(cls, fullname: str) -> None: ...
     @classmethod
     def get_source(cls, fullname: str) -> None: ...
-    # Loader
-    if sys.version_info < (3, 12):
-        @staticmethod
-        def module_repr(m: types.ModuleType) -> str: ...
-    if sys.version_info >= (3, 10):
-        @staticmethod
-        def create_module(spec: ModuleSpec) -> types.ModuleType | None: ...
-    else:
-        @classmethod
-        def create_module(cls, spec: ModuleSpec) -> types.ModuleType | None: ...
-
+    @staticmethod
+    def create_module(spec: ModuleSpec) -> types.ModuleType | None: ...
     @staticmethod
     def exec_module(module: types.ModuleType) -> None: ...
 
 class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
-    if sys.version_info < (3, 12):
-        @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
-
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
     ) -> ModuleSpec | None: ...
 
 class PathFinder:
-    if sys.version_info >= (3, 10):
-        @staticmethod
-        def invalidate_caches() -> None: ...
-    else:
-        @classmethod
-        def invalidate_caches(cls) -> None: ...
-    if sys.version_info >= (3, 10):
-        @staticmethod
-        def find_distributions(context: DistributionFinder.Context = ...) -> Iterable[PathDistribution]: ...
-    elif sys.version_info >= (3, 8):
-        @classmethod
-        def find_distributions(cls, context: DistributionFinder.Context = ...) -> Iterable[PathDistribution]: ...
-
+    @staticmethod
+    def find_distributions(context: DistributionFinder.Context = ...) -> Iterable[PathDistribution]: ...
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
     ) -> ModuleSpec | None: ...
-    if sys.version_info < (3, 12):
-        @classmethod
-        def find_module(cls, fullname: str, path: Sequence[str] | None = None) -> importlib.abc.Loader | None: ...
-
-SOURCE_SUFFIXES: list[str]
-DEBUG_BYTECODE_SUFFIXES: list[str]
-OPTIMIZED_BYTECODE_SUFFIXES: list[str]
-BYTECODE_SUFFIXES: list[str]
-EXTENSION_SUFFIXES: list[str]
-
-def all_suffixes() -> list[str]: ...
 
 class FileFinder(importlib.abc.PathEntryFinder):
     path: str
@@ -156,20 +98,11 @@ class ExtensionFileLoader(importlib.abc.ExecutionLoader):
     def __eq__(self, other: object) -> bool: ...
     def __hash__(self) -> int: ...
 
-if sys.version_info >= (3, 11):
-    import importlib.readers
-
-    class NamespaceLoader(importlib.abc.InspectLoader):
-        def __init__(
-            self, name: str, path: MutableSequence[str], path_finder: Callable[[str, tuple[str, ...]], ModuleSpec]
-        ) -> None: ...
-        def is_package(self, fullname: str) -> Literal[True]: ...
-        def get_source(self, fullname: str) -> Literal[""]: ...
-        def get_code(self, fullname: str) -> types.CodeType: ...
-        # Actually get_resource_reader() returns importlib.readers.NamespaceReader.
-        # Unfortunately, importing from importlib.readers in importlib.machinery
-        # appears to break mypy's brain a little (probably due to a massive import cycle)?
-        def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
-        if sys.version_info < (3, 12):
-            @staticmethod
-            def module_repr(module: types.ModuleType) -> str: ...
+class NamespaceLoader(importlib.abc.InspectLoader):
+    def __init__(
+        self, name: str, path: MutableSequence[str], path_finder: Callable[[str, tuple[str, ...]], ModuleSpec]
+    ) -> None: ...
+    def is_package(self, fullname: str) -> Literal[True]: ...
+    def get_source(self, fullname: str) -> Literal[""]: ...
+    def get_code(self, fullname: str) -> types.CodeType: ...
+    def get_resource_reader(self, module: types.ModuleType) -> importlib.readers.NamespaceReader: ...
