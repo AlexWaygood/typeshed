@@ -6,13 +6,8 @@ from importlib.abc import PathEntryFinder
 from importlib.machinery import ModuleSpec
 from io import TextIOWrapper
 from types import ModuleType, TracebackType
-from typing import Any, NoReturn, Protocol, TextIO, TypeVar
+from typing import Any, NoReturn, Protocol, TextIO
 from typing_extensions import Final, Literal, TypeAlias, final
-
-_T = TypeVar("_T")
-
-# see https://github.com/python/typeshed/issues/8513#issue-1333671093 for the rationale behind this alias
-_ExitCode: TypeAlias = str | int | None
 
 # Intentionally omits one deprecated and one optional method of `importlib.abc.MetaPathFinder`
 class _MetaPathFinder(Protocol):
