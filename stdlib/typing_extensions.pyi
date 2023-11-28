@@ -166,93 +166,17 @@ if sys.version_info >= (3, 10):
         ParamSpecKwargs as ParamSpecKwargs,
         TypeAlias as TypeAlias,
         TypeGuard as TypeGuard,
-        is_typeddict as is_typeddict,
     )
-else:
-    @final
-    class ParamSpecArgs:
-        @property
-        def __origin__(self) -> ParamSpec: ...
-        def __init__(self, origin: ParamSpec) -> None: ...
 
-    @final
-    class ParamSpecKwargs:
-        @property
-        def __origin__(self) -> ParamSpec: ...
-        def __init__(self, origin: ParamSpec) -> None: ...
-
-    Concatenate: _SpecialForm
-    TypeAlias: _SpecialForm
-    TypeGuard: _SpecialForm
-    def is_typeddict(tp: object) -> bool: ...
-
-    class NewType:
-        def __init__(self, name: str, tp: Any) -> None: ...
-        def __call__(self, __x: _T) -> _T: ...
-        __supertype__: type
-
-# New things in 3.11
-# NamedTuples are not new, but the ability to create generic NamedTuples is new in 3.11
-if sys.version_info >= (3, 11):
-    from typing import (
-        LiteralString as LiteralString,
-        NamedTuple as NamedTuple,
-        Never as Never,
-        NotRequired as NotRequired,
-        Required as Required,
-        Self as Self,
-        Unpack as Unpack,
-        assert_never as assert_never,
-        assert_type as assert_type,
-        clear_overloads as clear_overloads,
-        dataclass_transform as dataclass_transform,
-        get_overloads as get_overloads,
-        reveal_type as reveal_type,
-    )
-else:
-    Self: _SpecialForm
-    Never: _SpecialForm
-    def reveal_type(__obj: _T) -> _T: ...
-    def assert_never(__arg: Never) -> Never: ...
-    def assert_type(__val: _T, __typ: Any) -> _T: ...
-    def clear_overloads() -> None: ...
-    def get_overloads(func: Callable[..., object]) -> Sequence[Callable[..., object]]: ...
-
-    Required: _SpecialForm
-    NotRequired: _SpecialForm
-    LiteralString: _SpecialForm
-    Unpack: _SpecialForm
-
-    def dataclass_transform(
-        *,
-        eq_default: bool = True,
-        order_default: bool = False,
-        kw_only_default: bool = False,
-        frozen_default: bool = False,
-        field_specifiers: tuple[type[Any] | Callable[..., Any], ...] = (),
-        **kwargs: object,
-    ) -> IdentityFunction: ...
-
-    class NamedTuple(tuple[Any, ...]):
-        if sys.version_info < (3, 8):
-            _field_types: ClassVar[collections.OrderedDict[str, type]]
-        elif sys.version_info < (3, 9):
-            _field_types: ClassVar[dict[str, type]]
-        _field_defaults: ClassVar[dict[str, Any]]
-        _fields: ClassVar[tuple[str, ...]]
-        __orig_bases__: ClassVar[tuple[Any, ...]]
-        @overload
-        def __init__(self, typename: str, fields: Iterable[tuple[str, Any]] = ...) -> None: ...
-        @overload
-        def __init__(self, typename: str, fields: None = None, **kwargs: Any) -> None: ...
-        @classmethod
-        def _make(cls, iterable: Iterable[Any]) -> Self: ...
-        if sys.version_info >= (3, 8):
-            def _asdict(self) -> dict[str, Any]: ...
-        else:
-            def _asdict(self) -> collections.OrderedDict[str, Any]: ...
-
-        def _replace(self, **kwargs: Any) -> Self: ...
+from typing import (
+    LiteralString as LiteralString,
+    NamedTuple as NamedTuple,
+    Never as Never,
+    NotRequired as NotRequired,
+    Required as Required,
+    Self as Self,
+    Unpack as Unpack,
+)
 
 # New things in 3.xx
 # The `default` parameter was added to TypeVar, ParamSpec, and TypeVarTuple (PEP 696)
@@ -327,39 +251,8 @@ class TypeVarTuple:
     def __init__(self, name: str, *, default: Any | None = None) -> None: ...
     def __iter__(self) -> Any: ...  # Unpack[Self]
 
-if sys.version_info >= (3, 12):
-    from collections.abc import Buffer as Buffer
-    from types import get_original_bases as get_original_bases
-    from typing import TypeAliasType as TypeAliasType, override as override
-else:
-    def override(__arg: _F) -> _F: ...
-    def get_original_bases(__cls: type) -> tuple[Any, ...]: ...
-    @final
-    class TypeAliasType:
-        def __init__(
-            self, name: str, value: Any, *, type_params: tuple[TypeVar | ParamSpec | TypeVarTuple, ...] = ()
-        ) -> None: ...
-        @property
-        def __value__(self) -> Any: ...
-        @property
-        def __type_params__(self) -> tuple[TypeVar | ParamSpec | TypeVarTuple, ...]: ...
-        @property
-        def __parameters__(self) -> tuple[Any, ...]: ...
-        @property
-        def __name__(self) -> str: ...
-        # It's writable on types, but not on instances of TypeAliasType.
-        @property
-        def __module__(self) -> str | None: ...  # type: ignore[override]
-        def __getitem__(self, parameters: Any) -> Any: ...
-        if sys.version_info >= (3, 10):
-            def __or__(self, right: Any) -> _SpecialForm: ...
-            def __ror__(self, left: Any) -> _SpecialForm: ...
-
-    @runtime_checkable
-    class Buffer(Protocol):
-        # Not actually a Protocol at runtime; see
-        # https://github.com/python/typeshed/issues/10224 for why we're defining it this way
-        def __buffer__(self, __flags: int) -> memoryview: ...
+from collections.abc import Buffer as Buffer
+from types import get_original_bases as get_original_bases
 
 class Doc:
     documentation: str

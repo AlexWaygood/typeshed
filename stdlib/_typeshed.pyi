@@ -1,5 +1,5 @@
 from typing import Any, Iterable, Protocol, TypeVar
-from typing_extensions import Buffer, TypeAlias
+from typing_extensions import TypeAlias
 
 _T = TypeVar("_T")
 _KT = TypeVar("_KT")
@@ -33,5 +33,5 @@ class IdentityFunction(Protocol):
 StrPath: TypeAlias = str  # stable
 BytesPath: TypeAlias = bytes  # stable
 StrOrBytesPath: TypeAlias = str | bytes  # stable
-WriteableBuffer: TypeAlias = Buffer
-ReadableBuffer: TypeAlias = Buffer  # stable
+WriteableBuffer: TypeAlias = bytes
+ReadableBuffer: TypeAlias = bytes  # stable
