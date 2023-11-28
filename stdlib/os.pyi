@@ -27,13 +27,8 @@ from io import BufferedRandom, BufferedReader, BufferedWriter, FileIO, TextIOWra
 from typing import IO, Any, AnyStr, BinaryIO, Generic, NoReturn, Protocol, TypeVar, overload, runtime_checkable
 from typing_extensions import Final, Literal, Self, TypeAlias, final
 
-from . import path as _path
-
 if sys.version_info >= (3, 9):
     from types import GenericAlias
-
-# This unnecessary alias is to work around various errors
-path = _path
 
 _T = TypeVar("_T")
 _T1 = TypeVar("_T1")
