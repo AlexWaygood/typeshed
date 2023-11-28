@@ -4,7 +4,5 @@ from typing import (  # noqa: Y022
     Iterable as Iterable,
     Iterator as Iterator,
     Mapping as Mapping,
-    MutableMapping as MutableMapping,
     Sequence as Sequence,
-    Sized as Sized,
 )
