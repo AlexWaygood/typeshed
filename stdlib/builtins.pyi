@@ -7,7 +7,6 @@ from _typeshed import (
     ConvertibleToInt,
     ReadableBuffer,
     SupportsKeysAndGetItem,
-    SupportsNext,
     SupportsRichComparison,
     SupportsRichComparisonT,
 )
@@ -866,23 +865,6 @@ class property:
 # See https://github.com/python/typeshed/pull/991#issuecomment-288160993
 class _PathLike(Protocol[AnyStr_co]):
     def __fspath__(self) -> AnyStr_co: ...
-
-@overload
-def getattr(__o: object, __name: str) -> Any: ...
-
-# While technically covered by the last overload, spelling out the types for None, bool
-# and basic containers help mypy out in some tricky situations involving type context
-# (aka bidirectional inference)
-@overload
-def getattr(__o: object, __name: str, __default: None) -> Any | None: ...
-@overload
-def getattr(__o: object, __name: str, __default: bool) -> Any | bool: ...
-@overload
-def getattr(__o: object, __name: str, __default: list[Any]) -> Any | list[Any]: ...
-@overload
-def getattr(__o: object, __name: str, __default: dict[Any, Any]) -> Any | dict[Any, Any]: ...
-@overload
-def getattr(__o: object, __name: str, __default: _T) -> Any | _T: ...
 
 # Keep this alias in sync with unittest.case._ClassInfo
 if sys.version_info >= (3, 10):
