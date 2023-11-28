@@ -124,39 +124,12 @@ OpenBinaryModeReading: TypeAlias = Literal["rb", "br", "rbU", "rUb", "Urb", "brU
 OpenBinaryMode: TypeAlias = OpenBinaryModeUpdating | OpenBinaryModeReading | OpenBinaryModeWriting
 
 # stable
-class HasFileno(Protocol):
-    def fileno(self) -> int: ...
-
-FileDescriptor: TypeAlias = int  # stable
-FileDescriptorLike: TypeAlias = int | HasFileno  # stable
-FileDescriptorOrPath: TypeAlias = int | StrOrBytesPath
-
-# stable
 class SupportsRead(Protocol[_T_co]):
     def read(self, __length: int = ...) -> _T_co: ...
-
-# stable
-class SupportsReadline(Protocol[_T_co]):
-    def readline(self, __length: int = ...) -> _T_co: ...
-
-# stable
-class SupportsNoArgReadline(Protocol[_T_co]):
-    def readline(self) -> _T_co: ...
 
 # stable
 class SupportsWrite(Protocol[_T_contra]):
     def write(self, __s: _T_contra) -> object: ...
 
-# stable
-class SupportsFlush(Protocol):
-    def flush(self) -> object: ...
-
-# Unfortunately PEP 688 does not allow us to distinguish read-only
-# from writable buffers. We use these aliases for readability for now.
-# Perhaps a future extension of the buffer protocol will allow us to
-# distinguish these cases in the type system.
-ReadOnlyBuffer: TypeAlias = Buffer  # stable
-# Anything that implements the read-write buffer interface.
 WriteableBuffer: TypeAlias = Buffer
-# Same as WriteableBuffer, but also includes read-only buffer types (like bytes).
 ReadableBuffer: TypeAlias = Buffer  # stable
