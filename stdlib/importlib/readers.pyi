@@ -1,4 +1,4 @@
-import importlib.resources.abc as abc
+import importlib.abc as abc
 import zipfile
 from _typeshed import Incomplete, StrPath
 from collections.abc import Iterator
