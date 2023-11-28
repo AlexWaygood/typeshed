@@ -1,7 +1,7 @@
 import abc
 import sys
 from _typeshed import StrPath
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable
 from importlib.abc import MetaPathFinder
 from typing import Any, ClassVar, NamedTuple, overload
 from typing_extensions import Self

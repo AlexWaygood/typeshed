@@ -1,5 +1,4 @@
 import abc
-import builtins
 import sys
 from _typeshed import FileDescriptorOrPath, ReadableBuffer, WriteableBuffer
 from collections.abc import Callable, Iterable, Iterator
