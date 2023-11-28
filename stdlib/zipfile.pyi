@@ -3,8 +3,6 @@ from typing import IO, Iterator, overload
 from typing_extensions import Literal, Self, TypeAlias
 
 _DateTuple: TypeAlias = tuple[int, int, int, int, int, int]
-_ReadWriteBinaryMode: TypeAlias = Literal["r", "w", "rb", "wb"]
-
 date_time: _DateTuple
 
 class Path:

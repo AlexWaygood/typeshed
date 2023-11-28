@@ -22,7 +22,6 @@ if sys.version_info >= (3, 10):
 if sys.version_info >= (3, 9):
     from types import GenericAlias
 
-
 # This itself is only available during type checking
 def type_check_only(func_or_cls: _F) -> _F: ...
 

@@ -19,46 +19,6 @@ from importlib.machinery import ModuleSpec
 from typing import Any, ClassVar, Mapping, Protocol, TypeVar, overload  # noqa: Y022
 from typing_extensions import ParamSpec, Self, TypeVarTuple, final
 
-__all__ = [
-    "FunctionType",
-    "LambdaType",
-    "CodeType",
-    "MappingProxyType",
-    "SimpleNamespace",
-    "GeneratorType",
-    "CoroutineType",
-    "AsyncGeneratorType",
-    "MethodType",
-    "BuiltinFunctionType",
-    "ModuleType",
-    "TracebackType",
-    "FrameType",
-    "GetSetDescriptorType",
-    "MemberDescriptorType",
-    "new_class",
-    "prepare_class",
-    "DynamicClassAttribute",
-    "coroutine",
-    "BuiltinMethodType",
-    "ClassMethodDescriptorType",
-    "MethodDescriptorType",
-    "MethodWrapperType",
-    "WrapperDescriptorType",
-    "resolve_bases",
-]
-
-if sys.version_info >= (3, 8):
-    __all__ += ["CellType"]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["GenericAlias"]
-
-if sys.version_info >= (3, 10):
-    __all__ += ["EllipsisType", "NoneType", "NotImplementedType", "UnionType"]
-
-if sys.version_info >= (3, 12):
-    __all__ += ["get_original_bases"]
-
 # Note, all classes "defined" here require special handling.
 
 _T1 = TypeVar("_T1")
@@ -587,10 +547,6 @@ if sys.version_info >= (3, 12):
 
 # Actually a different type, but `property` is special and we want that too.
 DynamicClassAttribute = property
-
-_Fn = TypeVar("_Fn", bound=Callable[..., object])
-_R = TypeVar("_R")
-_P = ParamSpec("_P")
 
 class GenericAlias:
     @property

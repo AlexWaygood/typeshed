@@ -7,14 +7,6 @@ from typing_extensions import TypeAlias
 if sys.version_info >= (3, 9):
     from importlib.abc import Traversable
 
-__all__ = ["Package", "Resource", "contents", "is_resource", "open_binary", "open_text", "path", "read_binary", "read_text"]
-
-if sys.version_info >= (3, 9):
-    __all__ += ["as_file", "files"]
-
-if sys.version_info >= (3, 10):
-    __all__ += ["ResourceReader"]
-
 Package: TypeAlias = str | ModuleType
 Resource: TypeAlias = str
 
