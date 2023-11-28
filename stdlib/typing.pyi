@@ -1,5 +1,5 @@
 import collections  # noqa
-from _typeshed import Incomplete, ReadableBuffer, SupportsKeysAndGetItem
+from _typeshed import Incomplete, SupportsKeysAndGetItem
 from abc import ABCMeta, abstractmethod
 
 # This itself is only available during type checking
@@ -483,24 +483,6 @@ class IO(Iterator[AnyStr]):
     def truncate(self, __size: int | None = None) -> int: ...
     @abstractmethod
     def writable(self) -> bool: ...
-    @abstractmethod
-    @overload
-    def write(self: IO[str], __s: str) -> int: ...
-    @abstractmethod
-    @overload
-    def write(self: IO[bytes], __s: ReadableBuffer) -> int: ...
-    @abstractmethod
-    @overload
-    def write(self, __s: AnyStr) -> int: ...
-    @abstractmethod
-    @overload
-    def writelines(self: IO[str], __lines: Iterable[str]) -> None: ...
-    @abstractmethod
-    @overload
-    def writelines(self: IO[bytes], __lines: Iterable[ReadableBuffer]) -> None: ...
-    @abstractmethod
-    @overload
-    def writelines(self, __lines: Iterable[AnyStr]) -> None: ...
     @abstractmethod
     def __next__(self) -> AnyStr: ...
     @abstractmethod
