@@ -1,7 +1,4 @@
-import collections  # noqa: F401
-from abc import ABCMeta
-
-def type_check_only(func_or_cls: _F) -> _F: ...
+import abc, collections  # noqa: F401
 
 Any = object()
 
@@ -119,12 +116,10 @@ class Awaitable(Protocol[_T_co]):
 class Coroutine(Awaitable[_ReturnT_co], Generic[_YieldT_co, _SendT_contra, _ReturnT_co]):
     def __await__(self) -> Generator[Any, None, _T_co]: ...
 
-@type_check_only
 class AwaitableGenerator(
     Awaitable[_ReturnT_co],
     Generator[_YieldT_co, _SendT_contra, _ReturnT_co],
     Generic[_YieldT_co, _SendT_contra, _ReturnT_co, _S],
-    metaclass=ABCMeta,
 ): ...
 
 class AsyncIterable(Protocol[_T_co]):
