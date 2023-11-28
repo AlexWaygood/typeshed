@@ -1,5 +1,5 @@
 import collections  # noqa
-from _typeshed import Incomplete, SupportsKeysAndGetItem
+from _typeshed import Incomplete
 from abc import ABCMeta, abstractmethod
 
 # This itself is only available during type checking
@@ -432,7 +432,7 @@ class MutableMapping(Mapping[_KT, _VT]):
     # -- weakref.WeakValueDictionary.__ior__
     # -- weakref.WeakKeyDictionary.__ior__
     @overload
-    def update(self, __m: SupportsKeysAndGetItem[_KT, _VT], **kwargs: _VT) -> None: ...
+    def update(self, __m: Mapping[_KT, _VT], **kwargs: _VT) -> None: ...
     @overload
     def update(self, __m: Iterable[tuple[_KT, _VT]], **kwargs: _VT) -> None: ...
     @overload
