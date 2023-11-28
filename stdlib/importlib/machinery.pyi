@@ -1,8 +1,7 @@
 import importlib.abc
-import importlib.metadata
 import importlib.readers
 import types
-from typing import Any, Callable, Iterable, MutableSequence, Sequence
+from typing import Any, Callable, MutableSequence, Sequence
 from typing_extensions import Literal
 
 class ModuleSpec:
@@ -65,14 +64,6 @@ class FrozenImporter(importlib.abc.MetaPathFinder, importlib.abc.InspectLoader):
     def exec_module(module: types.ModuleType) -> None: ...
 
 class WindowsRegistryFinder(importlib.abc.MetaPathFinder):
-    @classmethod
-    def find_spec(
-        cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
-    ) -> ModuleSpec | None: ...
-
-class PathFinder:
-    @staticmethod
-    def find_distributions(context: importlib.metadata.DistributionFinder.Context = ...) -> Iterable[importlib.metadata.PathDistribution]: ...
     @classmethod
     def find_spec(
         cls, fullname: str, path: Sequence[str] | None = None, target: types.ModuleType | None = None
