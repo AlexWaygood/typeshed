@@ -2,8 +2,7 @@
 #
 # See the README.md file in this directory for more information.
 
-from collections.abc import Iterable
-from typing import Any, Protocol, TypeVar
+from typing import Any, Iterable, Protocol, TypeVar
 from typing_extensions import Buffer, Literal, TypeAlias
 
 _T = TypeVar("_T")
