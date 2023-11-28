@@ -1,4 +1,3 @@
-from _typeshed import SupportsRichComparison, SupportsRichComparisonT
 from collections.abc import Callable, Iterable, Iterator, MutableSet
 
 # mypy crashes if any of {ByteString, Sequence, MutableSequence, Mapping, MutableMapping} are imported from collections.abc in builtins.pyi
@@ -17,6 +16,9 @@ from typing import (  # noqa: Y022
     overload,
 )
 from typing_extensions import Literal, TypeAlias
+
+SupportsRichComparison = Any
+SupportsRichComparisonT = Any
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
