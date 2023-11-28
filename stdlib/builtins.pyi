@@ -1,9 +1,6 @@
 import collections.abc  # noqa: F401
 import typing_extensions  # noqa: F401
-from typing import Any, MutableMapping, MutableSequence, Sequence, TypeVar  # noqa: Y022
-
-SupportsRichComparison = Any
-SupportsRichComparisonT = Any
+from typing import MutableMapping, MutableSequence, Sequence, TypeVar  # noqa: Y022
 
 _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
