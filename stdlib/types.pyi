@@ -1,7 +1,6 @@
 from machinery import ModuleSpec
 
-class ModuleType:
-    __spec__: ModuleSpec | None
+spec: ModuleSpec | None
 
 class GenericAlias: ...
 class UnionType: ...
