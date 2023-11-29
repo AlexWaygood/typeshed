@@ -478,4 +478,5 @@ if sys.version_info >= (3, 12):
     def matmul(m1: Sequence[Collection[float]], m2: Sequence[Collection[float]]) -> Iterator[tuple[float, ...]]:
         "Multiply two matrices."
         # matmul([(7, 5), (3, 5)], [(2, 5), (7, 9)]) --> (49, 80), (41, 60)
+        n = len(m2[0])
         return batched(starmap(math.sumprod, product(m1, transpose(m2))), n)
