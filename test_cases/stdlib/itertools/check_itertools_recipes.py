@@ -475,11 +475,7 @@ if sys.version_info >= (3, 12):
         powers = map(pow, repeat(x), reversed(range(n)))
         return math.sumprod(coefficients, powers)
 
-    # Slightly adapted from the itertools docs,
-    # to make things a little easier for pyright
     def matmul(m1: Sequence[Collection[float]], m2: Sequence[Collection[float]]) -> Iterator[tuple[float, ...]]:
         "Multiply two matrices."
         # matmul([(7, 5), (3, 5)], [(2, 5), (7, 9)]) --> (49, 80), (41, 60)
-        n = len(m2[0])
-        it: Iterator[float] = starmap(math.sumprod, product(m1, transpose(m2)))
-        return batched(it, n)
+        return batched(starmap(math.sumprod, product(m1, transpose(m2))), n)
