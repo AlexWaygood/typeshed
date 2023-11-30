@@ -16,7 +16,6 @@ concurrency:
 permissions:
   contents: read
 
-
 jobs:
   mypy_primer:
     name: Run
@@ -34,7 +33,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install git+https://github.com/hauntsaninja/mypy_primer.git@b75d4ba477e6d56cf3712aa1d494951da368fa7d
+        run: pip install git+https://github.com/hauntsaninja/mypy_primer.git@b22bd762e5e42c6e06d493d6cd75186c81a7b33e
       - name: Run mypy_primer
         shell: bash
         run: |
