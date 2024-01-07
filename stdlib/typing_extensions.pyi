@@ -26,6 +26,7 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     DefaultDict as DefaultDict,
     Deque as Deque,
     Dict as Dict,
+    Final as Final,
     ForwardRef as ForwardRef,
     FrozenSet as FrozenSet,
     Generator as Generator,
@@ -36,6 +37,7 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     Iterator as Iterator,
     KeysView as KeysView,
     List as List,
+    Literal as Literal,
     Mapping as Mapping,
     MappingView as MappingView,
     Match as Match,
@@ -44,6 +46,7 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     MutableSet as MutableSet,
     NoReturn as NoReturn,
     Optional as Optional,
+    OrderedDict as OrderedDict,
     Pattern as Pattern,
     Reversible as Reversible,
     Sequence as Sequence,
@@ -53,6 +56,7 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     SupportsBytes as SupportsBytes,
     SupportsComplex as SupportsComplex,
     SupportsFloat as SupportsFloat,
+    SupportsIndex as SupportsIndex,
     SupportsInt as SupportsInt,
     SupportsRound as SupportsRound,
     Text as Text,
@@ -63,9 +67,11 @@ from typing import (  # noqa: Y022,Y037,Y038,Y039
     ValuesView as ValuesView,
     _Alias,
     cast as cast,
+    final as final,
     no_type_check as no_type_check,
     no_type_check_decorator as no_type_check_decorator,
     overload as overload,
+    runtime_checkable as runtime_checkable,
     type_check_only,
 )
 
@@ -195,22 +201,8 @@ class _SpecialForm:
         def __or__(self, other: Any) -> _SpecialForm: ...
         def __ror__(self, other: Any) -> _SpecialForm: ...
 
-# Do not import (and re-export) Protocol or runtime_checkable from
-# typing module because type checkers need to be able to distinguish
-# typing.Protocol and typing_extensions.Protocol so they can properly
-# warn users about potential runtime exceptions when using typing.Protocol
-# on older versions of Python.
-Protocol: _SpecialForm
-
-def runtime_checkable(cls: _TC) -> _TC: ...
-
 # This alias for above is kept here for backwards compatibility.
 runtime = runtime_checkable
-Final: _SpecialForm
-
-def final(f: _F) -> _F: ...
-
-Literal: _SpecialForm
 
 def IntVar(name: str) -> Any: ...  # returns a new TypeVar
 
@@ -250,8 +242,6 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
 # TypedDict is a (non-subscriptable) special form.
 TypedDict: object
 
-OrderedDict = _Alias()
-
 def get_type_hints(
     obj: Callable[..., Any],
     globalns: dict[str, Any] | None = None,
@@ -275,11 +265,6 @@ def get_origin(tp: Any) -> Any | None: ...
 
 Annotated: _SpecialForm
 _AnnotatedAlias: Any  # undocumented
-
-@runtime_checkable
-class SupportsIndex(Protocol, metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def __index__(self) -> int: ...
 
 # New and changed things in 3.10
 if sys.version_info >= (3, 10):
