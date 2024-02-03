@@ -8,7 +8,6 @@
 # nor `float` as a subtype of `numbers.Real`, etc.)
 
 import sys
-from _typeshed import Incomplete
 from abc import ABCMeta, abstractmethod
 from typing import Literal, SupportsFloat, SupportsIndex, overload
 from typing_extensions import TypeAlias
