@@ -29,7 +29,6 @@ from utils import (
     colored,
     get_all_testcase_directories,
     get_mypy_req,
-    make_venv,
     print_error,
     testcase_dir_from_package_name,
 )
@@ -148,13 +147,16 @@ def setup_testcase_dir(package: PackageInfo, tempdir: Path, verbosity: Verbosity
         shutil.copytree(Path("stubs", requirement), new_typeshed / "stubs" / requirement)
 
     if requirements.external_pkgs:
-        pip_exe = make_venv(tempdir / VENV_DIR).pip_exe
+        venv_location = str(tempdir / VENV_DIR)
+        subprocess.run(["uv", "venv", venv_location], check=True)
         # Use --no-cache-dir to avoid issues with concurrent read/writes to the cache
-        pip_command = [pip_exe, "install", get_mypy_req(), *requirements.external_pkgs, "--no-cache-dir"]
+        uv_command = ["uv", "pip", "install", get_mypy_req(), *requirements.external_pkgs, "--no-cache-dir"]
         if verbosity is Verbosity.VERBOSE:
-            verbose_log(f"{package.name}: Setting up venv in {tempdir / VENV_DIR}. {pip_command=}\n")
+            verbose_log(f"{package.name}: Setting up venv in {venv_location}. {uv_command=}\n")
         try:
-            subprocess.run(pip_command, check=True, capture_output=True, text=True)
+            subprocess.run(
+                uv_command, check=True, capture_output=True, text=True, env=os.environ | {"VIRTUAL_ENV": venv_location}
+            )
         except subprocess.CalledProcessError as e:
             _PRINT_QUEUE.put(f"{package.name}\n{e.stderr}")
             raise
