@@ -1,0 +1,89 @@
+error: _collections_abc.Mapping.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\_collections_abc.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: at line 843 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\_collections_abc.py
+<function Mapping.__eq__ at 0x0000023F35499360>
+
+error: _collections_abc.Set.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\_collections_abc.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: at line 616 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\_collections_abc.py
+<function Set.__eq__ at 0x0000023F354985E0>
+
+error: importlib.machinery.ExtensionFileLoader.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 150 in file stdlib\importlib\machinery.pyi
+def (importlib.machinery.ExtensionFileLoader, builtins.object) -> builtins.bool
+Runtime: in file <frozen importlib._bootstrap_external>
+<function ExtensionFileLoader.__eq__ at 0x0000023F354064D0>
+
+error: importlib.machinery.ModuleSpec.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 29 in file stdlib\importlib\machinery.pyi
+def (importlib.machinery.ModuleSpec, builtins.object) -> builtins.bool
+Runtime: in file <frozen importlib._bootstrap>
+<function ModuleSpec.__eq__ at 0x0000023F35381AB0>
+
+error: ipaddress.IPv4Interface.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 37 in file stdlib\ipaddress.pyi
+def (ipaddress._BaseAddress, builtins.object) -> builtins.bool
+Runtime: at line 1401 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\ipaddress.py
+<function IPv4Interface.__eq__ at 0x0000023F3EB34700>
+
+error: ipaddress.IPv6Address.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 37 in file stdlib\ipaddress.pyi
+def (ipaddress._BaseAddress, builtins.object) -> builtins.bool
+Runtime: at line 1925 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\ipaddress.py
+<function IPv6Address.__eq__ at 0x0000023F3EB36440>
+
+error: ipaddress.IPv6Interface.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 37 in file stdlib\ipaddress.pyi
+def (ipaddress._BaseAddress, builtins.object) -> builtins.bool
+Runtime: at line 2105 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\ipaddress.py
+<function IPv6Interface.__eq__ at 0x0000023F3EB36E60>
+
+error: locale names exported from the stub do not correspond to the names exported at runtime. This is probably due to an inaccurate `__all__` in the stub or things being missing from the stub.
+Stub: in file stdlib\locale.pyi
+Names exported in the stub but not at runtime: ['LC_MESSAGES']
+Runtime:
+Names exported at runtime but not in the stub: []
+
+error: pstats.FunctionProfile.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\pstats.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: in file <string>
+<function FunctionProfile.__eq__ at 0x0000023F40A2CDC0>
+
+error: pstats.StatsProfile.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\pstats.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: in file <string>
+<function StatsProfile.__eq__ at 0x0000023F40A2D120>
+
+error: typing.ParamSpecArgs.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\typing.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: at line 837 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\typing.py
+<function ParamSpecArgs.__eq__ at 0x0000023F359FE7A0>
+
+error: typing.ParamSpecKwargs.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 95 in file stdlib\typing.pyi
+def (builtins.object, builtins.object) -> builtins.bool
+Runtime: at line 861 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\typing.py
+<function ParamSpecKwargs.__eq__ at 0x0000023F359FE950>
+
+error: typing_extensions names exported from the stub do not correspond to the names exported at runtime. This is probably due to an inaccurate `__all__` in the stub or things being missing from the stub.
+Stub: in file stdlib\typing_extensions.pyi
+Names exported in the stub but not at runtime: ['NamedTuple', 'ParamSpecArgs', 'ParamSpecKwargs', 'assert_type', 'clear_overloads', 'get_overloads']
+Runtime:
+Names exported at runtime but not in the stub: []
+
+error: unittest.FunctionTestCase.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 98 in file stdlib\unittest\__init__.pyi
+def (unittest.case.TestCase, builtins.object) -> builtins.bool
+Runtime: at line 1391 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\unittest\case.py
+<function FunctionTestCase.__eq__ at 0x0000023F3AFC6710>
+
+error: unittest.case.FunctionTestCase.__eq__ is inconsistent, runtime overrides __eq__ but the stub does not
+Stub: at line 98 in file stdlib\unittest\case.pyi
+def (unittest.case.TestCase, builtins.object) -> builtins.bool
+Runtime: at line 1391 in file C:\Users\alexw\AppData\Local\Programs\Python\Python310\lib\unittest\case.py
+<function FunctionTestCase.__eq__ at 0x0000023F3AFC6710>

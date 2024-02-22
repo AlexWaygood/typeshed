@@ -1,0 +1,97 @@
+*** Testing Python 3.12 on win32
+Testing third-party packages...
+testing ExifRead (17 files)... failure (exit code 1)
+
+stubs\ExifRead\exifread\utils.pyi:9: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing Flask-Cors (5 files)... failure (exit code 1)
+
+stubs\Flask-Cors\flask_cors\core.pyi:58: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing WebOb (17 files)... failure (exit code 1)
+
+stubs\WebOb\webob\multidict.pyi:40: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing fanstatic (10 files)... failure (exit code 1)
+
+stubs\WebOb\webob\multidict.pyi:40: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing fpdf2 (29 files)... failure (exit code 1)
+
+stubs\fpdf2\fpdf\fpdf.pyi:565: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing mock (3 files)... failure (exit code 1)
+
+stubs\mock\mock\mock.pyi:230: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\mock\mock\mock.pyi:260: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing openpyxl (190 files)... failure (exit code 1)
+
+stubs\openpyxl\openpyxl\xml\_functions_overloads.pyi:80: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:137: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:179: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:182: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:184: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:267: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\nested.pyi:270: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\descriptors\base.pyi:268: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\openpyxl\openpyxl\formatting\rule.pyi:72: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing paramiko (46 files)... failure (exit code 1)
+
+stubs\paramiko\paramiko\rsakey.pyi:30: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing parsimonious (6 files)... failure (exit code 1)
+
+stubs\parsimonious\parsimonious\grammar.pyi:47: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing pika (30 files)... failure (exit code 1)
+
+stubs\pika\pika\adapters\twisted_connection.pyi:9: error: Unused "type: ignore" comment, use narrower [import-not-found] instead of [import] code  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:10: error: Unused "type: ignore" comment, use narrower [import-not-found] instead of [import] code  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:11: error: Unused "type: ignore" comment, use narrower [import-not-found] instead of [import] code  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:12: error: Unused "type: ignore" comment, use narrower [import-not-found] instead of [import] code  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:13: error: Unused "type: ignore" comment, use narrower [import-not-found] instead of [import] code  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:23: error: Unused "type: ignore" comment  [unused-ignore]
+stubs\pika\pika\adapters\twisted_connection.pyi:24: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing psycopg2 (12 files)... failure (exit code 1)
+
+stubs\psycopg2\psycopg2\extensions.pyi:116: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing pycocotools (4 files)... failure (exit code 1)
+
+stubs\pycocotools\pycocotools\mask.pyi:25: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing pyflakes (5 files)... failure (exit code 1)
+
+stubs\pyflakes\pyflakes\checker.pyi:42: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+stubs\pyflakes\pyflakes\checker.pyi:44: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+stubs\pyflakes\pyflakes\checker.pyi:46: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing pyinstaller (21 files)... failure (exit code 1)
+
+stubs\pyinstaller\PyInstaller\building\api.pyi:55: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing pysftp (3 files)... failure (exit code 1)
+
+stubs\paramiko\paramiko\rsakey.pyi:30: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing seaborn (49 files)... failure (exit code 1)
+
+stubs\seaborn\seaborn\palettes.pyi:41: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+stubs\seaborn\seaborn\utils.pyi:75: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+testing setuptools (82 files)... failure (exit code 1)
+
+stubs\setuptools\setuptools\command\upload_docs.pyi:14: error: Unused "type: ignore[misc]" comment  [unused-ignore]
+
+testing tqdm (31 files)... failure (exit code 1)
+
+stubs\tqdm\tqdm\contrib\logging.pyi:21: error: Unused "type: ignore" comment  [unused-ignore]
+
+testing uWSGI (2 files)... failure (exit code 1)
+
+stubs\uWSGI\uwsgi.pyi:90: error: Unused "type: ignore" comment, use narrower [overload-overlap] instead of [misc] code  [unused-ignore]
+
+--- 20 packages with errors, 3269 files checked ---

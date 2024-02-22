@@ -1,0 +1,469 @@
+error: _collections_abc.dict_values.__eq__ overrides __eq__ in the stub but not at runtime
+Stub: in file stdlib\_collections_abc.pyi:79
+def (_collections_abc.dict_values[_KT_co`1, _VT_co`2], builtins.object) -> builtins.bool
+Runtime:
+MISSING
+
+error: _decimal.Context.__hash__ overrides __hash__ in the stub but not at runtime
+Stub: in file stdlib\_decimal.pyi:212
+None
+Runtime:
+MISSING
+
+error: _weakref.CallableProxyType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\_weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.CallableProxyType' objects>
+
+error: _weakref.ProxyType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\_weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ProxyType' objects>
+
+error: _weakref.ReferenceType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\_weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ReferenceType' objects>
+
+error: _weakref.ref.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\_weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ReferenceType' objects>
+
+error: array.array.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\array.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'array.array' objects>
+
+error: builtins.dict.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'dict' objects>
+
+error: builtins.frozenset.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'frozenset' objects>
+
+error: builtins.list.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'list' objects>
+
+error: builtins.memoryview.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'memoryview' objects>
+
+error: builtins.range.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'range' objects>
+
+error: builtins.set.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'set' objects>
+
+error: builtins.slice.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'slice' objects>
+
+error: builtins.tuple.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\builtins.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'tuple' objects>
+
+error: collections.OrderedDict.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\collections\__init__.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'collections.OrderedDict' objects>
+
+error: collections.deque.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\collections\__init__.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'collections.deque' objects>
+
+error: contextvars.Context.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\contextvars.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of '_contextvars.Context' objects>
+
+error: datetime.date.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\datetime.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'datetime.date' objects>
+
+error: datetime.datetime.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\datetime.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'datetime.datetime' objects>
+
+error: datetime.time.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\datetime.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'datetime.time' objects>
+
+error: datetime.timedelta.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\datetime.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'datetime.timedelta' objects>
+
+error: datetime.timezone.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\datetime.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'datetime.timezone' objects>
+
+error: decimal.Context.__hash__ overrides __hash__ in the stub but not at runtime
+Stub: in file stdlib\decimal.pyi:212
+None
+Runtime:
+MISSING
+
+error: importlib.metadata.EntryPoint.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\importlib\metadata\__init__.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\importlib\metadata\__init__.py:265
+<function EntryPoint.__eq__ at 0x000001FE341A2AC0>
+
+error: ipaddress.IPv4Interface.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:1435
+<function IPv4Interface.__hash__ at 0x000001FE36A12DE0>
+
+error: ipaddress.IPv4Interface.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:1411
+<function IPv4Interface.__eq__ at 0x000001FE36A12CA0>
+
+error: ipaddress.IPv6Address.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:1933
+<function IPv6Address.__hash__ at 0x000001FE36A13D80>
+
+error: ipaddress.IPv6Address.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:1936
+<function IPv6Address.__eq__ at 0x000001FE36A13E20>
+
+error: ipaddress.IPv6Interface.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:2140
+<function IPv6Interface.__hash__ at 0x000001FE36A08B80>
+
+error: ipaddress.IPv6Interface.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:2116
+<function IPv6Interface.__eq__ at 0x000001FE36A08A40>
+
+error: ipaddress._BaseNetwork.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\ipaddress.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\ipaddress.py:736
+<function _BaseNetwork.__hash__ at 0x000001FE36A10D60>
+
+error: pstats.FunctionProfile.__mypy-replace is not present at runtime
+Stub: in file stdlib\pstats.pyi:32
+def (*, ncalls: builtins.str =, tottime: builtins.float =, percall_tottime: builtins.float =, cumtime: builtins.float =, percall_cumtime: builtins.float =, file_name: builtins.str =, line_number: builtins.int =)
+Runtime:
+MISSING
+
+error: pstats.FunctionProfile.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\pstats.pyi
+MISSING
+Runtime: in file <string>
+<function FunctionProfile.__hash__ at 0x000001FE38131E40>
+
+error: pstats.FunctionProfile.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\pstats.pyi
+MISSING
+Runtime: in file <string>
+<function FunctionProfile.__eq__ at 0x000001FE38131DA0>
+
+error: pstats.StatsProfile.__mypy-replace is not present at runtime
+Stub: in file stdlib\pstats.pyi:41
+def (*, total_tt: builtins.float =, func_profiles: builtins.dict[builtins.str, pstats.FunctionProfile] =)
+Runtime:
+MISSING
+
+error: pstats.StatsProfile.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\pstats.pyi
+MISSING
+Runtime: in file <string>
+<function StatsProfile.__hash__ at 0x000001FE38132200>
+
+error: pstats.StatsProfile.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\pstats.pyi
+MISSING
+Runtime: in file <string>
+<function StatsProfile.__eq__ at 0x000001FE381320C0>
+
+error: re.Pattern.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\re.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 're.Pattern' objects>
+
+error: re.Pattern.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\re.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 're.Pattern' objects>
+
+error: ssl.SSLSession.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\ssl.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of '_ssl.SSLSession' objects>
+
+error: tracemalloc.Frame.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\tracemalloc.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\tracemalloc.py:169
+<function Frame.__hash__ at 0x000001FE368E6340>
+
+error: tracemalloc.Statistic.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\tracemalloc.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\tracemalloc.py:42
+<function Statistic.__hash__ at 0x000001FE368E6AC0>
+
+error: tracemalloc.StatisticDiff.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\tracemalloc.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\tracemalloc.py:84
+<function StatisticDiff.__hash__ at 0x000001FE368E65C0>
+
+error: tracemalloc.Trace.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\tracemalloc.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\tracemalloc.py:300
+<function Trace.__hash__ at 0x000001FE368E5760>
+
+error: tracemalloc.Traceback.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\tracemalloc.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\tracemalloc.py:212
+<function Traceback.__hash__ at 0x000001FE368E5EE0>
+
+error: types.BuiltinFunctionType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'builtin_function_or_method' objects>
+
+error: types.BuiltinFunctionType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'builtin_function_or_method' objects>
+
+error: types.BuiltinMethodType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'builtin_function_or_method' objects>
+
+error: types.BuiltinMethodType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'builtin_function_or_method' objects>
+
+error: types.CellType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'cell' objects>
+
+error: types.CodeType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'code' objects>
+
+error: types.CodeType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'code' objects>
+
+error: types.GenericAlias.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'types.GenericAlias' objects>
+
+error: types.GenericAlias.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'types.GenericAlias' objects>
+
+error: types.MethodType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'method' objects>
+
+error: types.MethodType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'method' objects>
+
+error: types.MethodWrapperType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'method-wrapper' objects>
+
+error: types.SimpleNamespace.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'types.SimpleNamespace' objects>
+
+error: types.UnionType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'types.UnionType' objects>
+
+error: types.UnionType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\types.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'types.UnionType' objects>
+
+error: typing.ParamSpecArgs.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\typing.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\typing.py:1112
+<function ParamSpecArgs.__eq__ at 0x000001FE28415DA0>
+
+error: typing.ParamSpecKwargs.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\typing.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\typing.py:1136
+<function ParamSpecKwargs.__eq__ at 0x000001FE28415F80>
+
+error: unittest.FunctionTestCase.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\unittest\__init__.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:1427
+<function FunctionTestCase.__hash__ at 0x000001FE2A4CB240>
+
+error: unittest.FunctionTestCase.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\unittest\__init__.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:1418
+<function FunctionTestCase.__eq__ at 0x000001FE2A4CB1A0>
+
+error: unittest.TestCase.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\unittest\__init__.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:509
+<function TestCase.__hash__ at 0x000001FE2A4C84A0>
+
+error: unittest.case.FunctionTestCase.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\unittest\case.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:1427
+<function FunctionTestCase.__hash__ at 0x000001FE2A4CB240>
+
+error: unittest.case.FunctionTestCase.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\unittest\case.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:1418
+<function FunctionTestCase.__eq__ at 0x000001FE2A4CB1A0>
+
+error: unittest.case.TestCase.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\unittest\case.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py:509
+<function TestCase.__hash__ at 0x000001FE2A4C84A0>
+
+error: uuid.UUID.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\uuid.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\uuid.py:268
+<function UUID.__hash__ at 0x000001FE31974720>
+
+error: weakref.CallableProxyType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.CallableProxyType' objects>
+
+error: weakref.ProxyType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ProxyType' objects>
+
+error: weakref.ReferenceType.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ReferenceType' objects>
+
+error: weakref.WeakMethod.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'weakref.ReferenceType' objects>
+
+error: weakref.ref.__eq__ overrides __eq__ at runtime but not in the stub
+Stub: in file stdlib\weakref.pyi
+MISSING
+Runtime:
+<slot wrapper '__eq__' of 'weakref.ReferenceType' objects>
+
+error: winreg.HKEYType.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\winreg.pyi
+MISSING
+Runtime:
+<slot wrapper '__hash__' of 'PyHKEY' objects>
+
+error: xml.etree.ElementTree.QName.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\xml\etree\ElementTree.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\xml\etree\ElementTree.py:499
+<function QName.__hash__ at 0x000001FE32428720>
+
+error: xml.etree.cElementTree.QName.__hash__ overrides __hash__ at runtime but not in the stub
+Stub: in file stdlib\xml\etree\cElementTree.pyi
+MISSING
+Runtime: in file C:\Users\alexw\AppData\Local\Programs\Python\Python311\Lib\xml\etree\ElementTree.py:499
+<function QName.__hash__ at 0x000001FE32428720>
+
+Found 78 errors (checked 541 modules)

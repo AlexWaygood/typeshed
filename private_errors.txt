@@ -1,0 +1,31 @@
+error: importlib.metadata._EntryPointBase is not present at runtime
+Stub: at line 36
+<TypeInfo importlib.metadata._EntryPointBase>
+Runtime:
+MISSING
+
+error: ipaddress._BaseInterface is not present at runtime
+Stub: at line 127
+<TypeInfo ipaddress._BaseInterface>
+Runtime:
+MISSING
+
+error: urllib.parse._ParseResultBytesBase is not present at runtime
+Stub: at line 99
+<TypeInfo urllib.parse._ParseResultBytesBase>
+Runtime:
+MISSING
+
+error: urllib.parse._ResultMixinBase is not present at runtime
+Stub: at line 45
+<TypeInfo urllib.parse._ResultMixinBase>
+Runtime:
+MISSING
+
+error: urllib.parse._SplitResultBytesBase is not present at runtime
+Stub: at line 84
+<TypeInfo urllib.parse._SplitResultBytesBase>
+Runtime:
+MISSING
+
+Found 83 errors (checked 471 modules)
