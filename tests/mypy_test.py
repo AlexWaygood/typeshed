@@ -423,8 +423,7 @@ def setup_venv_for_external_requirements_set(
 
 
 def install_requirements_for_venv(venv_dir: Path, args: TestConfig, external_requirements: frozenset[str]) -> None:
-    # Use --no-cache-dir to avoid issues with concurrent read/writes to the cache
-    uv_command = ["uv", "pip", "install", get_mypy_req(), *sorted(external_requirements), "--no-cache-dir"]
+    uv_command = ["uv", "pip", "install", get_mypy_req(), *sorted(external_requirements)]
     if args.verbose:
         with _PRINT_LOCK:
             print(colored(f"Running {uv_command}", "blue"))
