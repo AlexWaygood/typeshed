@@ -183,6 +183,9 @@ class _SpecialForm:
         def __or__(self, other: Any) -> _SpecialForm: ...
         def __ror__(self, other: Any) -> _SpecialForm: ...
 
+
+Callable: _SpecialForm
+
 _F = TypeVar("_F", bound=Callable[..., Any])
 _P = _ParamSpec("_P")
 _T = TypeVar("_T")
@@ -191,13 +194,10 @@ def overload(func: _F) -> _F: ...
 
 Union: _SpecialForm
 Generic: _SpecialForm
-# Protocol is only present in 3.8 and later, but mypy needs it unconditionally
 Protocol: _SpecialForm
-Callable: _SpecialForm
 Type: _SpecialForm
 NoReturn: _SpecialForm
 ClassVar: _SpecialForm
-
 Optional: _SpecialForm
 Tuple: _SpecialForm
 Final: _SpecialForm
