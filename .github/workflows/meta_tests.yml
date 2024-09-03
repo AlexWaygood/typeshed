@@ -35,12 +35,17 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python ./tests/typecheck_typeshed.py --platform=${{ matrix.platform }}
+      - run: |
+          (
+            uv run \
+            --python=3.12 \
+            --no-project \
+            --with-requirements requirements-tests.txt \
+            ./tests/typecheck_typeshed.py \
+            --platform=${{ matrix.platform }}
+          )
+
   pyright:
     name: Run pyright against the scripts and tests directories
     runs-on: ubuntu-latest
@@ -63,18 +68,23 @@ jobs:
           python-platform: ${{ matrix.python-platform }}
           python-version: "3.9" # The Python version to test against.
           project: ./pyrightconfig.scripts_and_tests.json
+
   stubsabot-dry-run:
     name: Stubsabot dry run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Git config
         run: |
           git config --global user.name stubsabot
           git config --global user.email '<>'
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python scripts/stubsabot.py --action-level local
+      - run: |
+          (
+            uv run \
+            --python=3.12 \
+            --no-project \
+            --with-requirements requirements-tests.txt \
+            scripts/stubsabot.py \
+            --action-level local
+          )

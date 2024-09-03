@@ -27,12 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python ./tests/check_typeshed_structure.py
+      - run: uv run --no-project --python 3.12 --with-requirements requirements-tests.txt tests/check_typeshed_structure.py
 
   pytype:
     name: Run pytype against the stubs
@@ -66,12 +62,17 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python ./tests/mypy_test.py --platform=${{ matrix.platform }} --python-version=${{ matrix.python-version }}
+      - run: |
+          (
+            uv run \
+            --python ${{ matrix.python-version }} \
+            --no-project \
+            --with-requirements requirements-tests.txt \
+            tests/mypy_test.py \
+            --platform=${{ matrix.platform }} \
+            --python-version=${{ matrix.python-version }}
+          )
 
   # Run this as a separate job, as the other versions in the matrix are
   # (and should be) run *using* the Python version we're testing the stubs for,
@@ -85,27 +86,36 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-          allow-prereleases: true
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python ./tests/mypy_test.py --platform=${{ matrix.platform }} --python-version=3.13
+      - run: |
+          (
+            uv run \
+            --python=3.12 \
+            --no-project \
+            --with-requirements requirements-tests.txt \
+            tests/mypy_test.py \
+            --platform=${{ matrix.platform }} \
+            --python-version=3.13
+          )
 
   regression-tests:
     name: Run mypy on the test cases
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          # Use py311 for now, as py312 seems to be around 30s slower in CI
-          # TODO: figure out why that is (#11590)
-          python-version: "3.11"
+      # Use py311 for now, as py312 seems to be around 30s slower in CI
+      # TODO: figure out why that is (#11590)
       - run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - run: uv pip install -r requirements-tests.txt --system
-      - run: python ./tests/regr_test.py --all --verbosity QUIET
+      - run: |
+          (
+            uv run \
+            --python=3.11 \
+            --no-project \
+            --with-requirements requirements-tests.txt \
+            tests/regr_test.py \
+            --all \
+            --verbosity QUIET
+          )
 
   pyright:
     name: Test typeshed with pyright
@@ -176,13 +186,9 @@ jobs:
         with:
           repository: typeshed-internal/stub_uploader
           path: stub_uploader
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Run tests
         run: |
           cd stub_uploader
-          uv pip install -r requirements.txt --system
-          python -m pytest tests
+          uv run --python=3.12 --no-project --with-requirements requirements.txt pytest tests
