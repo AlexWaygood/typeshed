@@ -37,15 +37,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: requirements-tests.txt
-          allow-prereleases: true
-          check-latest: true
-      - name: Install dependencies
-        run: pip install -r requirements-tests.txt
-      - name: Run stubtest
-        run: python tests/stubtest_stdlib.py
+      - run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv run --python ${{ matrix.python-version }} --no-project --isolated --with-requirements requirements-tests.txt tests/stubtest_stdlib.py
