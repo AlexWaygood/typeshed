@@ -363,7 +363,7 @@ class LogRecord:
 
 _L = TypeVar("_L", bound=Logger | LoggerAdapter[Any])
 
-class LoggerAdapter(Generic[_L]):
+class LoggerAdapter[_L: Logger | LoggerAdapter[Any]]:
     logger: _L
     manager: Manager  # undocumented
 

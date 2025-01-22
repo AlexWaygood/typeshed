@@ -27,7 +27,7 @@ class CompileError(ValueError):
 
 # _P needs to be positional only and can't contain varargs, but there is no way to express that
 # the arguments also need
-class SassFunction(Generic[_P, _T]):
+class SassFunction[**_P, _T]:
     @classmethod
     def from_lambda(cls, name: str, lambda_: Callable[_P, _T]) -> SassFunction[_P, _T]: ...
     @classmethod

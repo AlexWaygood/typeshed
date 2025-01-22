@@ -13,7 +13,7 @@ _ExtenderMessageT = TypeVar(
 
 class _ExtensionFieldDescriptor(FieldDescriptor, Generic[_ContainerMessageT, _ExtenderMessageT]): ...
 
-class _ExtensionDict(Generic[_ContainerMessageT]):
+class _ExtensionDict[_ContainerMessageT: Message]:
     def __init__(self, extended_message: _ContainerMessageT) -> None: ...
     def __getitem__(
         self, extension_handle: _ExtensionFieldDescriptor[_ContainerMessageT, _ExtenderMessageT]

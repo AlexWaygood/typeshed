@@ -33,7 +33,7 @@ PyIUnknownType = _win32typing.PyIUnknown
 _GoodDispatchTypes: TypeAlias = tuple[type[str], type[IIDType]]
 
 @overload
-def Dispatch(
+def Dispatch[_T](
     IDispatch: str | PyIDispatchType | _GoodDispatchTypes | PyIUnknownType,
     userName: str | None,
     createClass: _DispatchCreateClass[_T],

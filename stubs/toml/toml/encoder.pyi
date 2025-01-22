@@ -7,7 +7,7 @@ _MappingT = TypeVar("_MappingT", bound=Mapping[str, Any])
 def dump(o: _MappingT, f: SupportsWrite[str], encoder: TomlEncoder[_MappingT] | None = None) -> str: ...
 def dumps(o: _MappingT, encoder: TomlEncoder[_MappingT] | None = None) -> str: ...
 
-class TomlEncoder(Generic[_MappingT]):
+class TomlEncoder[_MappingT: Mapping[str, Any]]:
     _dict: type[_MappingT]
     preserve: bool
     dump_funcs: MutableMapping[type[Any], Callable[[Any], str]]

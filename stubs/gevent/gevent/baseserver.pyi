@@ -15,7 +15,7 @@ class _SpawnFunc(Protocol):
 
 _Spawner: TypeAlias = Pool | _SpawnFunc | int | Literal["default"] | None
 
-class BaseServer(Generic[_P]):
+class BaseServer[**_P]:
     min_delay: float
     max_delay: float
     max_accept: int

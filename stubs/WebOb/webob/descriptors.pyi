@@ -26,7 +26,7 @@ _ContentRangeParams: TypeAlias = (
     | None
 )
 
-class _AsymmetricProperty(Generic[_GetterReturnType, _SetterValueType]):
+class _AsymmetricProperty[_GetterReturnType, _SetterValueType]:
     @overload
     def __get__(self, obj: None, type: type | None = ..., /) -> property: ...
     @overload
@@ -47,7 +47,7 @@ class _DateProperty(
 @overload
 def environ_getter(key: str, default: None, rfc_section: str | None = None) -> _SymmetricPropertyWithDelete[Any | None]: ...
 @overload
-def environ_getter(
+def environ_getter[_DefaultT](
     key: str, default: _DefaultT, rfc_section: str | None = None
 ) -> _AsymmetricPropertyWithDelete[Any | _DefaultT, Any | _DefaultT | None]: ...
 @overload
@@ -63,7 +63,7 @@ def environ_decoder(
 @overload
 def environ_decoder(key: str, *, rfc_section: str | None = None, encattr: str | None = None) -> _SymmetricProperty[str]: ...
 def upath_property(key: str) -> _SymmetricProperty[str]: ...
-def deprecated_property(attr: _T, name: str, text: str, version: str) -> _T: ...
+def deprecated_property[_T](attr: _T, name: str, text: str, version: str) -> _T: ...
 def header_getter(header: str, rfc_section: str) -> _StringProperty: ...
 @overload
 def converter(

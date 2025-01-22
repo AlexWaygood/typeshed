@@ -12,7 +12,7 @@ STDOUT_LINE: Final[str]
 STDERR_LINE: Final[str]
 
 # undocumented
-def failfast(method: _F) -> _F: ...
+def failfast[_F: Callable[..., Any]](method: _F) -> _F: ...
 
 class TestResult:
     errors: list[tuple[unittest.case.TestCase, str]]

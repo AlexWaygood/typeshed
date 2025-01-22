@@ -46,7 +46,7 @@ class _HasItems(Protocol):
 
 linesep: bytes
 
-class Mailbox(Generic[_MessageT]):
+class Mailbox[_MessageT: Message]:
     _path: str  # undocumented
     _factory: Callable[[IO[Any]], _MessageT] | None  # undocumented
     @overload
@@ -233,7 +233,7 @@ class BabylMessage(Message):
 
 class MMDFMessage(_mboxMMDFMessage): ...
 
-class _ProxyFile(Generic[AnyStr]):
+class _ProxyFile[AnyStr: (bytes, str)]:
     def __init__(self, f: IO[AnyStr], pos: int | None = None) -> None: ...
     def read(self, size: int | None = None) -> AnyStr: ...
     def read1(self, size: int | None = None) -> AnyStr: ...

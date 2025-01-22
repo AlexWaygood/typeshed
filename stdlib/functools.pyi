@@ -52,7 +52,7 @@ if sys.version_info >= (3, 9):
         typed: bool
 
 @final
-class _lru_cache_wrapper(Generic[_T]):
+class _lru_cache_wrapper[_T]:
     __wrapped__: Callable[..., _T]
     def __call__(self, *args: Hashable, **kwargs: Hashable) -> _T: ...
     def cache_info(self) -> _CacheInfo: ...
@@ -66,7 +66,7 @@ class _lru_cache_wrapper(Generic[_T]):
 @overload
 def lru_cache(maxsize: int | None = 128, typed: bool = False) -> Callable[[Callable[..., _T]], _lru_cache_wrapper[_T]]: ...
 @overload
-def lru_cache(maxsize: Callable[..., _T], typed: bool = False) -> _lru_cache_wrapper[_T]: ...
+def lru_cache[_T](maxsize: Callable[..., _T], typed: bool = False) -> _lru_cache_wrapper[_T]: ...
 
 if sys.version_info >= (3, 12):
     WRAPPER_ASSIGNMENTS: tuple[
@@ -83,46 +83,46 @@ else:
     ]
 WRAPPER_UPDATES: tuple[Literal["__dict__"]]
 
-class _Wrapped(Generic[_PWrapped, _RWrapped, _PWrapper, _RWrapper]):
+class _Wrapped[**_PWrapped, _RWrapped, **_PWrapper, _RWrapper]:
     __wrapped__: Callable[_PWrapped, _RWrapped]
     def __call__(self, *args: _PWrapper.args, **kwargs: _PWrapper.kwargs) -> _RWrapper: ...
     # as with ``Callable``, we'll assume that these attributes exist
     __name__: str
     __qualname__: str
 
-class _Wrapper(Generic[_PWrapped, _RWrapped]):
+class _Wrapper[**_PWrapped, _RWrapped]:
     def __call__(self, f: Callable[_PWrapper, _RWrapper]) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
 
 if sys.version_info >= (3, 12):
-    def update_wrapper(
+    def update_wrapper[**_PWrapper, _RWrapper, **_PWrapped, _RWrapped](
         wrapper: Callable[_PWrapper, _RWrapper],
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
         updated: Sequence[str] = ("__dict__",),
     ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
-    def wraps(
+    def wraps[**_PWrapped, _RWrapped](
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__", "__type_params__"),
         updated: Sequence[str] = ("__dict__",),
     ) -> _Wrapper[_PWrapped, _RWrapped]: ...
 
 else:
-    def update_wrapper(
+    def update_wrapper[**_PWrapper, _RWrapper, **_PWrapped, _RWrapped](
         wrapper: Callable[_PWrapper, _RWrapper],
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
         updated: Sequence[str] = ("__dict__",),
     ) -> _Wrapped[_PWrapped, _RWrapped, _PWrapper, _RWrapper]: ...
-    def wraps(
+    def wraps[**_PWrapped, _RWrapped](
         wrapped: Callable[_PWrapped, _RWrapped],
         assigned: Sequence[str] = ("__module__", "__name__", "__qualname__", "__doc__", "__annotations__"),
         updated: Sequence[str] = ("__dict__",),
     ) -> _Wrapper[_PWrapped, _RWrapped]: ...
 
-def total_ordering(cls: type[_T]) -> type[_T]: ...
+def total_ordering[_T](cls: type[_T]) -> type[_T]: ...
 def cmp_to_key(mycmp: Callable[[_T, _T], int]) -> Callable[[_T], SupportsAllComparisons]: ...
 
-class partial(Generic[_T]):
+class partial[_T]:
     @property
     def func(self) -> Callable[..., _T]: ...
     @property
@@ -137,7 +137,7 @@ class partial(Generic[_T]):
 # With protocols, this could change into a generic protocol that defines __get__ and returns _T
 _Descriptor: TypeAlias = Any
 
-class partialmethod(Generic[_T]):
+class partialmethod[_T]:
     func: Callable[..., _T] | _Descriptor
     args: tuple[Any, ...]
     keywords: dict[str, Any]
@@ -151,7 +151,7 @@ class partialmethod(Generic[_T]):
     if sys.version_info >= (3, 9):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
-class _SingleDispatchCallable(Generic[_T]):
+class _SingleDispatchCallable[_T]:
     registry: types.MappingProxyType[Any, Callable[..., _T]]
     def dispatch(self, cls: Any) -> Callable[..., _T]: ...
     # @fun.register(complex)
@@ -168,9 +168,9 @@ class _SingleDispatchCallable(Generic[_T]):
     def _clear_cache(self) -> None: ...
     def __call__(self, /, *args: Any, **kwargs: Any) -> _T: ...
 
-def singledispatch(func: Callable[..., _T]) -> _SingleDispatchCallable[_T]: ...
+def singledispatch[_T](func: Callable[..., _T]) -> _SingleDispatchCallable[_T]: ...
 
-class singledispatchmethod(Generic[_T]):
+class singledispatchmethod[_T]:
     dispatcher: _SingleDispatchCallable[_T]
     func: Callable[..., _T]
     def __init__(self, func: Callable[..., _T]) -> None: ...
@@ -184,7 +184,7 @@ class singledispatchmethod(Generic[_T]):
     def register(self, cls: type[Any], method: Callable[..., _T]) -> Callable[..., _T]: ...
     def __get__(self, obj: _S, cls: type[_S] | None = None) -> Callable[..., _T]: ...
 
-class cached_property(Generic[_T_co]):
+class cached_property[_T_co]:
     func: Callable[[Any], _T_co]
     attrname: str | None
     def __init__(self, func: Callable[[Any], _T_co]) -> None: ...
@@ -199,7 +199,7 @@ class cached_property(Generic[_T_co]):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 if sys.version_info >= (3, 9):
-    def cache(user_function: Callable[..., _T], /) -> _lru_cache_wrapper[_T]: ...
+    def cache[_T](user_function: Callable[..., _T], /) -> _lru_cache_wrapper[_T]: ...
 
 def _make_key(
     args: tuple[Hashable, ...],

@@ -9,7 +9,7 @@ class _HasId(Protocol):
 _R = TypeVar("_R", default=Any)
 _T = TypeVar("_T", bound=_HasId)
 
-class _Page(Generic[_T]):
+class _Page[_T: _HasId]:
     has_next: bool
     values: list[_T]
     next_after: str | None
@@ -20,7 +20,7 @@ class _Page(Generic[_T]):
     @staticmethod
     def initial(after: str | None) -> _Page[_T]: ...
 
-class _PageIterator(Generic[_T]):
+class _PageIterator[_T: _HasId]:
     page: _Page[_T]
     get_next_page: Callable[[_Page[_T]], _Page[_T]]
 

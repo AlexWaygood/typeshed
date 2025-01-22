@@ -44,7 +44,7 @@ class _ExceptionWithTraceback:
 
 def _rebuild_exc(exc: Exception, tb: str) -> Exception: ...
 
-class _WorkItem(Generic[_T]):
+class _WorkItem[_T]:
     future: Future[_T]
     fn: Callable[..., _T]
     args: Iterable[Any]
@@ -102,7 +102,7 @@ class _SafeQueue(Queue[Future[Any]]):
     def _on_queue_feeder_error(self, e: Exception, obj: _CallItem) -> None: ...
 
 def _get_chunks(*iterables: Any, chunksize: int) -> Generator[tuple[Any, ...], None, None]: ...
-def _process_chunk(fn: Callable[..., _T], chunk: Iterable[tuple[Any, ...]]) -> list[_T]: ...
+def _process_chunk[_T](fn: Callable[..., _T], chunk: Iterable[tuple[Any, ...]]) -> list[_T]: ...
 
 if sys.version_info >= (3, 11):
     def _sendback_result(

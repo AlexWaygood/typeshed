@@ -36,11 +36,11 @@ class StrArray:
 
 _T = TypeVar("_T")
 
-class _GenericContainer(Generic[_T]):
+class _GenericContainer[_T]:
     def __len__(self) -> int: ...
     def __getitem__(self, idx: int) -> _T: ...
 
-class GenericIterator(Generic[_T]):
+class GenericIterator[_T]:
     container: _GenericContainer[_T]
     length: int
     idx: int

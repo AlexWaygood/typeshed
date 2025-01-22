@@ -28,7 +28,7 @@ _CompiledStringPattern: TypeAlias = AnyStr | _ErrorPattern
 _CompiledRePattern: TypeAlias = Pattern[AnyStr] | _ErrorPattern
 _Searcher: TypeAlias = searcher_string[AnyStr] | searcher_re[AnyStr]
 
-class SpawnBase(Generic[AnyStr]):
+class SpawnBase[AnyStr: (bytes, str)]:
     encoding: str | None
     pid: int | None
     flag_eof: bool

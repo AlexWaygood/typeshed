@@ -13,7 +13,7 @@ __all__ = ["Pool", "ThreadPool"]
 _S = TypeVar("_S")
 _T = TypeVar("_T")
 
-class ApplyResult(Generic[_T]):
+class ApplyResult[_T]:
     def __init__(
         self, pool: Pool, callback: Callable[[_T], object] | None, error_callback: Callable[[BaseException], object] | None
     ) -> None: ...
@@ -37,7 +37,7 @@ class MapResult(ApplyResult[list[_T]]):
         error_callback: Callable[[BaseException], object] | None,
     ) -> None: ...
 
-class IMapIterator(Generic[_T]):
+class IMapIterator[_T]:
     def __init__(self, pool: Pool) -> None: ...
     def __iter__(self) -> Self: ...
     def next(self, timeout: float | None = None) -> _T: ...

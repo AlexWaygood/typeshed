@@ -2,7 +2,7 @@ from typing import Any, Generic, TypeVar, overload
 
 _T = TypeVar("_T", str, bytes)
 
-class Formatter(Generic[_T]):
+class Formatter[_T: (str, bytes)]:
     name: Any
     aliases: Any
     filenames: Any

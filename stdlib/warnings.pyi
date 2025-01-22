@@ -66,7 +66,7 @@ class WarningMessage:
         source: Any | None = None,
     ) -> None: ...
 
-class catch_warnings(Generic[_W]):
+class catch_warnings[_W: list[WarningMessage] | None]:
     if sys.version_info >= (3, 11):
         @overload
         def __init__(

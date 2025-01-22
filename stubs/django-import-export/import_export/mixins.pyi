@@ -18,7 +18,7 @@ logger: Logger
 
 _ModelT = TypeVar("_ModelT", bound=Model)
 
-class BaseImportExportMixin(Generic[_ModelT]):
+class BaseImportExportMixin[_ModelT: Model]:
     resource_class: type[Resource[_ModelT]]
     resource_classes: SupportsGetItem[int, type[Resource[_ModelT]]]
     @property

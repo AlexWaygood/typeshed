@@ -11,7 +11,7 @@ _D = TypeVar("_D")
 _P = ParamSpec("_P")
 
 @final
-class ContextVar(Generic[_T]):
+class ContextVar[_T]:
     @overload
     def __new__(cls, name: str) -> Self: ...
     @overload
@@ -31,7 +31,7 @@ class ContextVar(Generic[_T]):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
 @final
-class Token(Generic[_T]):
+class Token[_T]:
     @property
     def var(self) -> ContextVar[_T]: ...
     @property

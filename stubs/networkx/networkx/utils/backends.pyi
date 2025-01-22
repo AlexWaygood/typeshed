@@ -7,7 +7,7 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 __all__ = ["_dispatchable"]
 
-class _dispatchable(Generic[_P, _R]):
+class _dispatchable[**_P, _R]:
     __defaults__: Incomplete
     __kwdefaults__: Incomplete
     __module__: Incomplete

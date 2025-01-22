@@ -27,7 +27,7 @@ class Match(NamedTuple):
     b: int
     size: int
 
-class SequenceMatcher(Generic[_T]):
+class SequenceMatcher[_T]:
     @overload
     def __init__(self, isjunk: Callable[[_T], bool] | None, a: Sequence[_T], b: Sequence[_T], autojunk: bool = True) -> None: ...
     @overload

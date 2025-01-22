@@ -10,7 +10,7 @@ OPENSSH_AUTH_MAGIC: bytes
 
 _BytesT = TypeVar("_BytesT", bound=bytes | bytearray)
 
-def _unpad_openssh(data: _BytesT) -> _BytesT: ...
+def _unpad_openssh[_BytesT: bytes | bytearray](data: _BytesT) -> _BytesT: ...
 
 class PKey:
     public_blob: PublicBlob | None

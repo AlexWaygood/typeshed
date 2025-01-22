@@ -74,12 +74,12 @@ class CachedMethod:
 def cached(cache: Mapping[Any, Any], scoped: bool = True, typed: bool = False, key: Incomplete | None = None): ...
 def cachedmethod(cache, scoped: bool = True, typed: bool = False, key: Incomplete | None = None): ...
 
-class cachedproperty(Generic[_T]):
+class cachedproperty[_T]:
     func: Callable[[Incomplete], _T]
     def __init__(self, func: Callable[[Incomplete], _T]) -> None: ...
     def __get__(self, obj: _T, objtype: type | None = None): ...
 
-class ThresholdCounter(Generic[_T]):
+class ThresholdCounter[_T]:
     total: int
     def __init__(self, threshold: float = 0.001) -> None: ...
     @property
@@ -102,7 +102,7 @@ class ThresholdCounter(Generic[_T]):
     def get(self, key: _T, default: int = 0) -> int: ...
     def update(self, iterable: Iterable[_T] | Mapping[_T, int], **kwargs: Iterable[_T] | Mapping[_T, int]) -> None: ...
 
-class MinIDMap(Generic[_T]):
+class MinIDMap[_T]:
     mapping: weakref.WeakKeyDictionary[_T, int]
     ref_map: dict[_T, int]
     free: list[int]

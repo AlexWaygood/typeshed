@@ -9,7 +9,7 @@ from .. import Command
 _StrPathT = TypeVar("_StrPathT", bound=StrPath)
 
 def strip_module(filename): ...
-def sorted_walk(dir: GenericPath[AnyStr]) -> Iterator[tuple[AnyStr, list[AnyStr], list[AnyStr]]]: ...
+def sorted_walk[AnyStr: (bytes, str)](dir: GenericPath[AnyStr]) -> Iterator[tuple[AnyStr, list[AnyStr], list[AnyStr]]]: ...
 def write_stub(resource, pyfile) -> None: ...
 
 class bdist_egg(Command):
@@ -51,7 +51,7 @@ def can_scan() -> bool: ...
 
 INSTALL_DIRECTORY_ATTRS: Final[list[str]]
 
-def make_zipfile(
+def make_zipfile[_StrPathT: StrPath](
     zip_filename: _StrPathT,
     base_dir,
     verbose: bool = False,

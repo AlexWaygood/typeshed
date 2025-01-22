@@ -289,7 +289,7 @@ _W = TypeVar("_W", bound=Misc)
 # Events considered covariant because you should never assign to event.widget.
 _W_co = TypeVar("_W_co", covariant=True, bound=Misc)
 
-class Event(Generic[_W_co]):
+class Event[_W_co: Misc]:
     serial: int
     num: int
     focus: bool

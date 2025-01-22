@@ -19,7 +19,7 @@ else:
 
 _T = TypeVar("_T")
 
-class Queue(Generic[_T]):
+class Queue[_T]:
     @property
     def hub(self) -> Hub: ...  # readonly in Cython
     @property
@@ -73,7 +73,7 @@ class JoinableQueue(Queue[_T]):
     def join(self, timeout: float | None = None) -> bool: ...
     def task_done(self) -> None: ...
 
-class Channel(Generic[_T]):
+class Channel[_T]:
     @property
     def getters(self) -> deque[Waiter[Any]]: ...  # readonly in Cython
     @property

@@ -144,7 +144,7 @@ class _Printer:
     def PrintField(self, field: FieldDescriptor, value: Any) -> None: ...
     def PrintFieldValue(self, field: FieldDescriptor, value: Any) -> None: ...
 
-def Parse(
+def Parse[_M: Message](
     text: str | bytes,
     message: _M,
     allow_unknown_extension: bool = False,
@@ -152,7 +152,7 @@ def Parse(
     descriptor_pool: DescriptorPool | None = None,
     allow_unknown_field: bool = False,
 ) -> _M: ...
-def Merge(
+def Merge[_M: Message](
     text: str | bytes,
     message: _M,
     allow_unknown_extension: bool = False,
@@ -160,7 +160,7 @@ def Merge(
     descriptor_pool: DescriptorPool | None = None,
     allow_unknown_field: bool = False,
 ) -> _M: ...
-def MergeLines(
+def MergeLines[_M: Message](
     lines: Iterable[str | bytes],
     message: _M,
     allow_unknown_extension: bool = False,

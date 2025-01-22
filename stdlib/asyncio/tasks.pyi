@@ -88,20 +88,20 @@ ALL_COMPLETED = concurrent.futures.ALL_COMPLETED
 if sys.version_info >= (3, 13):
     class _SyncAndAsyncIterator(Iterator[_T_co], AsyncIterator[_T_co], Protocol[_T_co]): ...
 
-    def as_completed(fs: Iterable[_FutureLike[_T]], *, timeout: float | None = None) -> _SyncAndAsyncIterator[Future[_T]]: ...
+    def as_completed[_T](fs: Iterable[_FutureLike[_T]], *, timeout: float | None = None) -> _SyncAndAsyncIterator[Future[_T]]: ...
 
 elif sys.version_info >= (3, 10):
-    def as_completed(fs: Iterable[_FutureLike[_T]], *, timeout: float | None = None) -> Iterator[Future[_T]]: ...
+    def as_completed[_T](fs: Iterable[_FutureLike[_T]], *, timeout: float | None = None) -> Iterator[Future[_T]]: ...
 
 else:
-    def as_completed(
+    def as_completed[_T](
         fs: Iterable[_FutureLike[_T]], *, loop: AbstractEventLoop | None = None, timeout: float | None = None
     ) -> Iterator[Future[_T]]: ...
 
 @overload
-def ensure_future(coro_or_future: _FT, *, loop: AbstractEventLoop | None = None) -> _FT: ...  # type: ignore[overload-overlap]
+def ensure_future[_FT: Future[Any]](coro_or_future: _FT, *, loop: AbstractEventLoop | None = None) -> _FT: ...  # type: ignore[overload-overlap]
 @overload
-def ensure_future(coro_or_future: Awaitable[_T], *, loop: AbstractEventLoop | None = None) -> Task[_T]: ...
+def ensure_future[_T](coro_or_future: Awaitable[_T], *, loop: AbstractEventLoop | None = None) -> Task[_T]: ...
 
 # `gather()` actually returns a list with length equal to the number
 # of tasks passed; however, Tuple is used similar to the annotation for
@@ -111,13 +111,13 @@ def ensure_future(coro_or_future: Awaitable[_T], *, loop: AbstractEventLoop | No
 # N.B. Having overlapping overloads is the only way to get acceptable type inference in all edge cases.
 if sys.version_info >= (3, 10):
     @overload
-    def gather(coro_or_future1: _FutureLike[_T1], /, *, return_exceptions: Literal[False] = False) -> Future[tuple[_T1]]: ...  # type: ignore[overload-overlap]
+    def gather[_T1](coro_or_future1: _FutureLike[_T1], /, *, return_exceptions: Literal[False] = False) -> Future[tuple[_T1]]: ...  # type: ignore[overload-overlap]
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1], coro_or_future2: _FutureLike[_T2], /, *, return_exceptions: Literal[False] = False
     ) -> Future[tuple[_T1, _T2]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -126,7 +126,7 @@ if sys.version_info >= (3, 10):
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -136,7 +136,7 @@ if sys.version_info >= (3, 10):
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4, _T5](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -147,7 +147,7 @@ if sys.version_info >= (3, 10):
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4, _T5]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4, _T5, _T6](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -159,15 +159,15 @@ if sys.version_info >= (3, 10):
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4, _T5, _T6]]: ...
     @overload
-    def gather(*coros_or_futures: _FutureLike[_T], return_exceptions: Literal[False] = False) -> Future[list[_T]]: ...  # type: ignore[overload-overlap]
+    def gather[_T](*coros_or_futures: _FutureLike[_T], return_exceptions: Literal[False] = False) -> Future[list[_T]]: ...  # type: ignore[overload-overlap]
     @overload
-    def gather(coro_or_future1: _FutureLike[_T1], /, *, return_exceptions: bool) -> Future[tuple[_T1 | BaseException]]: ...
+    def gather[_T1](coro_or_future1: _FutureLike[_T1], /, *, return_exceptions: bool) -> Future[tuple[_T1 | BaseException]]: ...
     @overload
-    def gather(
+    def gather[_T1, _T2](
         coro_or_future1: _FutureLike[_T1], coro_or_future2: _FutureLike[_T2], /, *, return_exceptions: bool
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException]]: ...
     @overload
-    def gather(
+    def gather[_T1, _T2, _T3](
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -176,7 +176,7 @@ if sys.version_info >= (3, 10):
         return_exceptions: bool,
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException, _T3 | BaseException]]: ...
     @overload
-    def gather(
+    def gather[_T1, _T2, _T3, _T4](
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -186,7 +186,7 @@ if sys.version_info >= (3, 10):
         return_exceptions: bool,
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException, _T3 | BaseException, _T4 | BaseException]]: ...
     @overload
-    def gather(
+    def gather[_T1, _T2, _T3, _T4, _T5](
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -199,7 +199,7 @@ if sys.version_info >= (3, 10):
         tuple[_T1 | BaseException, _T2 | BaseException, _T3 | BaseException, _T4 | BaseException, _T5 | BaseException]
     ]: ...
     @overload
-    def gather(
+    def gather[_T1, _T2, _T3, _T4, _T5, _T6](
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -220,15 +220,15 @@ if sys.version_info >= (3, 10):
         ]
     ]: ...
     @overload
-    def gather(*coros_or_futures: _FutureLike[_T], return_exceptions: bool) -> Future[list[_T | BaseException]]: ...
+    def gather[_T](*coros_or_futures: _FutureLike[_T], return_exceptions: bool) -> Future[list[_T | BaseException]]: ...
 
 else:
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1], /, *, loop: AbstractEventLoop | None = None, return_exceptions: Literal[False] = False
     ) -> Future[tuple[_T1]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         /,
@@ -237,7 +237,7 @@ else:
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -247,7 +247,7 @@ else:
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -258,7 +258,7 @@ else:
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4, _T5](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -270,7 +270,7 @@ else:
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4, _T5]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4, _T5, _T6](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -283,15 +283,15 @@ else:
         return_exceptions: Literal[False] = False,
     ) -> Future[tuple[_T1, _T2, _T3, _T4, _T5, _T6]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T](  # type: ignore[overload-overlap]
         *coros_or_futures: _FutureLike[_T], loop: AbstractEventLoop | None = None, return_exceptions: Literal[False] = False
     ) -> Future[list[_T]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1], /, *, loop: AbstractEventLoop | None = None, return_exceptions: bool
     ) -> Future[tuple[_T1 | BaseException]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         /,
@@ -300,7 +300,7 @@ else:
         return_exceptions: bool,
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -310,7 +310,7 @@ else:
         return_exceptions: bool,
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException, _T3 | BaseException]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -321,7 +321,7 @@ else:
         return_exceptions: bool,
     ) -> Future[tuple[_T1 | BaseException, _T2 | BaseException, _T3 | BaseException, _T4 | BaseException]]: ...
     @overload
-    def gather(  # type: ignore[overload-overlap]
+    def gather[_T1, _T2, _T3, _T4, _T5, _T6](  # type: ignore[overload-overlap]
         coro_or_future1: _FutureLike[_T1],
         coro_or_future2: _FutureLike[_T2],
         coro_or_future3: _FutureLike[_T3],
@@ -343,51 +343,51 @@ else:
         ]
     ]: ...
     @overload
-    def gather(
+    def gather[_T](
         *coros_or_futures: _FutureLike[_T], loop: AbstractEventLoop | None = None, return_exceptions: bool
     ) -> Future[list[_T | BaseException]]: ...
 
-def run_coroutine_threadsafe(coro: _FutureLike[_T], loop: AbstractEventLoop) -> concurrent.futures.Future[_T]: ...
+def run_coroutine_threadsafe[_T](coro: _FutureLike[_T], loop: AbstractEventLoop) -> concurrent.futures.Future[_T]: ...
 
 if sys.version_info >= (3, 10):
-    def shield(arg: _FutureLike[_T]) -> Future[_T]: ...
+    def shield[_T](arg: _FutureLike[_T]) -> Future[_T]: ...
     @overload
     async def sleep(delay: float) -> None: ...
     @overload
-    async def sleep(delay: float, result: _T) -> _T: ...
-    async def wait_for(fut: _FutureLike[_T], timeout: float | None) -> _T: ...
+    async def sleep[_T](delay: float, result: _T) -> _T: ...
+    async def wait_for[_T](fut: _FutureLike[_T], timeout: float | None) -> _T: ...
 
 else:
-    def shield(arg: _FutureLike[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]: ...
+    def shield[_T](arg: _FutureLike[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]: ...
     @overload
     async def sleep(delay: float, *, loop: AbstractEventLoop | None = None) -> None: ...
     @overload
-    async def sleep(delay: float, result: _T, *, loop: AbstractEventLoop | None = None) -> _T: ...
-    async def wait_for(fut: _FutureLike[_T], timeout: float | None, *, loop: AbstractEventLoop | None = None) -> _T: ...
+    async def sleep[_T](delay: float, result: _T, *, loop: AbstractEventLoop | None = None) -> _T: ...
+    async def wait_for[_T](fut: _FutureLike[_T], timeout: float | None, *, loop: AbstractEventLoop | None = None) -> _T: ...
 
 if sys.version_info >= (3, 11):
     @overload
-    async def wait(
+    async def wait[_FT: Future[Any]](
         fs: Iterable[_FT], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[_FT], set[_FT]]: ...
     @overload
-    async def wait(
+    async def wait[_T](
         fs: Iterable[Task[_T]], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[Task[_T]], set[Task[_T]]]: ...
 
 elif sys.version_info >= (3, 10):
     @overload
-    async def wait(  # type: ignore[overload-overlap]
+    async def wait[_FT: Future[Any]](  # type: ignore[overload-overlap]
         fs: Iterable[_FT], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[_FT], set[_FT]]: ...
     @overload
-    async def wait(
+    async def wait[_T](
         fs: Iterable[Awaitable[_T]], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[Task[_T]], set[Task[_T]]]: ...
 
 else:
     @overload
-    async def wait(  # type: ignore[overload-overlap]
+    async def wait[_FT: Future[Any]](  # type: ignore[overload-overlap]
         fs: Iterable[_FT],
         *,
         loop: AbstractEventLoop | None = None,
@@ -395,7 +395,7 @@ else:
         return_when: str = "ALL_COMPLETED",
     ) -> tuple[set[_FT], set[_FT]]: ...
     @overload
-    async def wait(
+    async def wait[_T](
         fs: Iterable[Awaitable[_T]],
         *,
         loop: AbstractEventLoop | None = None,
@@ -413,10 +413,10 @@ else:
 def all_tasks(loop: AbstractEventLoop | None = None) -> set[Task[Any]]: ...
 
 if sys.version_info >= (3, 11):
-    def create_task(coro: _CoroutineLike[_T], *, name: str | None = None, context: Context | None = None) -> Task[_T]: ...
+    def create_task[_T](coro: _CoroutineLike[_T], *, name: str | None = None, context: Context | None = None) -> Task[_T]: ...
 
 else:
-    def create_task(coro: _CoroutineLike[_T], *, name: str | None = None) -> Task[_T]: ...
+    def create_task[_T](coro: _CoroutineLike[_T], *, name: str | None = None) -> Task[_T]: ...
 
 if sys.version_info >= (3, 12):
     from _asyncio import current_task as current_task
@@ -448,10 +448,10 @@ if sys.version_info >= (3, 12):
             context: Context | None = None,
         ) -> _TaskT_co: ...
 
-    def create_eager_task_factory(
+    def create_eager_task_factory[_TaskT_co: Task[Any]](
         custom_task_constructor: _CustomTaskConstructor[_TaskT_co],
     ) -> _EagerTaskFactoryType[_TaskT_co]: ...
-    def eager_task_factory(
+    def eager_task_factory[_T_co](
         loop: AbstractEventLoop | None,
         coro: _TaskCompatibleCoro[_T_co],
         *,

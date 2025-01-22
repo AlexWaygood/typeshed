@@ -77,7 +77,7 @@ class SaveOptions:
 
 def contains_saved_model(export_dir: str | Path) -> bool: ...
 
-class _LoadedAttributes(Generic[_P, _R]):
+class _LoadedAttributes[**_P, _R]:
     signatures: Mapping[str, ConcreteFunction[_P, _R]]
 
 class _LoadedModel(AutoTrackable, _LoadedAttributes[_P, _R]):

@@ -21,11 +21,11 @@ class SettingType(type):
 
 def validate_invalid(value: object) -> NoReturn: ...
 def validate_bool(value: str | bool) -> bool: ...
-def validate_anything(value: _T) -> _T: ...
+def validate_anything[_T](value: _T) -> _T: ...
 
 convert_str_value_as_is = validate_anything
 
-class Setting(Generic[_T], metaclass=SettingType):
+class Setting[_T]:
     order: int  # all subclasses have this
     name: str
     environment_key: str
@@ -73,7 +73,7 @@ class Config:
     ares_tcp_port: _SettingDescriptor[str | int | None]
     ares_servers: _SettingDescriptor[Sequence[str] | str | None]
 
-class ImportableSetting(Generic[_T]):
+class ImportableSetting[_T]:
     default: str | Sequence[str]
     shortname_map: dict[str, str]
     def validate(self, value: str | _T) -> _T: ...
@@ -87,7 +87,7 @@ class IntSettingMixin:
     @staticmethod
     def validate(value: int) -> int: ...
 
-class _PositiveValueMixin(Generic[_T]):
+class _PositiveValueMixin[_T]:
     @staticmethod
     def validate(value: _T) -> _T: ...
 

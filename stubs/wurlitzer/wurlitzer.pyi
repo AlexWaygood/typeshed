@@ -55,7 +55,7 @@ def pipes(
     stdout: _PIPE, stderr: _PIPE, encoding: None, bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[io.BytesIO, io.BytesIO]]: ...
 @overload
-def pipes(
+def pipes[_StreamErrT: _Stream[str] | _Stream[bytes]](
     stdout: _PIPE, stderr: _StreamErrT, encoding: None, bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[io.BytesIO, _StreamErrT]]: ...
 @overload
@@ -67,7 +67,7 @@ def pipes(
     stdout: _PIPE, stderr: _PIPE, encoding: str = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[io.StringIO, io.StringIO]]: ...
 @overload
-def pipes(
+def pipes[_StreamErrT: _Stream[str] | _Stream[bytes]](
     stdout: _PIPE, stderr: _StreamErrT, encoding: str = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[io.StringIO, _StreamErrT]]: ...
 @overload
@@ -87,7 +87,7 @@ def pipes(
     stdout: logging.Logger, stderr: _PIPE, encoding: str = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_LogPipe, io.StringIO]]: ...
 @overload
-def pipes(
+def pipes[_StreamErrT: _Stream[str] | _Stream[bytes]](
     stdout: logging.Logger, stderr: _StreamErrT, encoding: str | None = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_LogPipe, _StreamErrT]]: ...
 @overload
@@ -95,27 +95,27 @@ def pipes(
     stdout: logging.Logger, stderr: logging.Logger, encoding: str | None = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_LogPipe, _LogPipe]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes]](
     stdout: _StreamOutT, stderr: _STDOUT, encoding: str | None = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_StreamOutT, None]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes]](
     stdout: _StreamOutT, stderr: _PIPE, encoding: None, bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_StreamOutT, io.BytesIO]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes]](
     stdout: _StreamOutT, stderr: _PIPE, encoding: str = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_StreamOutT, io.StringIO]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes], _StreamErrT: _Stream[str] | _Stream[bytes]](
     stdout: _StreamOutT, stderr: _StreamErrT, encoding: str | None = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_StreamOutT, _StreamErrT]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes]](
     stdout: _StreamOutT, stderr: logging.Logger, encoding: str | None = ..., bufsize: int | None = None
 ) -> _GeneratorContextManager[tuple[_StreamOutT, _LogPipe]]: ...
 @overload
-def pipes(
+def pipes[_StreamOutT: _Stream[str] | _Stream[bytes], _StreamErrT: _Stream[str] | _Stream[bytes]](
     stdout: _PIPE | logging.Logger | _StreamOutT = 3,
     stderr: _STDOUT | _PIPE | logging.Logger | _StreamErrT = 3,
     encoding: str | None = ...,

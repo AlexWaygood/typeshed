@@ -23,7 +23,7 @@ if sys.version_info >= (3, 10):
     if sys.version_info < (3, 11):
         _T = TypeVar("_T")
 
-        def remove_duplicates(items: Iterable[_T]) -> Iterator[_T]: ...
+        def remove_duplicates[_T](items: Iterable[_T]) -> Iterator[_T]: ...
 
     class FileReader(abc.TraversableResources):
         path: pathlib.Path

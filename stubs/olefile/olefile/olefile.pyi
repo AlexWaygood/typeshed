@@ -156,7 +156,7 @@ class OleStream(io.BytesIO):
         olefileio: OleFileIO[AnyStr],
     ) -> None: ...
 
-class OleDirectoryEntry(Generic[AnyStr]):
+class OleDirectoryEntry[AnyStr: (bytes, str)]:
     STRUCT_DIRENTRY: str
     DIRENTRY_SIZE: int
     clsid: str
@@ -175,7 +175,7 @@ class OleDirectoryEntry(Generic[AnyStr]):
 
 _Property: TypeAlias = int | str | bytes | bool | None
 
-class OleFileIO(Generic[AnyStr]):
+class OleFileIO[AnyStr: (bytes, str)]:
     root: OleDirectoryEntry[AnyStr] | None
 
     def __init__(

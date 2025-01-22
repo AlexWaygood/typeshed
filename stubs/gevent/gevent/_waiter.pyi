@@ -20,7 +20,7 @@ _ThrowArgs: TypeAlias = (
     | tuple[type[BaseException], BaseException | object, TracebackType | None]
 )
 
-class Waiter(Generic[_T]):
+class Waiter[_T]:
     @property
     def hub(self) -> Hub: ...  # readonly in Cython
     @property

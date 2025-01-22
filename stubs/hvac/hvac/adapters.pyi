@@ -7,7 +7,7 @@ from requests import Response, Session
 
 _R = TypeVar("_R")
 
-class Adapter(Generic[_R], metaclass=ABCMeta):
+class Adapter[_R]:
     @classmethod
     def from_adapter(cls, adapter: Adapter[_R]) -> Self: ...
     base_uri: str

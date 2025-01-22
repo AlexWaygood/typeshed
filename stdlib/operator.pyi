@@ -181,7 +181,7 @@ if sys.version_info >= (3, 11):
 # However, they consider themselves to live in the operator module, so we'll put
 # them here.
 @final
-class attrgetter(Generic[_T_co]):
+class attrgetter[_T_co]:
     @overload
     def __new__(cls, attr: str, /) -> attrgetter[Any]: ...
     @overload
@@ -195,7 +195,7 @@ class attrgetter(Generic[_T_co]):
     def __call__(self, obj: Any, /) -> _T_co: ...
 
 @final
-class itemgetter(Generic[_T_co]):
+class itemgetter[_T_co]:
     @overload
     def __new__(cls, item: _T, /) -> itemgetter[_T]: ...
     @overload

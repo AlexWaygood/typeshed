@@ -46,7 +46,7 @@ def loads(s: str, _dict: type[dict[str, Any]] = ..., decoder: TomlDecoder[dict[s
 
 class InlineTableDict: ...
 
-class TomlDecoder(Generic[_MutableMappingT]):
+class TomlDecoder[_MutableMappingT: MutableMapping[str, Any]]:
     _dict: type[_MutableMappingT]
     @overload
     def __init__(self, _dict: type[_MutableMappingT]) -> None: ...

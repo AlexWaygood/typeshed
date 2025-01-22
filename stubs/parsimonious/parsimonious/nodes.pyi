@@ -32,7 +32,7 @@ class RuleDecoratorMeta(type): ...
 _VisitResultT = TypeVar("_VisitResultT")
 _ChildT = TypeVar("_ChildT")
 
-class NodeVisitor(Generic[_VisitResultT], metaclass=RuleDecoratorMeta):
+class NodeVisitor[_VisitResultT]:
     grammar: Grammar | Incomplete
     unwrapped_exceptions: tuple[type[BaseException], ...]
     def visit(self, node: Node) -> _VisitResultT: ...

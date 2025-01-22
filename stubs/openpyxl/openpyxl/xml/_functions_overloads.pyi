@@ -58,7 +58,7 @@ _lxml_QName: TypeAlias = QName  # noqa: Y042
 
 # from xml.etree import fromstring
 @overload
-def SubElement(parent: _ParentElement[_T], tag: str, attrib: dict[str, str] = ..., **extra: str) -> _T: ...
+def SubElement[_T](parent: _ParentElement[_T], tag: str, attrib: dict[str, str] = ..., **extra: str) -> _T: ...
 
 # from lxml.etree import fromstring
 @overload

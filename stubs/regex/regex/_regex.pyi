@@ -9,7 +9,7 @@ from typing_extensions import Self
 from .regex import Match, Pattern
 
 @final
-class Splitter(Generic[AnyStr]):
+class Splitter[AnyStr: (bytes, str)]:
     @property
     def pattern(self) -> Pattern[AnyStr]: ...
     def __iter__(self) -> Self: ...
@@ -17,7 +17,7 @@ class Splitter(Generic[AnyStr]):
     def split(self) -> AnyStr | Any: ...
 
 @final
-class Scanner(Generic[AnyStr]):
+class Scanner[AnyStr: (bytes, str)]:
     @property
     def pattern(self) -> Pattern[AnyStr]: ...
     def __iter__(self) -> Self: ...

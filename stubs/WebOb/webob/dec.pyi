@@ -24,7 +24,7 @@ _Middleware: TypeAlias = (
     _MiddlewareCallable[_RequestT_contra, _AppT_contra, _P] | _MiddlewareMethod[_RequestT_contra, _AppT_contra, _P]
 )
 
-class wsgify(Generic[_RequestT_contra, _P]):
+class wsgify[_RequestT_contra: Request, **_P]:
     RequestClass: type[Request]
     func: _RequestHandler[_RequestT_contra, _P] | None
     args: tuple[Any, ...]
@@ -155,7 +155,7 @@ class _unbound_wsgify(wsgify[_RequestT_contra, _P], Generic[_RequestT_contra, _P
     @overload
     def __call__(self, __self: _S, /, req: _RequestT_contra, *args: _P.args, **kw: _P.kwargs) -> _AnyResponse: ...
 
-class _UnboundMiddleware(Generic[_RequestT_contra, _AppT_contra, _P]):
+class _UnboundMiddleware[_RequestT_contra: Request, _AppT_contra: WSGIApplication, **_P]:
     wrapper_class: type[wsgify[_RequestT_contra, Concatenate[_AppT_contra, _P]]]
     app: _AppT_contra | None
     kw: dict[str, Any]
@@ -176,7 +176,7 @@ class _UnboundMiddleware(Generic[_RequestT_contra, _AppT_contra, _P]):
         self, func: _Middleware[_RequestT_contra, _AppT_contra, _P], app: _AppT_contra
     ) -> wsgify[_RequestT_contra, Concatenate[_AppT_contra, _P]]: ...
 
-class _MiddlewareFactory(Generic[_RequestT_contra, _AppT_contra, _P]):
+class _MiddlewareFactory[_RequestT_contra: Request, _AppT_contra: WSGIApplication, **_P]:
     wrapper_class: type[wsgify[_RequestT_contra, Concatenate[_AppT_contra, _P]]]
     middleware: _Middleware[_RequestT_contra, _AppT_contra, _P]
     kw: dict[str, Any]

@@ -388,6 +388,6 @@ class Event(GetAttrData):
         self, binarydata: SliceableBuffer | None = None, display: display.Display | None = None, **keys: object
     ) -> None: ...
 
-def call_error_handler(
+def call_error_handler[_T](
     handler: Callable[[XError, Request | None], _T], error: XError, request: Request | None
 ) -> _T | Literal[0]: ...

@@ -37,7 +37,7 @@ def make(
     image_factory: type[GenericImage],
     mask_pattern: MaskPattern | None = None,
 ) -> GenericImage: ...
-def copy_2d_array(x: Sequence[_AnySeq]) -> list[_AnySeq]: ...
+def copy_2d_array[_AnySeq: Sequence[Any]](x: Sequence[_AnySeq]) -> list[_AnySeq]: ...
 
 class ActiveWithNeighbors(NamedTuple):
     NW: bool
@@ -60,7 +60,7 @@ class _TTYWriter(Protocol):
     def write(self, s: str, /) -> object: ...
     def flush(self) -> object: ...
 
-class QRCode(Generic[GenericImage]):
+class QRCode[GenericImage: BaseImage]:
     modules: ModulesType
     error_correction: ErrorCorrect
     box_size: int

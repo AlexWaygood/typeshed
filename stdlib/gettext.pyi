@@ -80,7 +80,7 @@ if sys.version_info >= (3, 11):
         fallback: Literal[False] = False,
     ) -> GNUTranslations: ...
     @overload
-    def translation(
+    def translation[_NullTranslationsT: NullTranslations](
         domain: str,
         localedir: StrPath | None = None,
         languages: Iterable[str] | None = None,
@@ -89,7 +89,7 @@ if sys.version_info >= (3, 11):
         fallback: Literal[False] = False,
     ) -> _NullTranslationsT: ...
     @overload
-    def translation(
+    def translation[_NullTranslationsT: NullTranslations](
         domain: str,
         localedir: StrPath | None,
         languages: Iterable[str] | None,
@@ -117,7 +117,7 @@ else:
         codeset: str | None = None,
     ) -> GNUTranslations: ...
     @overload
-    def translation(
+    def translation[_NullTranslationsT: NullTranslations](
         domain: str,
         localedir: StrPath | None = None,
         languages: Iterable[str] | None = None,
@@ -127,7 +127,7 @@ else:
         codeset: str | None = None,
     ) -> _NullTranslationsT: ...
     @overload
-    def translation(
+    def translation[_NullTranslationsT: NullTranslations](
         domain: str,
         localedir: StrPath | None,
         languages: Iterable[str] | None,

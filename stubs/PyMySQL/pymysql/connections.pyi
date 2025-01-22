@@ -58,7 +58,7 @@ class FieldDescriptorPacket(MysqlPacket):
     def description(self): ...
     def get_column_length(self): ...
 
-class Connection(Generic[_C]):
+class Connection[_C: Cursor]:
     ssl: Any
     host: Any
     port: Any

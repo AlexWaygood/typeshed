@@ -36,7 +36,7 @@ class ThreadPool(GroupMappingMixin):
     def adjust(self) -> None: ...
     def spawn(self, func: Callable[_P, _T], *args: _P.args, **kwargs: _P.kwargs) -> AsyncResult[_T]: ...  # type: ignore[override]
 
-class ThreadResult(Generic[_T]):
+class ThreadResult[_T]:
     receiver: _Receiver[_T]
     hub: Hub
     context: object | None

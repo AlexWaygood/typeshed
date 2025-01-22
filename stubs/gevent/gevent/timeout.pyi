@@ -48,7 +48,7 @@ class Timeout(BaseException):
 # when timeout_value is provided we unfortunately get no type checking on *args, **kwargs, because
 # ParamSpec does not allow mixing in additional keyword arguments
 @overload
-def with_timeout(
+def with_timeout[_T1, _T2](
     seconds: float | None, function: Callable[..., _T1], *args: Any, timeout_value: _T2, **kwds: Any
 ) -> _T1 | _T2: ...
 @overload

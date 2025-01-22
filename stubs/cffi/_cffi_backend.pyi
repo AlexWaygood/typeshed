@@ -208,7 +208,7 @@ class FFI:
     def unpack(self, cdata: CData, length: int) -> bytes | str | list[Any]: ...
 
 def alignof(cdecl: CType, /) -> int: ...
-def callback(
+def callback[_T](
     cdecl: CType,
     python_callable: Callable[..., _T],
     error: Any = ...,

@@ -59,7 +59,7 @@ class Diff:
 
 _ModelT = TypeVar("_ModelT", bound=Model)
 
-class Resource(Generic[_ModelT], metaclass=DeclarativeMetaclass):
+class Resource[_ModelT: Model]:
     _meta: ResourceOptions[_ModelT]
     fields: OrderedDict[str, Field]
     create_instances: list[_ModelT]
@@ -227,6 +227,6 @@ _ResourceT = TypeVar("_ResourceT", bound=Resource[Any])
 
 # HK Type Vars could help type the first overload:
 @overload
-def modelresource_factory(model: Model, resource_class: type[_ResourceT]) -> _ResourceT: ...
+def modelresource_factory[_ResourceT: Resource[Any]](model: Model, resource_class: type[_ResourceT]) -> _ResourceT: ...
 @overload
-def modelresource_factory(model: _ModelT) -> ModelResource[_ModelT]: ...
+def modelresource_factory[_ModelT: Model](model: _ModelT) -> ModelResource[_ModelT]: ...

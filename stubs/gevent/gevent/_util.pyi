@@ -9,7 +9,7 @@ _T = TypeVar("_T")
 WRAPPER_ASSIGNMENTS: tuple[str, ...]
 WRAPPER_UPDATES: tuple[str, ...]
 
-def update_wrapper(wrapper: _T, wrapped: object, assigned: Sequence[str] = ..., updated: Sequence[str] = ...) -> _T: ...
+def update_wrapper[_T](wrapper: _T, wrapped: object, assigned: Sequence[str] = ..., updated: Sequence[str] = ...) -> _T: ...
 def copy_globals(
     source: ModuleType,
     globs: MutableMapping[str, Any],
@@ -21,7 +21,7 @@ def copy_globals(
 ) -> list[str]: ...
 def import_c_accel(globs: MutableMapping[str, Any], cname: str) -> None: ...
 
-class Lazy(Generic[_T]):
+class Lazy[_T]:
     data: _T
     def __init__(self, func: Callable[[Any], _T]) -> None: ...
     @overload
@@ -29,7 +29,7 @@ class Lazy(Generic[_T]):
     @overload
     def __get__(self, inst: object, class_: type[object]) -> _T: ...
 
-class readproperty(Generic[_T]):
+class readproperty[_T]:
     func: Callable[[Any], _T]
     def __init__(
         self: readproperty[_T], func: Callable[[Any], _T]  # pyright: ignore[reportInvalidTypeVarUse]  #11780
@@ -39,7 +39,7 @@ class readproperty(Generic[_T]):
     @overload
     def __get__(self, inst: object, class_: type[object]) -> _T: ...
 
-class LazyOnClass(Generic[_T]):
+class LazyOnClass[_T]:
     @classmethod
     def lazy(cls, cls_dict: MutableMapping[str, Any], func: Callable[[Any], _T]) -> None: ...
     name: str

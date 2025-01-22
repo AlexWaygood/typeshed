@@ -2,7 +2,7 @@ from typing import TypeVar
 
 _T = TypeVar("_T")
 
-def get_all(type_obj: type[_T], include_subtypes: bool = True) -> list[_T]: ...
+def get_all[_T](type_obj: type[_T], include_subtypes: bool = True) -> list[_T]: ...
 
 class GCToggler:
     postcollect: bool

@@ -49,15 +49,15 @@ if sys.version_info >= (3, 10):
 @overload
 def asdict(obj: DataclassInstance) -> dict[str, Any]: ...
 @overload
-def asdict(obj: DataclassInstance, *, dict_factory: Callable[[list[tuple[str, Any]]], _T]) -> _T: ...
+def asdict[_T](obj: DataclassInstance, *, dict_factory: Callable[[list[tuple[str, Any]]], _T]) -> _T: ...
 @overload
 def astuple(obj: DataclassInstance) -> tuple[Any, ...]: ...
 @overload
-def astuple(obj: DataclassInstance, *, tuple_factory: Callable[[list[Any]], _T]) -> _T: ...
+def astuple[_T](obj: DataclassInstance, *, tuple_factory: Callable[[list[Any]], _T]) -> _T: ...
 @overload
 def dataclass(cls: None, /) -> Callable[[type[_T]], type[_T]]: ...
 @overload
-def dataclass(cls: type[_T], /) -> type[_T]: ...
+def dataclass[_T](cls: type[_T], /) -> type[_T]: ...
 
 if sys.version_info >= (3, 11):
     @overload
@@ -106,7 +106,7 @@ else:
 class _DefaultFactory(Protocol[_T_co]):
     def __call__(self) -> _T_co: ...
 
-class Field(Generic[_T]):
+class Field[_T]:
     name: str
     type: Type[_T] | str | Any
     default: _T | Literal[_MISSING_TYPE.MISSING]
@@ -149,7 +149,7 @@ class Field(Generic[_T]):
 # to understand the magic that happens at runtime.
 if sys.version_info >= (3, 10):
     @overload  # `default` and `default_factory` are optional and mutually exclusive.
-    def field(
+    def field[_T](
         *,
         default: _T,
         default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
@@ -161,7 +161,7 @@ if sys.version_info >= (3, 10):
         kw_only: bool | Literal[_MISSING_TYPE.MISSING] = ...,
     ) -> _T: ...
     @overload
-    def field(
+    def field[_T](
         *,
         default: Literal[_MISSING_TYPE.MISSING] = ...,
         default_factory: Callable[[], _T],
@@ -187,7 +187,7 @@ if sys.version_info >= (3, 10):
 
 else:
     @overload  # `default` and `default_factory` are optional and mutually exclusive.
-    def field(
+    def field[_T](
         *,
         default: _T,
         default_factory: Literal[_MISSING_TYPE.MISSING] = ...,
@@ -198,7 +198,7 @@ else:
         metadata: Mapping[Any, Any] | None = None,
     ) -> _T: ...
     @overload
-    def field(
+    def field[_T](
         *,
         default: Literal[_MISSING_TYPE.MISSING] = ...,
         default_factory: Callable[[], _T],
@@ -240,7 +240,7 @@ else:
         # pyright (not unreasonably) thinks this is an invalid use of InitVar.
         def __getitem__(self, params: Any) -> InitVar[Any]: ...  # pyright: ignore[reportInvalidTypeForm]
 
-class InitVar(Generic[_T], metaclass=_InitVarMeta):
+class InitVar[_T]:
     type: Type[_T]
     def __init__(self, type: Type[_T]) -> None: ...
     if sys.version_info >= (3, 9):
@@ -321,4 +321,4 @@ else:
         frozen: bool = False,
     ) -> type: ...
 
-def replace(obj: _DataclassT, /, **changes: Any) -> _DataclassT: ...
+def replace[_DataclassT: DataclassInstance](obj: _DataclassT, /, **changes: Any) -> _DataclassT: ...

@@ -77,7 +77,7 @@ if sys.version_info >= (3, 11):
     _USE_VFORK: Final[bool]
 _USE_POSIX_SPAWN: Final[bool]
 
-class CompletedProcess(Generic[_T]):
+class CompletedProcess[_T]:
     # morally: _CMD
     args: Any
     returncode: int
@@ -1842,7 +1842,7 @@ class CalledProcessError(SubprocessError):
         self, returncode: int, cmd: _CMD, output: str | bytes | None = None, stderr: str | bytes | None = None
     ) -> None: ...
 
-class Popen(Generic[AnyStr]):
+class Popen[AnyStr: (bytes, str)]:
     args: _CMD
     stdin: IO[AnyStr] | None
     stdout: IO[AnyStr] | None

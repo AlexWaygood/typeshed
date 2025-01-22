@@ -7,7 +7,7 @@ _R = TypeVar("_R")
 
 logging_logger: Logger
 
-def retry_call(
+def retry_call[_R](
     f: Callable[..., _R],
     fargs: Sequence[Any] | None = None,
     fkwargs: dict[str, Any] | None = None,

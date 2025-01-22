@@ -28,14 +28,14 @@ def MessageToDict(
     descriptor_pool: DescriptorPool | None = None,
     float_precision: int | None = None,
 ) -> dict[str, Any]: ...
-def Parse(
+def Parse[_MessageT: Message](
     text: bytes | str,
     message: _MessageT,
     ignore_unknown_fields: bool = False,
     descriptor_pool: DescriptorPool | None = None,
     max_recursion_depth: int = 100,
 ) -> _MessageT: ...
-def ParseDict(
+def ParseDict[_MessageT: Message](
     js_dict: Any,
     message: _MessageT,
     ignore_unknown_fields: bool = False,

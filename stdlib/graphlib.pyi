@@ -10,7 +10,7 @@ _T = TypeVar("_T")
 if sys.version_info >= (3, 11):
     from types import GenericAlias
 
-class TopologicalSorter(Generic[_T]):
+class TopologicalSorter[_T]:
     @overload
     def __init__(self, graph: None = None) -> None: ...
     @overload

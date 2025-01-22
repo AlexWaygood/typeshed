@@ -216,7 +216,7 @@ if sys.version_info >= (3, 11):
 @overload
 def adapt(obj: Any, proto: Any, /) -> Any: ...
 @overload
-def adapt(obj: Any, proto: Any, alt: _T, /) -> Any | _T: ...
+def adapt[_T](obj: Any, proto: Any, alt: _T, /) -> Any | _T: ...
 def complete_statement(statement: str) -> bool: ...
 
 if sys.version_info >= (3, 12):
@@ -233,7 +233,7 @@ if sys.version_info >= (3, 12):
         autocommit: bool = ...,
     ) -> Connection: ...
     @overload
-    def connect(
+    def connect[_ConnectionT: Connection](
         database: StrOrBytesPath,
         timeout: float,
         detect_types: int,
@@ -246,7 +246,7 @@ if sys.version_info >= (3, 12):
         autocommit: bool = ...,
     ) -> _ConnectionT: ...
     @overload
-    def connect(
+    def connect[_ConnectionT: Connection](
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,
@@ -271,7 +271,7 @@ else:
         uri: bool = False,
     ) -> Connection: ...
     @overload
-    def connect(
+    def connect[_ConnectionT: Connection](
         database: StrOrBytesPath,
         timeout: float,
         detect_types: int,
@@ -282,7 +282,7 @@ else:
         uri: bool = False,
     ) -> _ConnectionT: ...
     @overload
-    def connect(
+    def connect[_ConnectionT: Connection](
         database: StrOrBytesPath,
         timeout: float = 5.0,
         detect_types: int = 0,

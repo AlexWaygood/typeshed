@@ -12,7 +12,7 @@ from openpyxl.styles.protection import Protection
 
 _T = TypeVar("_T")
 
-class ArrayDescriptor(Generic[_T]):
+class ArrayDescriptor[_T]:
     key: int
     def __init__(self, key: int) -> None: ...
     def __get__(self, instance: MutableSequence[_T], cls: Unused) -> _T: ...

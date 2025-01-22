@@ -35,7 +35,7 @@ class WriteIsWriteallMixin(WriteallMixin):
 
 class WriteallFileIO(WriteIsWriteallMixin, io.FileIO): ...  # type: ignore[misc]
 
-class OpenDescriptor(Generic[_IOT]):
+class OpenDescriptor[_IOT: IO[Any]]:
     default_buffer_size: ClassVar[int]
     fileio_mode: str
     mode: str
@@ -79,7 +79,7 @@ class OpenDescriptor(Generic[_IOT]):
     @classmethod
     def buffer_size_for_stream(cls, stream: object) -> int: ...
 
-class FileObjectBase(Generic[_IOT, AnyStr]):
+class FileObjectBase[_IOT: IO[Any], AnyStr: (bytes, str)]:
     def __init__(
         self: FileObjectBase[_IOT, AnyStr], descriptor: OpenDescriptor[_IOT]  # pyright: ignore[reportInvalidTypeVarUse]  #11780
     ) -> None: ...

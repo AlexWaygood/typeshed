@@ -75,7 +75,7 @@ class excel(Dialect): ...
 class excel_tab(excel): ...
 class unix_dialect(Dialect): ...
 
-class DictReader(Generic[_T]):
+class DictReader[_T]:
     fieldnames: Sequence[_T] | None
     restkey: _T | None
     restval: str | Any | None
@@ -123,7 +123,7 @@ class DictReader(Generic[_T]):
     if sys.version_info >= (3, 12):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
-class DictWriter(Generic[_T]):
+class DictWriter[_T]:
     fieldnames: Collection[_T]
     restval: Any | None
     extrasaction: Literal["raise", "ignore"]

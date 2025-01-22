@@ -47,7 +47,7 @@ class PairSpec(TypedDict, total=False):
 
 @contextmanager
 def theme_context(params: dict[str, Any]) -> Generator[None]: ...
-def build_plot_signature(cls: _ClsT) -> _ClsT: ...  # -> _ClsT & "__signature__ protocol"
+def build_plot_signature[_ClsT: type[Any]](cls: _ClsT) -> _ClsT: ...  # -> _ClsT & "__signature__ protocol"
 
 class ThemeConfig(mpl.RcParams):
     THEME_GROUPS: list[str]

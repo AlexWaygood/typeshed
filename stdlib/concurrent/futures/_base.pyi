@@ -37,7 +37,7 @@ _T = TypeVar("_T")
 _T_co = TypeVar("_T_co", covariant=True)
 _P = ParamSpec("_P")
 
-class Future(Generic[_T]):
+class Future[_T]:
     _condition: threading.Condition
     _state: str
     _result: _T | None
@@ -85,19 +85,19 @@ class _AsCompletedFuture(Protocol[_T_co]):
     # Not used by as_completed, but needed to propagate the generic type
     def result(self, timeout: float | None = None) -> _T_co: ...
 
-def as_completed(fs: Iterable[_AsCompletedFuture[_T]], timeout: float | None = None) -> Iterator[Future[_T]]: ...
+def as_completed[_T](fs: Iterable[_AsCompletedFuture[_T]], timeout: float | None = None) -> Iterator[Future[_T]]: ...
 
 class DoneAndNotDoneFutures(NamedTuple, Generic[_T]):
     done: set[Future[_T]]
     not_done: set[Future[_T]]
 
 if sys.version_info >= (3, 9):
-    def wait(
+    def wait[_T](
         fs: Iterable[Future[_T]], timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> DoneAndNotDoneFutures[_T]: ...
 
 else:
-    def wait(
+    def wait[_T](
         fs: Collection[Future[_T]], timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> DoneAndNotDoneFutures[_T]: ...
 

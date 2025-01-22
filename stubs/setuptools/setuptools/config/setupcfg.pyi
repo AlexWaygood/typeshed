@@ -23,7 +23,7 @@ def parse_configuration(
     distribution: Distribution, command_options: AllCommandOptions, ignore_option_errors: bool = False
 ) -> tuple[ConfigMetadataHandler, ConfigOptionsHandler]: ...
 
-class ConfigHandler(Generic[Target]):
+class ConfigHandler[Target: (Distribution, DistributionMetadata)]:
     section_prefix: str
     aliases: ClassVar[dict[str, str]]
     ignore_option_errors: Incomplete

@@ -21,7 +21,7 @@ _ConvertibleToMultiCellRange: TypeAlias = MultiCellRange | str | Iterable[CellRa
 # Since everything is convertible to a bool, this restricts to only intended expected types of intended literals
 _ConvertibleToBool: TypeAlias = bool | str | int | None  # True | False | "true" | "t" | "false" | "f" | 1 | 0 | None
 
-class Descriptor(Generic[_T]):
+class Descriptor[_T]:
     name: str | None
     def __init__(self, name: str | None = None, **kw: object) -> None: ...
     def __get__(self, instance: Serialisable | Strict, cls: type | None) -> _T: ...

@@ -98,7 +98,7 @@ class Field:
     @overload
     def __get__(self, obj: object, owner: _type[object] | None = None) -> Self: ...
 
-class UnboundField(Generic[_FieldT]):
+class UnboundField[_FieldT: Field]:
     creation_counter: int
     field_class: type[_FieldT]
     name: str | None

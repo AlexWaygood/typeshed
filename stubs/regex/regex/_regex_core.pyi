@@ -83,7 +83,7 @@ DEFAULT_VERSION: RegexFlag
 
 _Lexicon: TypeAlias = list[tuple[AnyStr, Callable[[Scanner[AnyStr], AnyStr], Any]]]
 
-class Scanner(Generic[AnyStr]):
+class Scanner[AnyStr: (bytes, str)]:
     lexicon: _Lexicon[AnyStr]
     scanner: Pattern[AnyStr]
 

@@ -196,7 +196,7 @@ class CallableMixin(Base):
 
 class Mock(CallableMixin, NonCallableMock): ...
 
-class _patch(Generic[_T]):
+class _patch[_T]:
     attribute_name: Any
     getter: Callable[[], Any]
     attribute: str

@@ -6,7 +6,7 @@ _SourcesT = TypeVar("_SourcesT", bound=StrOrBytesPath)
 _TargetsT = TypeVar("_TargetsT", bound=StrOrBytesPath)
 
 def newer(source: StrOrBytesPath, target: StrOrBytesPath) -> bool | Literal[1]: ...
-def newer_pairwise(
+def newer_pairwise[_SourcesT: StrOrBytesPath, _TargetsT: StrOrBytesPath](
     sources: SupportsLenAndGetItem[_SourcesT], targets: SupportsLenAndGetItem[_TargetsT]
 ) -> tuple[list[_SourcesT], list[_TargetsT]]: ...
 def newer_group(

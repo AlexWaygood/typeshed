@@ -87,7 +87,7 @@ class Greenlet(greenlet.greenlet, Generic[_P, _T]):
     # but since it has all the same fields as FrameType we shouldn't care
     spawning_stack: FrameType | None
 
-def joinall(
+def joinall[_G: greenlet.greenlet](
     greenlets: Sequence[_G], timeout: float | None = None, raise_error: bool = False, count: int | None = None
 ) -> list[_G]: ...
 def killall(

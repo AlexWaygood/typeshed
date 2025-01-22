@@ -9,7 +9,7 @@ if sys.platform != "win32":
 
     _T = TypeVar("_T")
 
-    class Result(Generic[_T]):
+    class Result[_T]:
         exception: BaseException | None
         value: _T | None
         def __init__(self, value: _T | None = None, exception: BaseException | None = None) -> None: ...

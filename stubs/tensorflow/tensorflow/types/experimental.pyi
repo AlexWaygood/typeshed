@@ -9,7 +9,7 @@ from tensorflow._aliases import ContainerGeneric
 _P = ParamSpec("_P")
 _R = TypeVar("_R", covariant=True)
 
-class Callable(Generic[_P, _R], metaclass=abc.ABCMeta):
+class Callable[**_P, _R]:
     def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R: ...
 
 class ConcreteFunction(Callable[_P, _R], metaclass=abc.ABCMeta):

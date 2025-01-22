@@ -14,7 +14,7 @@ UNKNOWN_CARDINALITY: Final = -2
 _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 
-def parallel_interleave(
+def parallel_interleave[_T1, _T2](
     map_func: Callable[[_T1], Dataset[_T2]],
     cycle_length: int,
     block_length: int = 1,
@@ -24,7 +24,7 @@ def parallel_interleave(
 ) -> Callable[[Dataset[_T1]], Dataset[_T2]]: ...
 def enable_debug_mode() -> None: ...
 def cardinality(dataset: Dataset[object]) -> Tensor: ...
-def sample_from_datasets(
+def sample_from_datasets[_T1](
     datasets: Sequence[Dataset[_T1]],
     weights: TensorCompatible | None = None,
     seed: int | None = None,

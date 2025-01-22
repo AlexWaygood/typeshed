@@ -46,7 +46,7 @@ class _ResultMixinStr:
 class _ResultMixinBytes:
     def decode(self, encoding: str = "ascii", errors: str = "strict") -> _ResultMixinStr: ...
 
-class _NetlocResultMixinBase(Generic[AnyStr]):
+class _NetlocResultMixinBase[AnyStr: (bytes, str)]:
     @property
     def username(self) -> AnyStr | None: ...
     @property
@@ -100,7 +100,7 @@ class SplitResultBytes(_SplitResultBase[bytes], _NetlocResultMixinBytes):
 class ParseResultBytes(_ParseResultBase[bytes], _NetlocResultMixinBytes):
     def geturl(self) -> bytes: ...
 
-def parse_qs(
+def parse_qs[AnyStr: (bytes, str)](
     qs: AnyStr | None,
     keep_blank_values: bool = False,
     strict_parsing: bool = False,
@@ -109,7 +109,7 @@ def parse_qs(
     max_num_fields: int | None = None,
     separator: str = "&",
 ) -> dict[AnyStr, list[AnyStr]]: ...
-def parse_qsl(
+def parse_qsl[AnyStr: (bytes, str)](
     qs: AnyStr | None,
     keep_blank_values: bool = False,
     strict_parsing: bool = False,
@@ -147,7 +147,7 @@ _QueryType: TypeAlias = (
 )
 
 @overload
-def urlencode(
+def urlencode[AnyStr: (bytes, str)](
     query: _QueryType,
     doseq: bool = False,
     safe: str = "",
@@ -200,11 +200,11 @@ else:
 @overload
 def urlunparse(components: Iterable[None]) -> Literal[b""]: ...  # type: ignore[overload-overlap]
 @overload
-def urlunparse(components: Iterable[AnyStr | None]) -> AnyStr: ...
+def urlunparse[AnyStr: (bytes, str)](components: Iterable[AnyStr | None]) -> AnyStr: ...
 
 # Requires an iterable of length 5
 @overload
 def urlunsplit(components: Iterable[None]) -> Literal[b""]: ...  # type: ignore[overload-overlap]
 @overload
-def urlunsplit(components: Iterable[AnyStr | None]) -> AnyStr: ...
+def urlunsplit[AnyStr: (bytes, str)](components: Iterable[AnyStr | None]) -> AnyStr: ...
 def unwrap(url: str) -> str: ...

@@ -27,7 +27,7 @@ class ModuleInfo(NamedTuple):
     name: str
     ispkg: bool
 
-def extend_path(path: _PathT, name: str) -> _PathT: ...
+def extend_path[_PathT: Iterable[str]](path: _PathT, name: str) -> _PathT: ...
 
 if sys.version_info < (3, 12):
     class ImpImporter:

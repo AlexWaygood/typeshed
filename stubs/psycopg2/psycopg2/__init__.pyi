@@ -36,14 +36,14 @@ from psycopg2._psycopg import (
 _T_conn = TypeVar("_T_conn", bound=connection)
 
 @overload
-def connect(
+def connect[_T_conn: connection](
     dsn: str | None,
     connection_factory: Callable[..., _T_conn],
     cursor_factory: Callable[[connection, str | bytes | None], cursor] | None = None,
     **kwargs: Any,
 ) -> _T_conn: ...
 @overload
-def connect(
+def connect[_T_conn: connection](
     dsn: str | None = None,
     *,
     connection_factory: Callable[..., _T_conn],

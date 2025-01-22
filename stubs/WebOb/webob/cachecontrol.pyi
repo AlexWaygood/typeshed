@@ -26,7 +26,7 @@ class exists_property:
     def __set__(self, obj: Any, value: bool | None) -> None: ...
     def __delete__(self, obj: Any) -> None: ...
 
-class value_property(Generic[_T, _NoneLiteral]):
+class value_property[_T, _NoneLiteral]:
     prop: str
     default: _T | None
     none: _NoneLiteral

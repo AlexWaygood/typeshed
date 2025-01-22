@@ -8,7 +8,7 @@ __all__ = ["Queue", "SimpleQueue", "JoinableQueue"]
 
 _T = TypeVar("_T")
 
-class Queue(Generic[_T]):
+class Queue[_T]:
     # FIXME: `ctx` is a circular dependency and it's not actually optional.
     # It's marked as such to be able to use the generic Queue in __init__.pyi.
     def __init__(self, maxsize: int = 0, *, ctx: Any = ...) -> None: ...
@@ -29,7 +29,7 @@ class JoinableQueue(Queue[_T]):
     def task_done(self) -> None: ...
     def join(self) -> None: ...
 
-class SimpleQueue(Generic[_T]):
+class SimpleQueue[_T]:
     def __init__(self, *, ctx: Any = ...) -> None: ...
     if sys.version_info >= (3, 9):
         def close(self) -> None: ...

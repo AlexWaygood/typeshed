@@ -402,7 +402,7 @@ class SpooledTemporaryFile(IO[AnyStr], _SpooledTemporaryFileBase):
     if sys.version_info >= (3, 9):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
 
-class TemporaryDirectory(Generic[AnyStr]):
+class TemporaryDirectory[AnyStr: (bytes, str)]:
     name: AnyStr
     if sys.version_info >= (3, 12):
         @overload

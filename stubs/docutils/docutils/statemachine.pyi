@@ -10,7 +10,7 @@ _TransitionResult: TypeAlias = tuple[_Context, str | None, list[str]]
 _TransitionMethod: TypeAlias = Callable[[Match[str], _Context, str], _TransitionResult[_Context]]
 _Observer: TypeAlias = Callable[[StateMachine[_Context]], None]
 
-class StateMachine(Generic[_Context]):
+class StateMachine[_Context]:
     input_lines: StringList | None
     input_offset: int
     line: str | None
@@ -54,7 +54,7 @@ class StateMachine(Generic[_Context]):
     def detach_observer(self, observer: _Observer[_Context]) -> None: ...
     def notify_observers(self) -> None: ...
 
-class State(Generic[_Context]):
+class State[_Context]:
     patterns: ClassVar[dict[str, str | Pattern[str]] | None]
     initial_transitions: ClassVar[Sequence[str] | Sequence[tuple[str, str]] | None]
     nested_sm: type[StateMachine[_Context]]
@@ -112,7 +112,7 @@ class _SearchOverride:
 class SearchStateMachine(_SearchOverride, StateMachine[_Context]): ...
 class SearchStateMachineWS(_SearchOverride, StateMachineWS[_Context]): ...
 
-class ViewList(Generic[_T]):
+class ViewList[_T]:
     data: list[_T]
     items: list[tuple[str, int]]
     parent: Self

@@ -6,7 +6,7 @@ _StrPathT = TypeVar("_StrPathT", bound=StrPath)
 _BytesPathT = TypeVar("_BytesPathT", bound=BytesPath)
 
 @overload
-def copy_file(
+def copy_file[_StrPathT: StrPath](
     src: StrPath,
     dst: _StrPathT,
     preserve_mode: bool | Literal[0, 1] = 1,
@@ -17,7 +17,7 @@ def copy_file(
     dry_run: bool | Literal[0, 1] = 0,
 ) -> tuple[_StrPathT | str, bool]: ...
 @overload
-def copy_file(
+def copy_file[_BytesPathT: BytesPath](
     src: BytesPath,
     dst: _BytesPathT,
     preserve_mode: bool | Literal[0, 1] = 1,
@@ -28,11 +28,11 @@ def copy_file(
     dry_run: bool | Literal[0, 1] = 0,
 ) -> tuple[_BytesPathT | bytes, bool]: ...
 @overload
-def move_file(
+def move_file[_StrPathT: StrPath](
     src: StrPath, dst: _StrPathT, verbose: bool | Literal[0, 1] = 0, dry_run: bool | Literal[0, 1] = 0
 ) -> _StrPathT | str: ...
 @overload
-def move_file(
+def move_file[_BytesPathT: BytesPath](
     src: BytesPath, dst: _BytesPathT, verbose: bool | Literal[0, 1] = 0, dry_run: bool | Literal[0, 1] = 0
 ) -> _BytesPathT | bytes: ...
 def write_file(filename: StrOrBytesPath, contents: Iterable[str]) -> None: ...

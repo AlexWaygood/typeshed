@@ -49,7 +49,7 @@ class AbstractListener(threading.Thread):
     def _stop_platform(self) -> None: ...  # undocumented
     def join(self, timeout: float | None = None, *args: Any) -> None: ...
 
-class Events(Generic[_T, _AbstractListener_T]):
+class Events[_T, _AbstractListener_T: AbstractListener]:
     _Listener: type[_AbstractListener_T] | None  # undocumented
 
     class Event:

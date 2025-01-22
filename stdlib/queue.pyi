@@ -17,7 +17,7 @@ class Full(Exception): ...
 if sys.version_info >= (3, 13):
     class ShutDown(Exception): ...
 
-class Queue(Generic[_T]):
+class Queue[_T]:
     maxsize: int
 
     mutex: Lock  # undocumented

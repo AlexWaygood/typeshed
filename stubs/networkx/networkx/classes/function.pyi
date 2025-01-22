@@ -111,7 +111,7 @@ def selfloop_edges(
     G: Graph[_Node], data: Literal[True], keys: Literal[False] = False, default=None
 ) -> Generator[tuple[_Node, _Node, dict[str, Incomplete]], None, None]: ...
 @overload
-def selfloop_edges(
+def selfloop_edges[_U](
     G: Graph[_Node], data: str, keys: Literal[False] = False, default: _U | None = None
 ) -> Generator[tuple[_Node, _Node, _U], None, None]: ...
 @overload
@@ -127,7 +127,7 @@ def selfloop_edges(
     G: Graph[_Node], data: Literal[True], keys: Literal[True], default=None
 ) -> Generator[tuple[_Node, _Node, int, dict[str, Incomplete]], None, None]: ...
 @overload
-def selfloop_edges(
+def selfloop_edges[_U](
     G: Graph[_Node], data: str, keys: Literal[True], default: _U | None = None
 ) -> Generator[tuple[_Node, _Node, int, _U], None, None]: ...
 def number_of_selfloops(G: Graph[Hashable]) -> int: ...

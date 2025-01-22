@@ -4,7 +4,7 @@ from typing import AnyStr, Generic
 
 from .spawnbase import SpawnBase, _CompiledRePattern, _CompiledStringPattern, _Searcher
 
-class searcher_string(Generic[AnyStr]):
+class searcher_string[AnyStr: (bytes, str)]:
     eof_index: int
     timeout_index: int
     longest_string: int
@@ -14,7 +14,7 @@ class searcher_string(Generic[AnyStr]):
     end: int
     def search(self, buffer: AnyStr, freshlen: int, searchwindowsize: int | None = None): ...
 
-class searcher_re(Generic[AnyStr]):
+class searcher_re[AnyStr: (bytes, str)]:
     eof_index: int
     timeout_index: int
     def __init__(self, patterns: Iterable[_CompiledRePattern[AnyStr]]) -> None: ...
@@ -23,7 +23,7 @@ class searcher_re(Generic[AnyStr]):
     end: int
     def search(self, buffer: AnyStr, freshlen: int, searchwindowsize: int | None = None): ...
 
-class Expecter(Generic[AnyStr]):
+class Expecter[AnyStr: (bytes, str)]:
     spawn: SpawnBase[AnyStr]
     searcher: _Searcher[AnyStr]
     searchwindowsize: int | None

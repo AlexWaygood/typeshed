@@ -21,7 +21,7 @@ if sys.version_info >= (3, 9):
 
 _S = TypeVar("_S")
 
-class _WorkItem(Generic[_S]):
+class _WorkItem[_S]:
     future: Future[_S]
     fn: Callable[..., _S]
     args: Iterable[Any]

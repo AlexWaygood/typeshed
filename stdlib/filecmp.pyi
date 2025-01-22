@@ -16,7 +16,7 @@ def cmpfiles(
     a: GenericPath[AnyStr], b: GenericPath[AnyStr], common: Iterable[GenericPath[AnyStr]], shallow: bool | Literal[0, 1] = True
 ) -> tuple[list[AnyStr], list[AnyStr], list[AnyStr]]: ...
 
-class dircmp(Generic[AnyStr]):
+class dircmp[AnyStr: (bytes, str)]:
     if sys.version_info >= (3, 13):
         def __init__(
             self,

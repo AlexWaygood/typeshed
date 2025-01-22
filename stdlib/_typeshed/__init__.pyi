@@ -315,7 +315,7 @@ else:
 # In typeshed, `structseq` is only ever used as a mixin in combination with a fixed-length `Tuple`
 # See discussion at #6546 & #6560
 # `structseq` classes are unsubclassable, so are all decorated with `@final`.
-class structseq(Generic[_T_co]):
+class structseq[_T_co]:
     n_fields: Final[int]
     n_unnamed_fields: Final[int]
     n_sequence_fields: Final[int]
