@@ -4,6 +4,10 @@ from braintree.resource import Resource
 from braintree.subscription import Subscription
 
 class VisaCheckoutCard(Resource):
+    """
+    A class representing Visa Checkout card
+    """
+
     billing_address: Address | None
     subscriptions: list[Subscription]
     verification: CreditCardVerification

@@ -7,7 +7,8 @@ from reportlab.platypus.flowables import Flowable
 
 __version__: Final[str]
 
-def xorKey(num, key): ...
+def xorKey(num, key):
+    """xor's each byte of the key with the number, which is <256"""
 
 CLOBBERID: int
 CLOBBERPERMISSIONS: int
@@ -41,10 +42,23 @@ class StandardEncryption:
         canCopy: int = 1,
         canAnnotate: int = 1,
         strength=None,
-    ) -> None: ...
+    ) -> None:
+        """
+        This class defines the encryption properties to be used while creating a pdf document.
+        Once initiated, a StandardEncryption object can be applied to a Canvas or a BaseDocTemplate.
+        The userPassword parameter sets the user password on the encrypted pdf.
+        The ownerPassword parameter sets the owner password on the encrypted pdf.
+        The boolean flags canPrint, canModify, canCopy, canAnnotate determine wether a user can
+        perform the corresponding actions on the pdf when only a user password has been supplied.
+        If the user supplies the owner password while opening the pdf, all actions can be performed regardless
+        of the flags.
+        Note that the security provided by these encryption settings (and even more so for the flags) is very weak.
+        """
+
     def setAllPermissions(self, value) -> None: ...
     def permissionBits(self): ...
-    def encode(self, t): ...
+    def encode(self, t):
+        """encode a string, stream, text"""
     P: Incomplete
     key: Incomplete
     U: Incomplete
@@ -65,7 +79,9 @@ class StandardEncryptionDictionary(PDFObject):
 
 padding: str
 
-def hexText(text): ...
+def hexText(text):
+    """a legitimate way to show strings in PDF"""
+
 def unHexText(hexText): ...
 
 PadString: Incomplete
@@ -80,7 +96,9 @@ def computeU(
     documentId=None,
 ): ...
 def checkU(encryptionkey, U) -> None: ...
-def encodePDF(key, objectNumber, generationNumber, string, revision=None): ...
+def encodePDF(key, objectNumber, generationNumber, string, revision=None):
+    """Encodes a string or stream"""
+
 def equalityCheck(observed, expected, label) -> None: ...
 def test() -> None: ...
 def encryptCanvas(
@@ -92,9 +110,15 @@ def encryptCanvas(
     canCopy: int = 1,
     canAnnotate: int = 1,
     strength: int = 40,
-) -> None: ...
+) -> None:
+    """Applies encryption to the document being generated"""
 
 class EncryptionFlowable(StandardEncryption, Flowable):
+    """Drop this in your Platypus story and it will set up the encryption options.
+
+    If you do it multiple times, the last one before saving will win.
+    """
+
     def wrap(self, availWidth, availHeight): ...
     def draw(self) -> None: ...
 
@@ -107,7 +131,9 @@ def encryptDocTemplate(
     canCopy: int = 1,
     canAnnotate: int = 1,
     strength: int = 40,
-) -> None: ...
+) -> None:
+    """For use in Platypus.  Call before build()."""
+
 def encryptPdfInMemory(
     inputPDF,
     userPassword,
@@ -117,7 +143,14 @@ def encryptPdfInMemory(
     canCopy: int = 1,
     canAnnotate: int = 1,
     strength: int = 40,
-): ...
+):
+    """accepts a PDF file 'as a byte array in memory'; return encrypted one.
+
+    This is a high level convenience and does not touch the hard disk in any way.
+    If you are encrypting the same file over and over again, it's better to use
+    pageCatcher and cache the results.
+    """
+
 def encryptPdfOnDisk(
     inputFileName,
     outputFileName,
@@ -128,6 +161,8 @@ def encryptPdfOnDisk(
     canCopy: int = 1,
     canAnnotate: int = 1,
     strength: int = 40,
-): ...
+):
+    """Creates encrypted file OUTPUTFILENAME.  Returns size in bytes."""
+
 def scriptInterp() -> None: ...
 def main() -> None: ...

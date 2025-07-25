@@ -1,3 +1,9 @@
+"""
+The hardcoded information on this module was loaded from the Unicode file Scripts-15.1.0.txt
+https://www.unicode.org/Public/UNIDATA/Scripts.txt
+Python's standard "unicodedata" library doesn't offer this table.
+"""
+
 from enum import IntEnum
 from typing import Final
 

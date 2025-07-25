@@ -1,3 +1,10 @@
+"""A simple wrapper around enum types to expose utility functions.
+
+Instances are created as properties with the same name as the enum they wrap
+on proto classes.  For usage, see:
+  reflection_test.py
+"""
+
 from typing import Generic, TypeVar
 
 from google.protobuf.descriptor import EnumDescriptor
@@ -18,4 +25,5 @@ class _EnumTypeWrapper(type, Generic[_V]):
     def values(self) -> list[_V]: ...
     def items(self) -> list[tuple[str, _V]]: ...
 
-class EnumTypeWrapper(_EnumTypeWrapper[int]): ...
+class EnumTypeWrapper(_EnumTypeWrapper[int]):
+    """A utility for finding the names of enum values."""

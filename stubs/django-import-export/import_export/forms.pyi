@@ -33,6 +33,15 @@ class SelectableFieldsExportForm(ExportForm):
     is_selectable_fields_form: bool
     resource_fields: dict[str, list[str]]
     @staticmethod
-    def create_boolean_field_name(resource: ModelResource[Any], field_name: str) -> str: ...
+    def create_boolean_field_name(resource: ModelResource[Any], field_name: str) -> str:
+        """
+        Create field name by combining `resource_name` + `field_name` to prevent
+        conflict between resource fields with same name
+
+        Example:
+            BookResource            +   name -> bookresource_name
+            BookResourceWithNames   +   name -> bookresourcewithnames_name
+        """
+
     def get_selected_resource(self) -> ModelResource[Any]: ...
     def get_selected_resource_export_fields(self) -> list[str]: ...

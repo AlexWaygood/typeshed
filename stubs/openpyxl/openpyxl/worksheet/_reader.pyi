@@ -1,3 +1,5 @@
+"""Reader for a single worksheet."""
+
 from _typeshed import Incomplete, SupportsGetItem, Unused
 from collections.abc import Container, Generator
 from datetime import datetime
@@ -46,7 +48,10 @@ DATA_TAG: Final[str]
 DIMENSION_TAG: Final[str]
 CUSTOM_VIEWS_TAG: Final[str]
 
-def parse_richtext_string(element: _ChildSerialisableTreeElement) -> CellRichText | str: ...
+def parse_richtext_string(element: _ChildSerialisableTreeElement) -> CellRichText | str:
+    """
+    Parse inline string and preserve rich text formatting
+    """
 
 class WorkSheetParser:
     min_row: Incomplete | None
@@ -85,9 +90,17 @@ class WorkSheetParser:
         rich_text: bool = False,
     ) -> None: ...
     def parse(self) -> Generator[Incomplete, None, None]: ...
-    def parse_dimensions(self) -> _RangeBoundariesTuple | None: ...
+    def parse_dimensions(self) -> _RangeBoundariesTuple | None:
+        """
+        Get worksheet dimensions if they are provided.
+        """
+
     def parse_cell(self, element) -> dict[str, _AnyCellValue]: ...
-    def parse_formula(self, element): ...
+    def parse_formula(self, element):
+        """
+        possible formulae types: shared, array, datatable
+        """
+
     def parse_column_dimensions(self, col: _HasAttrib) -> None: ...
     def parse_row(self, row: _SupportsIterAndAttrib) -> tuple[int, list[dict[str, _AnyCellValue]]]: ...
     def parse_formatting(self, element: _ChildSerialisableTreeElement) -> None: ...
@@ -99,6 +112,10 @@ class WorkSheetParser:
     def parse_custom_views(self, element: Unused) -> None: ...
 
 class WorksheetReader:
+    """
+    Create a parser and apply it to a workbook
+    """
+
     ws: Worksheet
     parser: WorkSheetParser
     tables: list[Incomplete]
@@ -110,7 +127,12 @@ class WorksheetReader:
     def bind_tables(self) -> None: ...
     def bind_merged_cells(self) -> None: ...
     def bind_hyperlinks(self) -> None: ...
-    def normalize_merged_cell_link(self, coord: str) -> _CellOrMergedCell | None: ...
+    def normalize_merged_cell_link(self, coord: str) -> _CellOrMergedCell | None:
+        """
+        Returns the appropriate cell to which a hyperlink, which references a merged cell at the specified coordinates,
+        should be bound.
+        """
+
     def bind_col_dimensions(self) -> None: ...
     def bind_row_dimensions(self) -> None: ...
     def bind_properties(self) -> None: ...

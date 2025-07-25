@@ -29,7 +29,8 @@ def TemporaryFile(
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
     executor: Executor | None = None,
-) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
+) -> AiofilesContextManager[AsyncTextIOWrapper]:
+    """Async open an unnamed temporary file"""
 
 # Unbuffered binary: returns a FileIO
 @overload
@@ -89,8 +90,8 @@ if sys.version_info >= (3, 12):
         delete_on_close: bool = True,
         loop: AbstractEventLoop | None = None,
         executor: Executor | None = None,
-    ) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
-
+    ) -> AiofilesContextManager[AsyncTextIOWrapper]:
+        """Async open a named temporary file"""
     # Unbuffered binary: returns a FileIO
     @overload
     def NamedTemporaryFile(
@@ -214,7 +215,9 @@ def SpooledTemporaryFile(
     dir: StrOrBytesPath | None = None,
     loop: AbstractEventLoop | None = None,
     executor: Executor | None = None,
-) -> AiofilesContextManager[AsyncTextIOWrapper]: ...
+) -> AiofilesContextManager[AsyncTextIOWrapper]:
+    """Async open a spooled temporary file"""
+
 @overload
 def SpooledTemporaryFile(
     max_size: int,
@@ -308,7 +311,9 @@ def TemporaryDirectory(
     dir: StrPath | None = None,
     loop: AbstractEventLoop | None = None,
     executor: Executor | None = None,
-) -> AiofilesContextManagerTempDir: ...
+) -> AiofilesContextManagerTempDir:
+    """Async open a temporary directory"""
+
 @overload
 def TemporaryDirectory(
     suffix: bytes | None = None,
@@ -319,6 +324,8 @@ def TemporaryDirectory(
 ) -> AiofilesContextManagerTempDir: ...
 
 class AiofilesContextManagerTempDir(AiofilesContextManager[str]):
+    """With returns the directory location, not the object (matching sync lib)"""
+
     async def __aenter__(self) -> str: ...
 
 __all__ = ["NamedTemporaryFile", "TemporaryFile", "SpooledTemporaryFile", "TemporaryDirectory"]

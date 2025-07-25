@@ -1,3 +1,9 @@
+"""
+Directives for additional body elements.
+
+See `docutils.parsers.rst.directives` for API details.
+"""
+
 from collections.abc import Callable
 from typing import ClassVar, Final
 from typing_extensions import TypeAlias
@@ -31,6 +37,14 @@ class ParsedLiteral(Directive):
     def run(self): ...
 
 class CodeBlock(Directive):
+    """Parse and mark up content of a code block.
+
+    Configuration setting: syntax_highlight
+       Highlight Code content with Pygments?
+       Possible values: ('long', 'short', 'none')
+
+    """
+
     option_spec: ClassVar[dict[str, _DirectiveFn]]
     def run(self): ...
 

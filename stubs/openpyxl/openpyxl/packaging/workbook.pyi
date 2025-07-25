@@ -32,6 +32,13 @@ class FileRecoveryProperties(Serialisable):
     ) -> None: ...
 
 class ChildSheet(Serialisable):
+    """
+    Represents a reference to a worksheet or chartsheet in workbook.xml
+
+    It contains the title, order and state but only an indirect reference to
+    the objects themselves.
+    """
+
     tagname: ClassVar[str]
     name: String[Literal[False]]
     sheetId: Integer[Literal[False]]
@@ -48,6 +55,10 @@ class PivotCache(Serialisable):
     def __init__(self, cacheId: ConvertibleToInt, id=None) -> None: ...
 
 class WorkbookPackage(Serialisable):
+    """
+    Represent the workbook file in the archive
+    """
+
     tagname: ClassVar[str]
     conformance: NoneSet[_WorkbookPackageConformance]
     fileVersion: Typed[FileVersion, Literal[True]]

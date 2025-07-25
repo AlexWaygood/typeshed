@@ -1,3 +1,5 @@
+"""Defused xml.dom.pulldom"""
+
 from typing import Final
 from xml.dom.pulldom import DOMEventStream
 from xml.sax import _SupportsReadClose

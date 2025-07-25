@@ -1,3 +1,9 @@
+"""distutils.command.bdist
+
+Implements the Distutils 'bdist' command (create a built [binary]
+distribution).
+"""
+
 from _typeshed import Unused
 from collections.abc import Callable
 from typing import ClassVar
@@ -5,7 +11,8 @@ from typing_extensions import deprecated
 
 from ..cmd import Command
 
-def show_formats() -> None: ...
+def show_formats() -> None:
+    """Print list of available formats (arguments to "--format" option)."""
 
 class ListCompat(dict[str, tuple[str, str]]):
     @deprecated("format_commands is now a dict. append is deprecated")

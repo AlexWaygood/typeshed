@@ -18,7 +18,12 @@ def create_server(
     _sock: socket | None = None,
     _dispatcher: ThreadedTaskDispatcher | None = None,
     **kw: _AdjustmentsParams,
-) -> MultiSocketServer | BaseWSGIServer: ...
+) -> MultiSocketServer | BaseWSGIServer:
+    """
+    if __name__ == '__main__':
+        server = create_server(app)
+        server.run()
+    """
 
 class MultiSocketServer:
     asyncore = wasyncore
@@ -80,7 +85,13 @@ class BaseWSGIServer(wasyncore.dispatcher):
     def pull_trigger(self) -> None: ...
     def set_socket_options(self, conn: socket) -> None: ...
     def fix_addr(self, addr: _RetAddress) -> _RetAddress: ...
-    def maintenance(self, now: int) -> None: ...
+    def maintenance(self, now: int) -> None:
+        """
+        Closes channels that have not had any activity in a while.
+
+        The timeout is configured through adj.channel_timeout (seconds).
+        """
+
     def print_listen(self, format_str: str) -> None: ...
     def close(self) -> None: ...
 

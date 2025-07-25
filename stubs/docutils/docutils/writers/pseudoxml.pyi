@@ -1,3 +1,7 @@
+"""
+Simple internal document tree Writer, writes indented pseudo-XML.
+"""
+
 from typing import ClassVar, Final
 
 from docutils import writers

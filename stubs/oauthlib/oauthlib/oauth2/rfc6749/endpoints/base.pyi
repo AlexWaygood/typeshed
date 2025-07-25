@@ -1,3 +1,11 @@
+"""
+oauthlib.oauth2.rfc6749
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This module is an implementation of various logic needed
+for consuming and providing OAuth 2.0 RFC6749.
+"""
+
 from _typeshed import Incomplete
 from collections.abc import Callable, Sequence
 from logging import Logger

@@ -1,6 +1,8 @@
 from typing import Literal
 
 class AuthlibBaseError(Exception):
+    """Base Exception for all errors in Authlib."""
+
     error: str | None
     description: str
     uri: str | None

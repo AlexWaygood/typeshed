@@ -1,3 +1,5 @@
+"""A set of basic callbacks for bleach.linkify."""
+
 from collections.abc import MutableMapping
 from typing import Protocol
 from typing_extensions import TypeAlias

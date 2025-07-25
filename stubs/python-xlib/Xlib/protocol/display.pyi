@@ -67,10 +67,29 @@ class Display:
     def flush(self) -> None: ...
     def close(self) -> None: ...
     def set_error_handler(self, handler: ErrorHandler[object] | None) -> None: ...
-    def allocate_resource_id(self) -> int: ...
-    def free_resource_id(self, rid: int) -> None: ...
+    def allocate_resource_id(self) -> int:
+        """id = d.allocate_resource_id()
+
+        Allocate a new X resource id number ID.
+
+        Raises ResourceIDError if there are no free resource ids.
+        """
+
+    def free_resource_id(self, rid: int) -> None:
+        """d.free_resource_id(rid)
+
+        Free resource id RID.  Attempts to free a resource id which
+        isn't allocated by us are ignored.
+        """
+
     @overload
-    def get_resource_class(self, class_name: Literal["resource"], default: object = None) -> type[resource.Resource]: ...
+    def get_resource_class(self, class_name: Literal["resource"], default: object = None) -> type[resource.Resource]:
+        """class = d.get_resource_class(class_name, default = None)
+
+        Return the class to be used for X resource objects of type
+        CLASS_NAME, or DEFAULT if no such class is set.
+        """
+
     @overload
     def get_resource_class(self, class_name: Literal["drawable"], default: object = None) -> type[drawable.Drawable]: ...
     @overload
@@ -98,15 +117,53 @@ class Display:
     def check_for_error(self) -> None: ...
     def send_request(self, request: rq.Request | rq.ReplyRequest | ConnectionSetupRequest, wait_for_response: bool) -> None: ...
     def close_internal(self, whom: object) -> None: ...
-    def send_and_recv(self, flush: bool = False, event: bool = False, request: int | None = None, recv: bool = False) -> None: ...
-    def parse_response(self, request: int) -> bool: ...
+    def send_and_recv(self, flush: bool = False, event: bool = False, request: int | None = None, recv: bool = False) -> None:
+        """send_and_recv(flush = None, event = None, request = None, recv = None)
+
+        Perform I/O, or wait for some other thread to do it for us.
+
+        send_recv_lock MUST be LOCKED when send_and_recv is called.
+        It will be UNLOCKED at return.
+
+        Exactly or one of the parameters flush, event, request and recv must
+        be set to control the return condition.
+
+        To attempt to send all requests in the queue, flush should
+        be true.  Will return immediately if another thread is
+        already doing send_and_recv.
+
+        To wait for an event to be received, event should be true.
+
+        To wait for a response to a certain request (either an error
+        or a response), request should be set to that request's
+        serial number.
+
+        To just read any pending data from the server, recv should be true.
+
+        It is not guaranteed that the return condition has been
+        fulfilled when the function returns, so the caller has to loop
+        until it is finished.
+        """
+
+    def parse_response(self, request: int) -> bool:
+        """Internal method.
+
+        Parse data received from server.  If REQUEST is not None
+        true is returned if the request with that serial number
+        was received, otherwise false is returned.
+
+        If REQUEST is -1, we're parsing the server connection setup
+        response.
+        """
+
     def parse_error_response(self, request: int) -> bool: ...
     def default_error_handler(self, err: object) -> None: ...
     def parse_request_response(self, request: int) -> bool: ...
     def parse_event_response(self, etype: int) -> None: ...
     def get_waiting_request(self, sno: int) -> rq.ReplyRequest | ConnectionSetupRequest | None: ...
     def get_waiting_replyrequest(self) -> rq.ReplyRequest | ConnectionSetupRequest: ...
-    def parse_connection_setup(self) -> bool: ...
+    def parse_connection_setup(self) -> bool:
+        """Internal function used to parse connection setup response."""
 
 PixmapFormat: rq.Struct
 VisualType: rq.Struct

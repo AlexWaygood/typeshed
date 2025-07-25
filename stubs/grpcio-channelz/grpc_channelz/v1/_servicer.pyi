@@ -1,8 +1,12 @@
+"""Channelz debug service implementation in gRPC Python."""
+
 import grpc_channelz.v1.channelz_pb2 as _channelz_pb2
 import grpc_channelz.v1.channelz_pb2_grpc as _channelz_pb2_grpc
 from grpc import ServicerContext
 
 class ChannelzServicer(_channelz_pb2_grpc.ChannelzServicer):
+    """Servicer handling RPCs for service statuses."""
+
     @staticmethod
     def GetTopChannels(
         request: _channelz_pb2.GetTopChannelsRequest, context: ServicerContext

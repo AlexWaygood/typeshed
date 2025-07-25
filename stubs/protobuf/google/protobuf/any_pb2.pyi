@@ -167,6 +167,7 @@ class Any(google.protobuf.message.Message, google.protobuf.internal.well_known_t
     value: builtins.bytes
     """Must be a valid serialized protocol buffer of the above specified type."""
     def __init__(self, *, type_url: builtins.str | None = ..., value: builtins.bytes | None = ...) -> None: ...
-    def ClearField(self, field_name: typing.Literal["type_url", b"type_url", "value", b"value"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["type_url", b"type_url", "value", b"value"]) -> None:
+        """Clears a message field."""
 
 global___Any = Any

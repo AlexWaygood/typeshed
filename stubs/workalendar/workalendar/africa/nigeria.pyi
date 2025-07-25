@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import IslamoWesternCalendar
 
 class Nigeria(IslamoWesternCalendar):
+    """Nigeria"""
+
     include_labour_day: ClassVar[bool]
     labour_day_label: ClassVar[str]
     include_good_friday: ClassVar[bool]
@@ -15,4 +17,12 @@ class Nigeria(IslamoWesternCalendar):
     shift_new_years_day: ClassVar[bool]
     WEEKEND_DAYS: Incomplete
     FIXED_HOLIDAYS: Incomplete
-    def get_fixed_holidays(self, year): ...
+    def get_fixed_holidays(self, year):
+        """Get fixed holidays.
+
+        Args:
+            year (int): Year
+
+        Returns:
+            tuple: Tuple of date and label
+        """

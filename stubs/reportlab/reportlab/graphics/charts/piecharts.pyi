@@ -1,3 +1,9 @@
+"""Basic Pie Chart class.
+
+This permits you to customize and pop out individual wedges;
+supports elliptical and circular pies.
+"""
+
 from _typeshed import Incomplete
 from typing import Final
 
@@ -11,6 +17,14 @@ __version__: Final[str]
 class WedgeLabel(Label): ...
 
 class WedgeProperties(PropHolder):
+    """This holds descriptive information about the wedges in a pie chart.
+
+    It is not to be confused with the 'wedge itself'; this just holds
+    a recipe for how to format one, and does not allow you to hack the
+    angles.  It can format a genuine Wedge object for you with its
+    format method.
+    """
+
     strokeWidth: int
     fillColor: Incomplete
     strokeColor: Incomplete
@@ -50,15 +64,20 @@ class WedgeProperties(PropHolder):
 
 class AbstractPieChart(PlotArea):
     def makeSwatchSample(self, rowNo, x, y, width, height): ...
-    def getSeriesName(self, i, default=None): ...
+    def getSeriesName(self, i, default=None):
+        """return series name i or default"""
 
 def boundsOverlap(P, Q): ...
-def findOverlapRun(B, wrap: int = 1): ...
+def findOverlapRun(B, wrap: int = 1):
+    """determine a set of overlaps in bounding boxes B or return None"""
+
 def fixLabelOverlaps(L, sideLabels: bool = False, mult0: float = 1.0) -> None: ...
 def intervalIntersection(A, B): ...
 def theta0(data, direction): ...
 
 class AngleData(float):
+    """use this to carry the data along with the angle"""
+
     def __new__(cls, angle, data): ...
 
 class Pie(AbstractPieChart):
@@ -95,6 +114,8 @@ class Pie(AbstractPieChart):
     def draw(self): ...
 
 class LegendedPie(Pie):
+    """Pie with a two part legend (one editable with swatches, one hidden without swatches)."""
+
     x: int
     y: int
     height: int
@@ -118,6 +139,14 @@ class LegendedPie(Pie):
     def demo(self, drawing=None): ...
 
 class Wedge3dProperties(PropHolder):
+    """This holds descriptive information about the wedges in a pie chart.
+
+    It is not to be confused with the 'wedge itself'; this just holds
+    a recipe for how to format one, and does not allow you to hack the
+    angles.  It can format a genuine Wedge object for you with its
+    format method.
+    """
+
     strokeWidth: int
     shading: float
     visible: int
@@ -170,14 +199,35 @@ class Pie3d(Pie):
     def draw(self): ...
     def demo(self): ...
 
-def sample0a(): ...
-def sample0b(): ...
-def sample1(): ...
-def sample2(): ...
-def sample3(): ...
-def sample4(): ...
-def sample5(): ...
-def sample6(): ...
-def sample7(): ...
-def sample8(): ...
-def sample9(): ...
+def sample0a():
+    """Make a degenerated pie chart with only one slice."""
+
+def sample0b():
+    """Make a degenerated pie chart with only one slice."""
+
+def sample1():
+    """Make a typical pie chart with with one slice treated in a special way."""
+
+def sample2():
+    """Make a pie chart with nine slices."""
+
+def sample3():
+    """Make a pie chart with a very slim slice."""
+
+def sample4():
+    """Make a pie chart with several very slim slices."""
+
+def sample5():
+    """Make a pie with side labels."""
+
+def sample6():
+    """Illustrates the pie moving to leave space for the left labels"""
+
+def sample7():
+    """Case with overlapping pointers"""
+
+def sample8():
+    """Case with overlapping labels"""
+
+def sample9():
+    """Case with overlapping labels"""

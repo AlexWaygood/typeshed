@@ -27,4 +27,17 @@ def serial_for_url(
     exclusive: float | None = ...,
     *,
     do_not_open: bool = ...,
-) -> Serial: ...
+) -> Serial:
+    """Get an instance of the Serial class, depending on port/url. The port is not
+    opened when the keyword parameter 'do_not_open' is true, by default it
+    is. All other parameters are directly passed to the __init__ method when
+    the port is instantiated.
+
+    The list of package names that is searched for protocol handlers is kept in
+    ``protocol_handler_packages``.
+
+    e.g. we want to support a URL ``foobar://``. A module
+    ``my_handlers.protocol_foobar`` is provided by the user. Then
+    ``protocol_handler_packages.append("my_handlers")`` would extend the search
+    path so that ``serial_for_url("foobar://"))`` would work.
+    """

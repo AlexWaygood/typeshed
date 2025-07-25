@@ -29,13 +29,25 @@ class DifferentialStyle(Serialisable):
     ) -> None: ...
 
 class DifferentialStyleList(Serialisable):
+    """
+    Dedupable container for differential styles.
+    """
+
     tagname: ClassVar[str]
     dxf: Incomplete
     styles: Alias
     __attrs__: ClassVar[tuple[str, ...]]
     def __init__(self, dxf=(), count: Unused = None) -> None: ...
-    def append(self, dxf: DifferentialStyle) -> None: ...
-    def add(self, dxf: DifferentialStyle) -> int: ...
+    def append(self, dxf: DifferentialStyle) -> None:
+        """
+        Check to see whether style already exists and append it if does not.
+        """
+
+    def add(self, dxf: DifferentialStyle) -> int:
+        """
+        Add a differential style and return its index
+        """
+
     def __bool__(self) -> bool: ...
     def __getitem__(self, idx: SupportsIndex) -> DifferentialStyle: ...
     @property

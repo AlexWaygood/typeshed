@@ -5,6 +5,16 @@ from django.db.models import Field as DjangoField, ForeignObjectRel, Model
 from django.db.transaction import Atomic
 
 class atomic_if_using_transaction:
+    """Context manager wraps `atomic` if `using_transactions`.
+
+    Replaces code::
+
+        if using_transactions:
+            with transaction.atomic(using=using):
+                return something()
+        return something()
+    """
+
     using_transactions: bool
     context_manager: Atomic
     def __init__(self, using_transactions: bool, using: str | None) -> None: ...

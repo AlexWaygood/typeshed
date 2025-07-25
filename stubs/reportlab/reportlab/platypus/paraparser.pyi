@@ -1,3 +1,5 @@
+"""The parser used to process markup within paragraphs"""
+
 from _typeshed import Incomplete
 from html.parser import HTMLParser
 
@@ -12,6 +14,8 @@ class _PCT(float):
     def __deepcopy__(self, mem): ...
 
 class _ExValidate:
+    """class for syntax checking attributes"""
+
     tag: Incomplete
     attr: Incomplete
     def __init__(self, tag, attr) -> None: ...
@@ -20,17 +24,29 @@ class _ExValidate:
     def __call__(self, parser, s): ...
 
 class _CheckSup(_ExValidate):
+    """class for syntax checking <sup|sub> attributes
+    if the check succeeds then we always return the string for later evaluation
+    """
+
     fontSize: Incomplete
     def validate(self, parser, s): ...
     def __call__(self, parser, s): ...
 
 class _CheckUS(_ExValidate):
+    """class for syntax checking <u|strike> width/offset attributes"""
+
     def validate(self, parser, s): ...
 
-class ParaFrag(ABag): ...
+class ParaFrag(ABag):
+    """class ParaFrag contains the intermediate representation of string
+    segments as they are being parsed by the ParaParser.
+    fontname, fontSize, rise, textColor, cbDefn
+    """
 
 class ParaParser(HTMLParser):
-    def __getattr__(self, attrName): ...
+    def __getattr__(self, attrName):
+        """This way we can handle <TAG> the same way as <tag> (ignoring case)."""
+
     def start_b(self, attributes) -> None: ...
     def end_b(self) -> None: ...
     def start_strong(self, attributes) -> None: ...
@@ -107,11 +123,22 @@ class ParaParser(HTMLParser):
     def __init__(
         self, verbose: int = 0, caseSensitive: int = 0, ignoreUnknownTags: int = 1, crashOnError: bool = True
     ) -> None: ...
-    def handle_data(self, data) -> None: ...
+    def handle_data(self, data) -> None:
+        """Creates an intermediate representation of string segments."""
+
     def handle_cdata(self, data) -> None: ...
-    def tt_parse(self, tt, style): ...
+    def tt_parse(self, tt, style):
+        """parse from tupletree form"""
+
     def findSpanStyle(self, style) -> None: ...
-    def parse(self, text, style): ...
-    def handle_starttag(self, tag, attrs) -> None: ...
-    def handle_endtag(self, tag) -> None: ...
-    def handle_entityref(self, name) -> None: ...
+    def parse(self, text, style):
+        """attempt replacement for parse"""
+
+    def handle_starttag(self, tag, attrs) -> None:
+        """Called by HTMLParser when a tag starts"""
+
+    def handle_endtag(self, tag) -> None:
+        """Called by HTMLParser when a tag ends"""
+
+    def handle_entityref(self, name) -> None:
+        """Handles a named entity."""

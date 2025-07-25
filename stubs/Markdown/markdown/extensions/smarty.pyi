@@ -1,3 +1,10 @@
+"""
+Convert ASCII dashes, quotes and ellipses to their HTML entity equivalents.
+
+See the [documentation](https://Python-Markdown.github.io/extensions/smarty)
+for details.
+"""
+
 from collections.abc import Mapping, Sequence
 from xml.etree.ElementTree import Element
 
@@ -30,9 +37,12 @@ HTML_STRICT_RE: str
 
 class SubstituteTextPattern(HtmlInlineProcessor):
     replace: Sequence[int | str | Element]
-    def __init__(self, pattern: str, replace: Sequence[int | str | Element], md: Markdown) -> None: ...
+    def __init__(self, pattern: str, replace: Sequence[int | str | Element], md: Markdown) -> None:
+        """Replaces matches with some text."""
 
 class SmartyExtension(Extension):
+    """Add Smarty to Markdown."""
+
     substitutions: dict[str, str]
     def __init__(self, **kwargs) -> None: ...
     def educateDashes(self, md: Markdown) -> None: ...

@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import ChineseNewYearCalendar, IslamicMixin
 
 class Malaysia(IslamicMixin, ChineseNewYearCalendar):
+    """Malaysia"""
+
     include_labour_day: ClassVar[bool]
     labour_day_label: ClassVar[str]
     include_nuzul_al_quran: ClassVar[bool]
@@ -22,4 +24,7 @@ class Malaysia(IslamicMixin, ChineseNewYearCalendar):
     include_chinese_second_day: ClassVar[bool]
     chinese_second_day_label: ClassVar[str]
     shift_sunday_holidays: ClassVar[bool]
-    def get_variable_days(self, year): ...
+    def get_variable_days(self, year):
+        """
+        Malaysia variable days
+        """

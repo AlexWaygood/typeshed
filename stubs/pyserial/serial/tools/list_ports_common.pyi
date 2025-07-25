@@ -1,9 +1,14 @@
 from collections.abc import Collection
 from typing import Any
 
-def numsplit(text: str) -> list[str | int]: ...
+def numsplit(text: str) -> list[str | int]:
+    """Convert string into a list of texts and numbers in order to support a
+    natural sorting.
+    """
 
 class ListPortInfo:
+    """Info collection base class for serial ports"""
+
     device: str
     name: str
     description: str
@@ -24,10 +29,20 @@ class ListPortInfo:
     product: str | None
     interface: str | None
     def __init__(self, device: str, skip_link_detection: bool = False) -> None: ...
-    def usb_description(self) -> str: ...
-    def usb_info(self) -> str: ...
-    def apply_usb_info(self) -> None: ...
-    def __lt__(self, other: ListPortInfo) -> bool: ...
-    def __getitem__(self, index: int) -> str: ...
+    def usb_description(self) -> str:
+        """return a short string to name the port based on USB info"""
 
-def list_links(devices: Collection[str]) -> list[str]: ...
+    def usb_info(self) -> str:
+        """return a string with USB related information about device"""
+
+    def apply_usb_info(self) -> None:
+        """update description and hwid from USB data"""
+
+    def __lt__(self, other: ListPortInfo) -> bool: ...
+    def __getitem__(self, index: int) -> str:
+        """Item access: backwards compatible -> (port, desc, hwid)"""
+
+def list_links(devices: Collection[str]) -> list[str]:
+    """search all /dev devices and look for symlinks to known ports already
+    listed in devices.
+    """

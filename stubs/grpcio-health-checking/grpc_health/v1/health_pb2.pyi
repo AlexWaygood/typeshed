@@ -1,3 +1,5 @@
+"""Generated protocol buffer code."""
+
 from _typeshed import Incomplete
 from typing import ClassVar, final
 

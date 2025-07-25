@@ -55,11 +55,18 @@ _FillsType: TypeAlias = Literal[
 fills: Final[tuple[_FillsType, ...]]
 
 class Fill(Serialisable):
+    """Base class"""
+
     tagname: ClassVar[str]
     @classmethod
     def from_tree(cls, el: Iterable[ABCSequence[_SupportsIterAndAttribAndTextAndTag]]) -> PatternFill | GradientFill | None: ...
 
 class PatternFill(Fill):
+    """Area fill patterns for use in styles.
+    Caution: if you do not specify a fill_type, other attributes will have
+    no effect !
+    """
+
     tagname: ClassVar[str]
     __elements__: ClassVar[tuple[str, ...]]
     patternType: NoneSet[_FillsType]
@@ -93,6 +100,24 @@ class StopList(Sequence[list[Stop]]):
     def __set__(self, obj: Serialisable | Strict, values: list[Stop] | tuple[Stop, ...]) -> None: ...
 
 class GradientFill(Fill):
+    """Fill areas with gradient
+
+    Two types of gradient fill are supported:
+
+        - A type='linear' gradient interpolates colours between
+          a set of specified Stops, across the length of an area.
+          The gradient is left-to-right by default, but this
+          orientation can be modified with the degree
+          attribute.  A list of Colors can be provided instead
+          and they will be positioned with equal distance between them.
+
+        - A type='path' gradient applies a linear gradient from each
+          edge of the area. Attributes top, right, bottom, left specify
+          the extent of fill from the respective borders. Thus top="0.2"
+          will fill the top 20% of the cell.
+
+    """
+
     tagname: ClassVar[str]
     type: Set[_GradientFillType]
     fill_type: Alias

@@ -3,6 +3,11 @@ from _typeshed import Incomplete
 from .spreadsheet_drawing import AbsoluteAnchor, OneCellAnchor
 
 class Drawing:
+    """a drawing object - eg container for shapes or charts
+    we assume user specifies dimensions in pixels; units are
+    converted to EMU in the drawing part
+    """
+
     count: int
     name: str
     description: str

@@ -1,3 +1,16 @@
+"""
+pygments.unistring
+~~~~~~~~~~~~~~~~~~
+
+Strings of all Unicode characters of a certain category.
+Used for matching in Unicode-aware languages. Run to regenerate.
+
+Inspired by chartypes_create.py from the MoinMoin project.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from typing import Any
 
 Cc: str

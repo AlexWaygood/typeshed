@@ -14,9 +14,41 @@ _T = TypeVar("_T")
 #        sorts of issues to reference a module that is not stubbed in typeshed, so
 #        for now we punt and just define an alias for Interface and implementer we
 #        can get rid of later
-def implementer(interface: Any, /) -> Callable[[_T], _T]: ...
+def implementer(interface: Any, /) -> Callable[[_T], _T]:
+    """
+    Declare the interfaces implemented by instances of a class.
 
-class MonitorWarning(RuntimeWarning): ...
+    This function is called as a class decorator.
+
+    The arguments are one or more interfaces or interface specifications
+    (`~zope.interface.interfaces.IDeclaration` objects).
+
+    The interfaces given (including the interfaces in the specifications) are
+    added to any interfaces previously declared, unless the interface is
+    already implemented.
+
+    Previous declarations include declarations for base classes unless
+    implementsOnly was used.
+
+    This function is provided for convenience. It provides a more convenient
+    way to call `classImplements`. For example::
+
+        @implementer(I1)
+        class C(object):
+            pass
+
+    is equivalent to calling::
+
+        classImplements(C, I1)
+
+    after the class has been created.
+
+    .. seealso:: `classImplements`
+       The change history provided there applies to this function too.
+    """
+
+class MonitorWarning(RuntimeWarning):
+    """The type of warnings we emit."""
 
 class _MonitorEntry:
     function: Callable[[Hub], object]

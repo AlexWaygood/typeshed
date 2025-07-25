@@ -21,6 +21,8 @@ class Polynomial:
     def __mod__(self, other: Polynomial) -> Polynomial: ...
 
 class RSBlock(NamedTuple):
+    """RSBlock(total_count, data_count)"""
+
     total_count: int
     data_count: int
 

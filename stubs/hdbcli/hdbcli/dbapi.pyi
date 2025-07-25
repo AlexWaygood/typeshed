@@ -26,28 +26,60 @@ class Connection:
         sessionvariables: dict[str, str] | None = ...,
         forcebulkfetch: bool | None = ...,
     ) -> None: ...
-    def cancel(self) -> bool: ...
-    def close(self) -> None: ...
-    def commit(self) -> None: ...
-    def cursor(self) -> Cursor: ...
-    def getaddress(self) -> str: ...
-    def getautocommit(self) -> bool: ...
-    def getclientinfo(self, key: str = ...) -> str | dict[str, str]: ...
-    def getproperty(self, *args, **kwargs): ...
-    def isconnected(self) -> bool: ...
-    def rollback(self) -> None: ...
-    def setautocommit(self, auto: bool = ...) -> None: ...
-    def setclientinfo(self, key: str, value: str | None = ...) -> None: ...
-    def ontrace(self, callback: Callable[[str], Any], options: str = ...) -> None: ...
+    def cancel(self) -> bool:
+        """Cancels the running database request that is executed on the connection."""
+
+    def close(self) -> None:
+        """Close the connection."""
+
+    def commit(self) -> None:
+        """Commit any pending transaction to the database."""
+
+    def cursor(self) -> Cursor:
+        """Create a new cursor"""
+
+    def getaddress(self) -> str:
+        """getaddress"""
+
+    def getautocommit(self) -> bool:
+        """Gets this connection's auto-commit mode."""
+
+    def getclientinfo(self, key: str = ...) -> str | dict[str, str]:
+        """Gets this connection's client information."""
+
+    def getproperty(self, *args, **kwargs):
+        """Gets this connection's property."""
+
+    def isconnected(self) -> bool:
+        """Checks the state of the connection with which the cursor is bound"""
+
+    def rollback(self) -> None:
+        """Roll back to the start of any pending transaction."""
+
+    def setautocommit(self, auto: bool = ...) -> None:
+        """Sets this connection's auto-commit mode."""
+
+    def setclientinfo(self, key: str, value: str | None = ...) -> None:
+        """Sets this connection's client information."""
+
+    def ontrace(self, callback: Callable[[str], Any], options: str = ...) -> None:
+        """Sets the trace callback"""
 
 connect = Connection
 
 class LOB:
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
-    def close(self) -> bool: ...
-    def find(self, object: str, length: int, position: int = ...) -> int: ...
-    def read(self, size: int = ..., position: int = ...) -> str | bytes: ...
-    def write(self, object: str | bytes) -> int: ...
+    def close(self) -> bool:
+        """Close LOB object"""
+
+    def find(self, object: str, length: int, position: int = ...) -> int:
+        """Return the offset of the given pattern in the LOB object"""
+
+    def read(self, size: int = ..., position: int = ...) -> str | bytes:
+        """Return a portion (or all) of the data in the LOB object"""
+
+    def write(self, object: str | bytes) -> int:
+        """Write the data to the LOB object"""
 
 _Parameters: TypeAlias = Sequence[tuple[Any, ...]] | None
 _Holdability: TypeAlias = Literal[0, 1, 2, 3]
@@ -63,42 +95,103 @@ class Cursor:
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def __enter__(self) -> Self: ...
     def __exit__(self, typ: type[BaseException] | None, val: BaseException | None, tb: TracebackType | None) -> None: ...
-    def callproc(self, procname: str, parameters: tuple[Any, ...] = ..., overview: bool = ...) -> tuple[Any, ...]: ...
-    def close(self) -> None: ...
-    def description_ext(self) -> Sequence[tuple[Any, ...]]: ...
-    def execute(self, operation: str, parameters: tuple[Any, ...] | None = ...) -> bool: ...
-    def executemany(self, operation: str, parameters: _Parameters = ..., batcherrors: bool = False) -> Any: ...
-    def executemanyprepared(self, parameters: _Parameters = ...) -> Any: ...
-    def executeprepared(self, parameters: _Parameters = ...) -> Any: ...
-    def fetchone(self, uselob: bool = ...) -> ResultRow | None: ...
-    def fetchall(self) -> list[ResultRow]: ...
-    def fetchmany(self, size: int | None = ...) -> list[ResultRow]: ...
-    def getrowsaffectedcounts(self) -> tuple[Any, ...]: ...
-    def getpacketsize(self) -> int: ...
-    def get_resultset_holdability(self) -> _Holdability: ...
-    def getwarning(self) -> Warning | None: ...
-    def haswarning(self) -> bool: ...
-    def clearwarning(self) -> None: ...
-    def has_result_set(self) -> bool: ...
-    def nextset(self) -> None: ...
-    def parameter_description(self) -> tuple[str, ...]: ...
+    def callproc(self, procname: str, parameters: tuple[Any, ...] = ..., overview: bool = ...) -> tuple[Any, ...]:
+        """Call a stored database procedure with the given name"""
+
+    def close(self) -> None:
+        """Close the cursor now"""
+
+    def description_ext(self) -> Sequence[tuple[Any, ...]]:
+        """Retrieve a sequence of descriptions of result columns"""
+
+    def execute(self, operation: str, parameters: tuple[Any, ...] | None = ...) -> bool:
+        """Prepare and execute a database operation."""
+
+    def executemany(self, operation: str, parameters: _Parameters = ..., batcherrors: bool = False) -> Any:
+        """Execute in batch"""
+
+    def executemanyprepared(self, parameters: _Parameters = ...) -> Any:
+        """Execute a prepared database operation in batch."""
+
+    def executeprepared(self, parameters: _Parameters = ...) -> Any:
+        """Execute a prepared database operation."""
+
+    def fetchone(self, uselob: bool = ...) -> ResultRow | None:
+        """Fetch the next row of a query result set"""
+
+    def fetchall(self) -> list[ResultRow]:
+        """Fetch all rows of a query result set"""
+
+    def fetchmany(self, size: int | None = ...) -> list[ResultRow]:
+        """Fetch the specified number of rows of a query result set"""
+
+    def getrowsaffectedcounts(self) -> tuple[Any, ...]:
+        """Retrieves a tuple of rows affected counts, one entry for each input row provided to the previous executemany() invocation"""
+
+    def getpacketsize(self) -> int:
+        """Gets the packet size used currently for the cursor"""
+
+    def get_resultset_holdability(self) -> _Holdability:
+        """Retrieves the result set holdability"""
+
+    def getwarning(self) -> Warning | None:
+        """Retrieve warning object if there is a warning from the previous execution"""
+
+    def haswarning(self) -> bool:
+        """Checks whether there is any warning from the previous execution"""
+
+    def clearwarning(self) -> None:
+        """make warning flag false"""
+
+    def has_result_set(self) -> bool:
+        """Check if SQL statement is query that has result set"""
+
+    def nextset(self) -> None:
+        """Make the cursot skip to the next result set, closing current result set"""
+
+    def parameter_description(self) -> tuple[str, ...]:
+        """Retrieve a sequence of descriptions of parameters"""
+
     @overload
-    def prepare(self, operation: str, newcursor: Literal[True]) -> Cursor: ...
+    def prepare(self, operation: str, newcursor: Literal[True]) -> Cursor:
+        """Prepare a database operation."""
+
     @overload
     def prepare(self, operation: str, newcursor: Literal[False]) -> Any: ...
-    def print_message(self): ...
-    def parsenamedquery(self, *args, **kwargs): ...
-    def scroll(self, value: int, mode: Literal["absolute", "relative"] = ...) -> None: ...
-    def server_cpu_time(self) -> int: ...
-    def server_memory_usage(self) -> int: ...
-    def server_processing_time(self) -> int: ...
+    def print_message(self):
+        """Retreves list of print messages from last statement"""
+
+    def parsenamedquery(self, *args, **kwargs):
+        """Internal Use Only"""
+
+    def scroll(self, value: int, mode: Literal["absolute", "relative"] = ...) -> None:
+        """Scroll the cursor"""
+
+    def server_cpu_time(self) -> int:
+        """Retrieves the server cpu time in microseconds"""
+
+    def server_memory_usage(self) -> int:
+        """Retrieves the server memory usage in bytes"""
+
+    def server_processing_time(self) -> int:
+        """Retrieves the server processing time in microseconds"""
+
     def setinputsizes(self, *args: Any, **kwargs: Any) -> None: ...
-    def setfetchsize(self, value: int) -> None: ...
-    def setquerytimeout(self, value: int) -> None: ...
-    def setpacketsize(self, value: int) -> None: ...
-    def set_resultset_holdability(self, holdability: _Holdability) -> None: ...
+    def setfetchsize(self, value: int) -> None:
+        """Set size of prefetched resultsets"""
+
+    def setquerytimeout(self, value: int) -> None:
+        """Set the query timeout"""
+
+    def setpacketsize(self, value: int) -> None:
+        """Sets the packet size used for the cursor"""
+
+    def set_resultset_holdability(self, holdability: _Holdability) -> None:
+        """Set the result set holdability"""
+
     def setoutputsize(self, *args: Any, **kwargs: Any) -> None: ...
-    def setcommandinfo(self, command_info: str, line_number: int) -> None: ...
+    def setcommandinfo(self, command_info: str, line_number: int) -> None:
+        """Set the command info and line number for the next execute"""
 
 class Warning(Exception):
     errorcode: int

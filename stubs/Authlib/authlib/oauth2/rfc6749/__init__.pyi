@@ -1,3 +1,12 @@
+"""authlib.oauth2.rfc6749.
+~~~~~~~~~~~~~~~~~~~~~~
+
+This module represents a direct implementation of
+The OAuth 2.0 Authorization Framework.
+
+https://tools.ietf.org/html/rfc6749
+"""
+
 from .authenticate_client import ClientAuthentication as ClientAuthentication
 from .authorization_server import AuthorizationServer as AuthorizationServer
 from .errors import (

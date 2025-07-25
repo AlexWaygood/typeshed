@@ -1,3 +1,5 @@
+"""Standard verifying functions used by attrmap."""
+
 from _typeshed import Incomplete
 from typing import Final
 
@@ -6,6 +8,8 @@ __version__: Final[str]
 class Percentage(float): ...
 
 class Validator:
+    """base validator class"""
+
     def __call__(self, x): ...
     def normalize(self, x): ...
     def normalizeTest(self, x): ...
@@ -39,6 +43,8 @@ class _isNumberOrNone(_isNumber):
     def normalize(self, x): ...
 
 class _isListOfNumbersOrNone(Validator):
+    """ListOfNumbersOrNone validator class."""
+
     def test(self, x): ...
 
 class isNumberInRange(_isNumber):
@@ -48,18 +54,28 @@ class isNumberInRange(_isNumber):
     def test(self, x): ...
 
 class _isListOfShapes(Validator):
+    """ListOfShapes validator class."""
+
     def test(self, x): ...
 
 class _isListOfStringsOrNone(Validator):
+    """ListOfStringsOrNone validator class."""
+
     def test(self, x): ...
 
 class _isTransform(Validator):
+    """Transform validator class."""
+
     def test(self, x): ...
 
 class _isColor(Validator):
+    """Color validator class."""
+
     def test(self, x): ...
 
 class _isColorOrNone(Validator):
+    """ColorOrNone validator class."""
+
     def test(self, x): ...
 
 class _isNormalDate(Validator):
@@ -67,7 +83,12 @@ class _isNormalDate(Validator):
     def normalize(self, x): ...
 
 class _isValidChild(Validator):
-    def test(self, x): ...
+    """ValidChild validator class."""
+
+    def test(self, x):
+        """Is this child allowed in a drawing or group?
+        I.e. does it descend from Shape or UserNode?
+        """
 
 class _isValidChildOrNone(_isValidChild):
     def test(self, x): ...
@@ -76,6 +97,16 @@ class _isCallable(Validator):
     def test(self, x): ...
 
 class OneOf(Validator):
+    """Make validator functions for list of choices.
+
+    Usage:
+    f = reportlab.lib.validators.OneOf('happy','sad')
+    or
+    f = reportlab.lib.validators.OneOf(('happy','sad'))
+    f('sad'),f('happy'), f('grumpy')
+    (1,1,0)
+    """
+
     def __init__(self, enum, *args) -> None: ...
     def test(self, x): ...
 
@@ -114,11 +145,29 @@ class isSubclassOf(Validator):
     def test(self, x): ...
 
 class matchesPattern(Validator):
+    """Matches value, or its string representation, against regex"""
+
     def __init__(self, pattern) -> None: ...
     def test(self, x): ...
 
 class DerivedValue:
-    def getValue(self, renderer, attr) -> None: ...
+    """This is used for magic values which work themselves out.
+    An example would be an "inherit" property, so that one can have
+
+      drawing.chart.categoryAxis.labels.fontName = inherit
+
+    and pick up the value from the top of the drawing.
+    Validators will permit this provided that a value can be pulled
+    in which satisfies it.  And the renderer will have special
+    knowledge of these so they can evaluate themselves.
+    """
+
+    def getValue(self, renderer, attr) -> None:
+        """Override this.  The renderers will pass the renderer,
+        and the attribute name.  Algorithms can then backtrack up
+        through all the stuff the renderer provides, including
+        a correct stack of parent nodes.
+        """
 
 class Inherit(DerivedValue):
     def getValue(self, renderer, attr): ...
@@ -126,6 +175,11 @@ class Inherit(DerivedValue):
 inherit: Incomplete
 
 class NumericAlign(str):
+    """for creating the numeric string value for anchors etc etc
+    dp is the character to align on (the last occurrence will be used)
+    dpLen is the length of characters after the dp
+    """
+
     def __new__(cls, dp: str = ".", dpLen: int = 0): ...
 
 isAuto: Auto

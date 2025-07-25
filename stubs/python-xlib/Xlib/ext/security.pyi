@@ -1,3 +1,8 @@
+"""
+A partial implementation of the SECURITY extension.  Support for the
+SecurityAuthorizationRevoked event is not implemented.
+"""
+
 from _typeshed import Unused
 from typing import Final
 

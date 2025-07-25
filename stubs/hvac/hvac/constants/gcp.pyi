@@ -1,3 +1,5 @@
+"""Constants related to the GCP auth method and/or secrets engine."""
+
 from collections.abc import Iterable
 
 DEFAULT_MOUNT_POINT: str

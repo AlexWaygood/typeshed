@@ -9,4 +9,8 @@ def construct(
     # explicitly checks for key_data as dict instance, instead of a Mapping
     key_data: str | bytes | dict[str, Any] | Key,
     algorithm: str | None = None,
-) -> Key: ...
+) -> Key:
+    """
+    Construct a Key object for the given algorithm with the given
+    key_data.
+    """

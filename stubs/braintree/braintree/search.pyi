@@ -1,17 +1,30 @@
 from _typeshed import Incomplete
 
 class Search:
+    """
+    Collection of classes used to build search queries.
+
+    Each Builder class defines one or more methods that returns a Node
+    object with the name of the field, the comparator, and the value.
+    """
+
     class IsNodeBuilder:
+        """Builds a query for value equality."""
+
         name: Incomplete
         def __init__(self, name) -> None: ...
         def __eq__(self, value): ...
         def is_equal(self, value): ...
 
     class EqualityNodeBuilder(IsNodeBuilder):
+        """Builds a query for value inequality."""
+
         def __ne__(self, value): ...
         def is_not_equal(self, value): ...
 
     class KeyValueNodeBuilder:
+        """Builds a query based on a key-value map."""
+
         name: Incomplete
         def __init__(self, name) -> None: ...
         def __eq__(self, value): ...
@@ -20,6 +33,8 @@ class Search:
         def is_not_equal(self, value): ...
 
     class PartialMatchNodeBuilder(EqualityNodeBuilder):
+        """Builds a query for matching parts of a sequence."""
+
         def starts_with(self, value): ...
         def ends_with(self, value): ...
 
@@ -29,15 +44,21 @@ class Search:
         def ends_with(self, value): ...
 
     class TextNodeBuilder(PartialMatchNodeBuilder):
+        """Builds a query for matching any part of a sequence."""
+
         def contains(self, value): ...
 
     class Node:
+        """Container for part of a search query."""
+
         name: Incomplete
         dict: Incomplete
         def __init__(self, name, dict) -> None: ...
         def to_param(self): ...
 
     class MultipleValueNodeBuilder:
+        """Builds a query to check membership in a sequence."""
+
         name: Incomplete
         whitelist: Incomplete
         def __init__(self, name, whitelist=[]) -> None: ...
@@ -45,9 +66,13 @@ class Search:
         def __eq__(self, value): ...
 
     class MultipleValueOrTextNodeBuilder(TextNodeBuilder, MultipleValueNodeBuilder):
+        """Builder node supporting contains and in_list."""
+
         def __init__(self, name, whitelist=[]) -> None: ...
 
     class RangeNodeBuilder:
+        """Builds a query supporting <=, >=, or == value."""
+
         name: Incomplete
         def __init__(self, name) -> None: ...
         def __eq__(self, value): ...

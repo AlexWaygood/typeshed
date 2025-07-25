@@ -1,3 +1,9 @@
+"""
+Utility list for top level containers that contain one type of element
+
+Provides the necessary API to read and write XML
+"""
+
 from typing import TypeVar
 from typing_extensions import Self
 

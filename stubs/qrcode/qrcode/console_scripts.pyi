@@ -1,3 +1,10 @@
+"""
+qr - Convert stdin (or the first argument) to a QR Code.
+
+When stdout is a tty the QR Code is printed to the terminal and when stdout is
+a pipe to a file an image is written. The default image format is PNG.
+"""
+
 from collections.abc import Iterable, Sequence
 
 from ._types import ErrorCorrect

@@ -23,6 +23,10 @@ class _Widget(Protocol[_FieldT_contra]):
     def __call__(self, field: _FieldT_contra, **kwargs: Any) -> Markup: ...
 
 class Field:
+    """
+    Field base class
+    """
+
     errors: Sequence[str]
     process_errors: Sequence[str]
     raw_data: list[Any] | None
@@ -68,23 +72,173 @@ class Field:
         _prefix: str = "",
         _translations: _SupportsGettextAndNgettext | None = None,
         _meta: DefaultMeta | None = None,
-    ) -> None: ...
-    def __html__(self) -> str: ...
-    def __call__(self, **kwargs: object) -> Markup: ...
+    ) -> None:
+        """
+        Construct a new field.
+
+        :param label:
+            The label of the field.
+        :param validators:
+            A sequence of validators to call when `validate` is called.
+        :param filters:
+            A sequence of callable which are run by :meth:`~Field.process`
+            to filter or transform the input data. For example
+            ``StringForm(filters=[str.strip, str.upper])``.
+            Note that filters are applied after processing the default and
+            incoming data, but before validation.
+        :param description:
+            A description for the field, typically used for help text.
+        :param id:
+            An id to use for the field. A reasonable default is set by the form,
+            and you shouldn't need to set this manually.
+        :param default:
+            The default value to assign to the field, if no form or object
+            input is provided. May be a callable.
+        :param widget:
+            If provided, overrides the widget used to render the field.
+        :param dict render_kw:
+            If provided, a dictionary which provides default keywords that
+            will be given to the widget at render time.
+        :param name:
+            The HTML name of this field. The default value is the Python
+            attribute name.
+        :param _form:
+            The form holding this field. It is passed by the form itself during
+            construction. You should never pass this value yourself.
+        :param _prefix:
+            The prefix to prepend to the form name of this field, passed by
+            the enclosing form during construction.
+        :param _translations:
+            A translations object providing message translations. Usually
+            passed by the enclosing form during construction. See
+            :doc:`I18n docs <i18n>` for information on message translations.
+        :param _meta:
+            If provided, this is the 'meta' instance from the form. You usually
+            don't pass this yourself.
+
+        If `_form` isn't provided, an :class:`UnboundField` will be
+        returned instead. Call its :func:`bind` method with a form instance and
+        a name to construct the field.
+        """
+
+    def __html__(self) -> str:
+        """
+        Returns a HTML representation of the field. For more powerful rendering,
+        see the :meth:`__call__` method.
+        """
+
+    def __call__(self, **kwargs: object) -> Markup:
+        """
+        Render this field as HTML, using keyword args as additional attributes.
+
+        This delegates rendering to
+        :meth:`meta.render_field <wtforms.meta.DefaultMeta.render_field>`
+        whose default behavior is to call the field's widget, passing any
+        keyword arguments from this call along to the widget.
+
+        In all of the WTForms HTML widgets, keyword arguments are turned to
+        HTML attributes, though in theory a widget is free to do anything it
+        wants with the supplied keyword arguments, and widgets don't have to
+        even do anything related to HTML.
+        """
+
     @classmethod
     def check_validators(cls, validators: Iterable[_Validator[_FormT, Self]] | None) -> None: ...
-    def gettext(self, string: str) -> str: ...
-    def ngettext(self, singular: str, plural: str, n: int) -> str: ...
-    def validate(self, form: BaseForm, extra_validators: tuple[_Validator[_FormT, Self], ...] | list[Any] = ()) -> bool: ...
-    def pre_validate(self, form: BaseForm) -> None: ...
-    def post_validate(self, form: BaseForm, validation_stopped: bool) -> None: ...
+    def gettext(self, string: str) -> str:
+        """
+        Get a translation for the given message.
+
+        This proxies for the internal translations object.
+
+        :param string: A string to be translated.
+        :return: A string which is the translated output.
+        """
+
+    def ngettext(self, singular: str, plural: str, n: int) -> str:
+        """
+        Get a translation for a message which can be pluralized.
+
+        :param str singular: The singular form of the message.
+        :param str plural: The plural form of the message.
+        :param int n: The number of elements this message is referring to
+        """
+
+    def validate(self, form: BaseForm, extra_validators: tuple[_Validator[_FormT, Self], ...] | list[Any] = ()) -> bool:
+        """
+        Validates the field and returns True or False. `self.errors` will
+        contain any errors raised during validation. This is usually only
+        called by `Form.validate`.
+
+        Subfields shouldn't override this, but rather override either
+        `pre_validate`, `post_validate` or both, depending on needs.
+
+        :param form: The form the field belongs to.
+        :param extra_validators: A sequence of extra validators to run.
+        """
+
+    def pre_validate(self, form: BaseForm) -> None:
+        """
+        Override if you need field-level validation. Runs before any other
+        validators.
+
+        :param form: The form the field belongs to.
+        """
+
+    def post_validate(self, form: BaseForm, validation_stopped: bool) -> None:
+        """
+        Override if you need to run any field-level validation tasks after
+        normal validation. This shouldn't be needed in most cases.
+
+        :param form: The form the field belongs to.
+        :param validation_stopped:
+            `True` if any validator raised StopValidation.
+        """
+
     def process(
         self, formdata: _MultiDictLikeWithGetlist | None, data: Any = ..., extra_filters: Sequence[_Filter] | None = None
-    ) -> None: ...
-    def process_data(self, value: Any) -> None: ...
-    def process_formdata(self, valuelist: list[Any]) -> None: ...
-    def populate_obj(self, obj: object, name: str) -> None: ...
+    ) -> None:
+        """
+        Process incoming data, calling process_data, process_formdata as needed,
+        and run filters.
 
+        If `data` is not provided, process_data will be called on the field's
+        default.
+
+        Field subclasses usually won't override this, instead overriding the
+        process_formdata and process_data methods. Only override this for
+        special advanced processing, such as when a field encapsulates many
+        inputs.
+
+        :param extra_filters: A sequence of extra filters to run.
+        """
+
+    def process_data(self, value: Any) -> None:
+        """
+        Process the Python data applied to this field and store the result.
+
+        This will be called during form construction by the form's `kwargs` or
+        `obj` argument.
+
+        :param value: The python object containing the value to process.
+        """
+
+    def process_formdata(self, valuelist: list[Any]) -> None:
+        """
+        Process data received over the wire from a form.
+
+        This will be called during form construction with data supplied
+        through the `formdata` argument.
+
+        :param valuelist: A list of strings to process.
+        """
+
+    def populate_obj(self, obj: object, name: str) -> None:
+        """
+        Populates `obj.<name>` with the field's data.
+
+        :note: This is a destructive operation. If `obj.<name>` already exists,
+               it will be overridden. Use with caution.
+        """
     # this is a workaround for what is essentially illegal in static type checking
     # Field.__new__ would return an UnboundField, unless the _form parameter is
     # specified. We can't really work around it by making UnboundField a subclass
@@ -115,6 +269,12 @@ class UnboundField(Generic[_FieldT]):
     ) -> _FieldT: ...
 
 class Flags:
+    """
+    Holds a set of flags as attributes.
+
+    Accessing a non-existing attribute returns None for its value.
+    """
+
     # the API for this is a bit loosey goosey, the intention probably
     # was that the values should always be boolean, but __contains__
     # just returns the same thing as __getattr__ and in the widgets
@@ -125,6 +285,10 @@ class Flags:
     def __contains__(self, name: str) -> Any | None: ...
 
 class Label:
+    """
+    An HTML form label.
+    """
+
     field_id: str
     text: str
     def __init__(self, field_id: str, text: str) -> None: ...

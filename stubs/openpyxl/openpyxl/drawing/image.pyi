@@ -14,6 +14,8 @@ _PILImageFilePath: TypeAlias = str | bytes | Path | SupportsRead[bytes]
 PILImage: ModuleType | Literal[False]
 
 class Image:
+    """Image in a spreadsheet"""
+
     anchor: str | _AnchorBase
     ref: _PILImageImage | _PILImageFilePath
     width: int

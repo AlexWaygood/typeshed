@@ -1,3 +1,7 @@
+"""
+Directives for figures and simple images.
+"""
+
 from _typeshed import Incomplete
 from typing import Final
 

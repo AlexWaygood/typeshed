@@ -1,3 +1,8 @@
+"""
+oauthlib.openid.connect.core.grant_types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+
 from collections.abc import Iterable
 from logging import Logger
 
@@ -26,4 +31,5 @@ class HybridGrant(GrantTypeBase):
         **kwargs,
     ) -> None: ...
     def add_id_token(self, token, token_handler, request: Request): ...  # type: ignore[override]
-    def openid_authorization_validator(self, request: Request): ...
+    def openid_authorization_validator(self, request: Request):
+        """Additional validation when following the Authorization Code flow."""

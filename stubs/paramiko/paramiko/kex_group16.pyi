@@ -1,3 +1,8 @@
+"""
+Standard SSH key exchange ("kex" if you wanna sound cool).  Diffie-Hellman of
+4096 bit key halves, using a known "p" prime and "g" generator.
+"""
+
 from _typeshed import ReadableBuffer
 from collections.abc import Callable
 from hashlib import _Hash

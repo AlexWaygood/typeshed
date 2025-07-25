@@ -17,6 +17,11 @@ BLUE: Final = "00FFFFFF"
 aRGB_REGEX: Final[Pattern[str]]
 
 class RGB(Typed[str, _N]):
+    """
+    Descriptor for aRGB values
+    If not supplied alpha is 00
+    """
+
     expected_type: type[str]
     @overload
     def __init__(self: RGB[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
@@ -28,6 +33,8 @@ class RGB(Typed[str, _N]):
     def __set__(self: RGB[Literal[False]], instance: Serialisable | Strict, value: str) -> None: ...
 
 class Color(Serialisable):
+    """Named colors for use in styles."""
+
     tagname: ClassVar[str]
     rgb: RGB[Literal[False]]
     indexed: Integer[Literal[False]]
@@ -53,7 +60,11 @@ class Color(Serialisable):
     @property
     def index(self) -> str | int | bool: ...
     @overload
-    def __add__(self, other: Color) -> Self: ...
+    def __add__(self, other: Color) -> Self:
+        """
+        Adding colours is undefined behaviour best do nothing
+        """
+
     @overload
     def __add__(self, other: _S) -> _S: ...
 

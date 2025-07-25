@@ -35,13 +35,35 @@ from .users import Users
 from .users_by_email import UsersByEmail
 
 class AsyncAuth0:
+    """Provides easy access to all endpoint classes
+
+    Args:
+        domain (str): Your Auth0 domain, for example 'username.auth0.com'
+
+        token (str): Management API v2 Token
+
+        rest_options (RestClientOptions): Pass an instance of
+            RestClientOptions to configure additional RestClient
+            options, such as rate-limit retries.
+            (defaults to None)
+    """
+
     def __init__(self, domain: str, token: str, rest_options: RestClientOptions | None = None) -> None: ...
-    def set_session(self, session) -> None: ...
-    async def __aenter__(self) -> Self: ...
+    def set_session(self, session) -> None:
+        """Set Client Session to improve performance by reusing session.
+
+        Args:
+            session (aiohttp.ClientSession): The client session which should be closed
+                manually or within context manager.
+        """
+
+    async def __aenter__(self) -> Self:
+        """Automatically create and set session within context manager."""
+
     async def __aexit__(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-    ) -> None: ...
-
+    ) -> None:
+        """Automatically close session within context manager."""
     # Same attributes as Auth0
     # See note in stubs/auth0-python/@tests/stubtest_allowlist.txt about _async methods
     actions: Actions

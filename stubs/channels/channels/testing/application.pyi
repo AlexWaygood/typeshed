@@ -16,6 +16,14 @@ class ApplicationCommunicator(BaseApplicationCommunicator):
     # The following methods are not present in the original source code,
     # but are commonly used in practice. Since the base package doesn't
     # provide type hints for them, they are added here to improve type correctness.
-    async def receive_nothing(self, timeout: float = 0.1, interval: float = 0.01) -> bool: ...
-    async def wait(self, timeout: float = 1) -> None: ...
+    async def receive_nothing(self, timeout: float = 0.1, interval: float = 0.01) -> bool:
+        """
+        Checks that there is no message to receive in the given time.
+        """
+
+    async def wait(self, timeout: float = 1) -> None:
+        """
+        Waits for the application to stop itself and returns any exceptions.
+        """
+
     def stop(self, exceptions: bool = True) -> None: ...

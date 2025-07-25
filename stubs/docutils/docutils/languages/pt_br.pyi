@@ -1,3 +1,7 @@
+"""
+Brazilian Portuguese-language mappings for language-dependent features.
+"""
+
 from typing import Final, Literal
 
 __docformat__: Final = "reStructuredText"

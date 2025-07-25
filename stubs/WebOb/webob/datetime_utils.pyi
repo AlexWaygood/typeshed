@@ -24,7 +24,10 @@ class _UTC(tzinfo):
 
 UTC: _UTC
 
-def timedelta_to_seconds(td: timedelta) -> int: ...
+def timedelta_to_seconds(td: timedelta) -> int:
+    """
+    Converts a timedelta instance to seconds.
+    """
 
 day: timedelta
 week: timedelta
@@ -36,5 +39,9 @@ year: timedelta
 
 def parse_date(value: str | bytes | None) -> datetime | None: ...
 def serialize_date(dt: datetime | date | timedelta | _TimeTuple | struct_time | float | str | bytes) -> str: ...
-def parse_date_delta(value: str | bytes | None) -> datetime | None: ...
+def parse_date_delta(value: str | bytes | None) -> datetime | None:
+    """
+    like parse_date, but also handle delta seconds
+    """
+
 def serialize_date_delta(value: datetime | date | timedelta | _TimeTuple | struct_time | float | str | bytes) -> str: ...

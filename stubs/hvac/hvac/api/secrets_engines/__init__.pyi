@@ -1,3 +1,5 @@
+"""Vault secrets engines endpoints"""
+
 from _typeshed import Incomplete
 
 from hvac.api.secrets_engines.active_directory import ActiveDirectory as ActiveDirectory
@@ -37,5 +39,7 @@ __all__ = (
 )
 
 class SecretsEngines(VaultApiCategory):
+    """Secrets Engines."""
+
     implemented_classes: Incomplete
     unimplemented_classes: Incomplete

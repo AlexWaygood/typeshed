@@ -1,3 +1,5 @@
+""" """
+
 from _typeshed import ReadableBuffer
 
 from pyasn1.type.base import Asn1Item

@@ -1,3 +1,5 @@
+"""Manipulation and analysis of geometric objects in the Cartesian plane."""
+
 from typing import Final
 
 from . import affinity as affinity

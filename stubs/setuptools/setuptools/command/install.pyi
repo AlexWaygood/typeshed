@@ -7,6 +7,8 @@ from setuptools.dist import Distribution
 from .._distutils.command import install as orig
 
 class install(orig.install):
+    """Use easy_install to install the package, w/dependencies"""
+
     distribution: Distribution  # override distutils.dist.Distribution with setuptools.dist.Distribution
     user_options: ClassVar[list[tuple[str, str | None, str]]]
     boolean_options: ClassVar[list[str]]

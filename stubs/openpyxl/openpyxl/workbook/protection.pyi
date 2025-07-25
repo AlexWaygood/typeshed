@@ -47,27 +47,36 @@ class WorkbookProtection(Serialisable):
         workbookSpinCount: ConvertibleToInt | None = None,
     ) -> None: ...
     @overload
-    def set_workbook_password(self, value: str = "", already_hashed: Literal[False] = False) -> None: ...
+    def set_workbook_password(self, value: str = "", already_hashed: Literal[False] = False) -> None:
+        """Set a password on this workbook."""
+
     @overload
     def set_workbook_password(self, value: str | None, already_hashed: Literal[True]) -> None: ...
     @overload
     def set_workbook_password(self, value: str | None = "", *, already_hashed: Literal[True]) -> None: ...
     @property
-    def workbookPassword(self) -> str | None: ...
+    def workbookPassword(self) -> str | None:
+        """Return the workbook password value, regardless of hash."""
+
     @workbookPassword.setter
     def workbookPassword(self, value: str) -> None: ...
     @overload
-    def set_revisions_password(self, value: str = "", already_hashed: Literal[False] = False) -> None: ...
+    def set_revisions_password(self, value: str = "", already_hashed: Literal[False] = False) -> None:
+        """Set a revision password on this workbook."""
+
     @overload
     def set_revisions_password(self, value: str | None, already_hashed: Literal[True]) -> None: ...
     @overload
     def set_revisions_password(self, value: str | None = "", *, already_hashed: Literal[True]) -> None: ...
     @property
-    def revisionsPassword(self) -> str | None: ...
+    def revisionsPassword(self) -> str | None:
+        """Return the revisions password value, regardless of hash."""
+
     @revisionsPassword.setter
     def revisionsPassword(self, value: str) -> None: ...
     @classmethod
-    def from_tree(cls, node: _SupportsIterAndAttribAndTextAndGet) -> Self: ...
+    def from_tree(cls, node: _SupportsIterAndAttribAndTextAndGet) -> Self:
+        """Don't hash passwords when deserialising from XML"""
 
 DocumentSecurity = WorkbookProtection
 

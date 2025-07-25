@@ -4,6 +4,10 @@ from braintree.resource import Resource
 from braintree.subscription import Subscription
 
 class AndroidPayCard(Resource):
+    """
+    A class representing Braintree Android Pay card objects.
+    """
+
     is_expired: Incomplete
     subscriptions: list[Subscription]
     def __init__(self, gateway, attributes) -> None: ...

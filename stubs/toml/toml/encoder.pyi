@@ -4,8 +4,46 @@ from typing import Any, Generic, TypeVar, overload
 
 _MappingT = TypeVar("_MappingT", bound=Mapping[str, Any])
 
-def dump(o: _MappingT, f: SupportsWrite[str], encoder: TomlEncoder[_MappingT] | None = None) -> str: ...
-def dumps(o: _MappingT, encoder: TomlEncoder[_MappingT] | None = None) -> str: ...
+def dump(o: _MappingT, f: SupportsWrite[str], encoder: TomlEncoder[_MappingT] | None = None) -> str:
+    """Writes out dict as toml to a file
+
+    Args:
+        o: Object to dump into toml
+        f: File descriptor where the toml should be stored
+        encoder: The ``TomlEncoder`` to use for constructing the output string
+
+    Returns:
+        String containing the toml corresponding to dictionary
+
+    Raises:
+        TypeError: When anything other than file descriptor is passed
+    """
+
+def dumps(o: _MappingT, encoder: TomlEncoder[_MappingT] | None = None) -> str:
+    """Stringifies input dict as toml
+
+        Args:
+            o: Object to dump into toml
+            encoder: The ``TomlEncoder`` to use for constructing the output string
+
+        Returns:
+            String containing the toml corresponding to dict
+
+        Examples:
+            ```python
+            >>> import toml
+            >>> output = {
+            ... 'a': "I'm a string",
+            ... 'b': ["I'm", "a", "list"],
+            ... 'c': 2400
+            ... }
+            >>> toml.dumps(output)
+            'a = "I'm a string"
+    b = [ "I'm", "a", "list",]
+    c = 2400
+    '
+            ```
+    """
 
 class TomlEncoder(Generic[_MappingT]):
     _dict: type[_MappingT]
@@ -17,7 +55,13 @@ class TomlEncoder(Generic[_MappingT]):
     def __init__(self: TomlEncoder[dict[str, Any]], _dict: type[dict[str, Any]] = ..., preserve: bool = False) -> None: ...
     def get_empty_table(self) -> _MappingT: ...
     def dump_list(self, v: Iterable[Any]) -> str: ...
-    def dump_inline_table(self, section: dict[str, Any] | Any) -> str: ...
+    def dump_inline_table(self, section: dict[str, Any] | Any) -> str:
+        """Preserve inline table in its compact syntax instead of expanding
+        into subsection.
+
+        https://github.com/toml-lang/toml#user-content-inline-table
+        """
+
     def dump_value(self, v: Any) -> str: ...
     def dump_sections(self, o: _MappingT, sup: str) -> tuple[str, _MappingT]: ...
 

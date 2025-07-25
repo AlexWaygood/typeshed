@@ -1,3 +1,8 @@
+"""
+This contains a bunch of RFC7230 definitions and regular expressions that are
+needed to properly parse HTTP messages.
+"""
+
 from re import Pattern
 from typing import Final
 

@@ -1,3 +1,7 @@
+"""
+S5/HTML Slideshow Writer.
+"""
+
 import re
 from _typeshed import StrPath
 from typing import ClassVar, Final
@@ -31,9 +35,21 @@ class S5HTMLTranslator(html4css1.HTMLTranslator):
     theme_files_copied: dict[str, bool]
     def __init__(self, document: nodes.document, /) -> None: ...
     def setup_theme(self) -> None: ...
-    def copy_theme(self) -> None: ...
+    def copy_theme(self) -> None:
+        """
+        Locate & copy theme files.
+
+        A theme may be explicitly based on another theme via a '__base__'
+        file.  The default base theme is 'default'.  Files are accumulated
+        from the specified theme, any base themes, and 'default'.
+        """
     files_to_skip_pattern: re.Pattern[str]
-    def copy_file(self, name, source_dir, dest_dir): ...
+    def copy_file(self, name, source_dir, dest_dir):
+        """
+        Copy file `name` from `source_dir` to `dest_dir`.
+        Return True if the file exists in either `source_dir` or `dest_dir`.
+        """
+
     def depart_document(self, node: nodes.document) -> None: ...
     def depart_footer(self, node: nodes.footer) -> None: ...
     def depart_header(self, node: nodes.header) -> None: ...

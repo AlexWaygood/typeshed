@@ -6,6 +6,8 @@ from . import exceptions as exceptions
 from .snippets import findall_regex as findall_regex, split_by_regex as split_by_regex
 
 class header(NamedTuple):
+    """header(index_path, old_path, old_version, new_path, new_version)"""
+
     index_path: str | None
     old_path: str
     old_version: str | None
@@ -13,11 +15,15 @@ class header(NamedTuple):
     new_version: str | None
 
 class diffobj(NamedTuple):
+    """diff(header, changes, text)"""
+
     header: header | None
     changes: list[Change] | None
     text: str
 
 class Change(NamedTuple):
+    """Change(old, new, line, hunk)"""
+
     old: int | None
     new: int | None
     line: int | None

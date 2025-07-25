@@ -1,3 +1,13 @@
+"""
+gevent is a coroutine-based Python networking library that uses greenlet
+to provide a high-level synchronous API on top of libev event loop.
+
+See http://www.gevent.org/ for the documentation.
+
+.. versionchanged:: 1.3a2
+   Add the `config` object.
+"""
+
 import sys
 
 from gevent._config import config as config

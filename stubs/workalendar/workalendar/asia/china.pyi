@@ -7,6 +7,8 @@ holidays: Incomplete
 workdays: Incomplete
 
 class China(ChineseNewYearCalendar):
+    """China"""
+
     shift_new_years_day: ClassVar[bool]
     include_chinese_new_year_eve: ClassVar[bool]
     extra_working_days: Incomplete

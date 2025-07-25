@@ -16,6 +16,8 @@ _DimKeyT = TypeVar("_DimKeyT", bound=str | int)
 _DimT = TypeVar("_DimT", bound=Dimension)
 
 class Dimension(Strict, StyleableObject):
+    """Information about the display properties of a row or column."""
+
     __fields__: ClassVar[tuple[str, ...]]
 
     index: Integer[Literal[False]]
@@ -42,6 +44,8 @@ class Dimension(Strict, StyleableObject):
     def __copy__(self) -> Self: ...
 
 class RowDimension(Dimension):
+    """Information about the display properties of a row."""
+
     r: Alias
     s: Alias
     ht: Float[Literal[True]]
@@ -69,11 +73,16 @@ class RowDimension(Dimension):
         **kw: Unused,
     ) -> None: ...
     @property
-    def customFormat(self) -> bool: ...
+    def customFormat(self) -> bool:
+        """Always true if there is a style for the row"""
+
     @property
-    def customHeight(self) -> bool: ...
+    def customHeight(self) -> bool:
+        """Always true if there is a height for the row"""
 
 class ColumnDimension(Dimension):
+    """Information about the display properties of a column."""
+
     width: Float[Literal[False]]
     bestFit: Bool[Literal[False]]
     auto_size: Alias
@@ -100,13 +109,25 @@ class ColumnDimension(Dimension):
         auto_size: _ConvertibleToBool | None = None,
     ) -> None: ...
     @property
-    def customWidth(self) -> bool: ...
-    def reindex(self) -> None: ...
+    def customWidth(self) -> bool:
+        """Always true if there is a width for the column"""
+
+    def reindex(self) -> None:
+        """
+        Set boundaries for column definition
+        """
+
     @property
-    def range(self) -> str: ...
+    def range(self) -> str:
+        """Return the range of cells actually covered"""
+
     def to_tree(self) -> Element | None: ...
 
 class DimensionHolder(BoundDictionary[_DimKeyT, _DimT]):
+    """
+    Allow columns to be grouped
+    """
+
     worksheet: Worksheet
     max_outline: int | None
     default_factory: Callable[[], _DimT] | None
@@ -114,7 +135,15 @@ class DimensionHolder(BoundDictionary[_DimKeyT, _DimT]):
     def __init__(
         self, worksheet: Worksheet, reference: str = "index", default_factory: Callable[[], _DimT] | None = None
     ) -> None: ...
-    def group(self, start: _DimKeyT, end: _DimKeyT | None = None, outline_level: int = 1, hidden: bool = False) -> None: ...
+    def group(self, start: _DimKeyT, end: _DimKeyT | None = None, outline_level: int = 1, hidden: bool = False) -> None:
+        """allow grouping a range of consecutive rows or columns together
+
+        :param start: first row or column to be grouped (mandatory)
+        :param end: last row or column to be grouped (optional, default to start)
+        :param outline_level: outline level
+        :param hidden: should the group be hidden on workbook open or not
+        """
+
     def to_tree(self) -> Element | None: ...
 
 class SheetFormatProperties(Serialisable):

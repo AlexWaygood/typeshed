@@ -1,3 +1,5 @@
+"""Constants and static functions to support protocol buffer wire format."""
+
 from typing import Any
 
 TAG_TYPE_BITS: Any
@@ -19,10 +21,29 @@ FORMAT_UINT64_LITTLE_ENDIAN: Any
 FORMAT_FLOAT_LITTLE_ENDIAN: Any
 FORMAT_DOUBLE_LITTLE_ENDIAN: Any
 
-def PackTag(field_number, wire_type): ...
-def UnpackTag(tag): ...
-def ZigZagEncode(value): ...
-def ZigZagDecode(value): ...
+def PackTag(field_number, wire_type):
+    """Returns an unsigned 32-bit integer that encodes the field number and
+    wire type information in standard protocol message wire format.
+
+    Args:
+      field_number: Expected to be an integer in the range [1, 1 << 29)
+      wire_type: One of the WIRETYPE_* constants.
+    """
+
+def UnpackTag(tag):
+    """The inverse of PackTag().  Given an unsigned 32-bit number,
+    returns a (field_number, wire_type) tuple.
+    """
+
+def ZigZagEncode(value):
+    """ZigZag Transform:  Encodes signed integers so that they can be
+    effectively used with varint encoding.  See wire_format.h for
+    more details.
+    """
+
+def ZigZagDecode(value):
+    """Inverse of ZigZagEncode()."""
+
 def Int32ByteSize(field_number, int32): ...
 def Int32ByteSizeNoTag(int32): ...
 def Int64ByteSize(field_number, int64): ...
@@ -43,8 +64,17 @@ def BytesByteSize(field_number, b): ...
 def GroupByteSize(field_number, message): ...
 def MessageByteSize(field_number, message): ...
 def MessageSetItemByteSize(field_number, msg): ...
-def TagByteSize(field_number): ...
+def TagByteSize(field_number):
+    """Returns the bytes required to serialize a tag with this field number."""
 
 NON_PACKABLE_TYPES: Any
 
-def IsTypePackable(field_type): ...
+def IsTypePackable(field_type):
+    """Return true iff packable = true is valid for fields of this type.
+
+    Args:
+      field_type: a FieldDescriptor::Type value.
+
+    Returns:
+      True iff fields of this type are packable.
+    """

@@ -12,7 +12,8 @@ class BasePathMixin:
     def base_path(self) -> str: ...
     @base_path.setter
     def base_path(self, newbase_path: str) -> None: ...
-    def get_path_from_uri(self) -> str: ...
+    def get_path_from_uri(self) -> str:
+        """Some URIs have a slash in the query string."""
 
 class GroupedBasePathMixin(Iterable[_T], metaclass=ABCMeta):
     @property

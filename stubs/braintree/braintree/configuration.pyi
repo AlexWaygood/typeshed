@@ -5,6 +5,18 @@ from braintree.util.graphql_client import GraphQLClient
 from braintree.util.http import Http
 
 class Configuration:
+    """
+    A class representing the configuration of your Braintree account.
+    You must call configure before any other Braintree operations. ::
+
+        braintree.Configuration.configure(
+            braintree.Environment.Sandbox,
+            "your_merchant_id",
+            "your_public_key",
+            "your_private_key"
+        )
+    """
+
     @staticmethod
     def configure(
         environment,

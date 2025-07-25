@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import ChineseNewYearCalendar, WesternMixin
 
 class HongKong(WesternMixin, ChineseNewYearCalendar):
+    """Hong Kong"""
+
     include_labour_day: ClassVar[bool]
     include_good_friday: ClassVar[bool]
     include_easter_saturday: ClassVar[bool]
@@ -18,7 +20,12 @@ class HongKong(WesternMixin, ChineseNewYearCalendar):
     chinese_third_day_label: ClassVar[str]
     shift_sunday_holidays: ClassVar[bool]
     shift_start_cny_sunday: ClassVar[bool]
-    def get_variable_days(self, year): ...
+    def get_variable_days(self, year):
+        """
+        Hong Kong variable days
+        """
 
 class HongKongBank(HongKong):
+    """Hong Kong Bank"""
+
     WEEKEND_DAYS: Incomplete

@@ -9,11 +9,31 @@ logger: Logger
 
 class Format:
     def get_title(self) -> type[Self]: ...
-    def create_dataset(self, in_stream: str | bytes | IO[Any]) -> Dataset: ...
-    def export_data(self, dataset: Dataset, **kwargs: Any) -> Any: ...
-    def is_binary(self) -> bool: ...
-    def get_read_mode(self) -> str: ...
-    def get_extension(self) -> str: ...
+    def create_dataset(self, in_stream: str | bytes | IO[Any]) -> Dataset:
+        """
+        Create dataset from given string.
+        """
+
+    def export_data(self, dataset: Dataset, **kwargs: Any) -> Any:
+        """
+        Returns format representation for given dataset.
+        """
+
+    def is_binary(self) -> bool:
+        """
+        Returns if this format is binary.
+        """
+
+    def get_read_mode(self) -> str:
+        """
+        Returns mode for opening files.
+        """
+
+    def get_extension(self) -> str:
+        """
+        Returns extension for this format files.
+        """
+
     def get_content_type(self) -> str: ...
     @classmethod
     def is_available(cls) -> bool: ...
@@ -25,7 +45,11 @@ class TablibFormat(Format):
     CONTENT_TYPE: ClassVar[str]
     encoding: str | None
     def __init__(self, encoding: str | None = None) -> None: ...
-    def get_format(self) -> type[Any]: ...
+    def get_format(self) -> type[Any]:
+        """
+        Import and returns tablib module.
+        """
+
     def get_title(self) -> str: ...  # type: ignore[override]
     def create_dataset(self, in_stream: str | bytes | IO[Any], **kwargs: Any) -> Dataset: ...  # type: ignore[override]
 
@@ -50,11 +74,17 @@ class HTML(TextFormat): ...
 
 class XLS(TablibFormat):
     def export_data(self, dataset: Dataset, **kwargs: Any) -> bytes: ...
-    def create_dataset(self, in_stream: bytes) -> Dataset: ...  # type: ignore[override]
+    def create_dataset(self, in_stream: bytes) -> Dataset:  # type: ignore[override]
+        """
+        Create dataset from first sheet.
+        """
 
 class XLSX(TablibFormat):
     def export_data(self, dataset: Dataset, **kwargs: Any) -> bytes: ...
-    def create_dataset(self, in_stream: ReadableBuffer) -> Dataset: ...  # type: ignore[override]
+    def create_dataset(self, in_stream: ReadableBuffer) -> Dataset:  # type: ignore[override]
+        """
+        Create dataset from first sheet.
+        """
 
 DEFAULT_FORMATS: list[type[Format]]
 BINARY_FORMATS: list[type[Format]]

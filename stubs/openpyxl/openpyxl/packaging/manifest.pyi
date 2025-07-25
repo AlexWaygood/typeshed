@@ -1,3 +1,7 @@
+"""
+File manifest
+"""
+
 from _typeshed import Incomplete
 from collections.abc import Generator
 from typing import ClassVar, Final, Literal
@@ -33,9 +37,34 @@ class Manifest(Serialisable):
     @property
     def filenames(self) -> list[str]: ...
     @property
-    def extensions(self) -> list[tuple[str, str]]: ...
-    def to_tree(self) -> Element: ...  # type: ignore[override]
-    def __contains__(self, content_type: str) -> bool: ...
-    def find(self, content_type): ...
-    def findall(self, content_type) -> Generator[Incomplete, None, None]: ...
-    def append(self, obj) -> None: ...
+    def extensions(self) -> list[tuple[str, str]]:
+        """
+        Map content types to file extensions
+        Skip parts without extensions
+        """
+
+    def to_tree(self) -> Element:  # type: ignore[override]
+        """
+        Custom serialisation method to allow setting a default namespace
+        """
+
+    def __contains__(self, content_type: str) -> bool:
+        """
+        Check whether a particular content type is contained
+        """
+
+    def find(self, content_type):
+        """
+        Find specific content-type
+        """
+
+    def findall(self, content_type) -> Generator[Incomplete, None, None]:
+        """
+        Find all elements of a specific content-type
+        """
+
+    def append(self, obj) -> None:
+        """
+        Add content object to the package manifest
+        # needs a contract...
+        """

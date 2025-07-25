@@ -1,3 +1,12 @@
+"""
+Abstraction of a one-way pipe where the read end can be used in
+`select.select`. Normally this is trivial, but Windows makes it nearly
+impossible.
+
+The pipe acts like an Event, which can be set or cleared. When set, the pipe
+will trigger as readable in `select <select.select>`.
+"""
+
 from typing import Protocol
 
 class _BasePipe(Protocol):
@@ -20,6 +29,11 @@ class PosixPipe:
     def set_forever(self) -> None: ...
 
 class WindowsPipe:
+    """
+    On Windows, only an OS-level "WinSock" may be used in select(), but reads
+    and writes must be to the actual socket object.
+    """
+
     def __init__(self) -> None: ...
     def close(self) -> None: ...
     def fileno(self) -> int: ...
@@ -32,4 +46,9 @@ class OrPipe:
     def set(self) -> None: ...
     def clear(self) -> None: ...
 
-def make_or_pipe(pipe: _Pipe) -> tuple[OrPipe, OrPipe]: ...
+def make_or_pipe(pipe: _Pipe) -> tuple[OrPipe, OrPipe]:
+    """
+    wraps a pipe into two pipe-like objects which are "or"d together to
+    affect the real pipe. if either returned pipe is set, the wrapped pipe
+    is set. when both are cleared, the wrapped pipe is cleared.
+    """

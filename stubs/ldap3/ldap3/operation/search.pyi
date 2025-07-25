@@ -1,3 +1,5 @@
+""" """
+
 from typing import Any
 
 ROOT: int
@@ -28,7 +30,9 @@ class FilterNode:
 
 def evaluate_match(match, schema, auto_escape, auto_encode, validator, check_names): ...
 def parse_filter(search_filter, schema, auto_escape, auto_encode, validator, check_names): ...
-def compile_filter(filter_node): ...
+def compile_filter(filter_node):
+    """Builds ASN1 structure for filter, converts from filter LDAP escaping to bytes"""
+
 def build_attribute_selection(attribute_list, schema): ...
 def search_operation(
     search_base,

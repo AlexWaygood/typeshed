@@ -1,3 +1,5 @@
+""" """
+
 from typing import Any, Literal
 
 from .abstract.attrDef import AttrDef as AttrDef

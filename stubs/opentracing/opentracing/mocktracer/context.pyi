@@ -3,6 +3,11 @@ from typing_extensions import Self
 import opentracing
 
 class SpanContext(opentracing.SpanContext):
+    """SpanContext satisfies the opentracing.SpanContext contract.
+
+    trace_id and span_id are uint64's, so their range is [1, 2^64).
+    """
+
     trace_id: int | None
     span_id: int | None
     def __init__(
