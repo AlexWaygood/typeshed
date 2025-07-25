@@ -1,3 +1,5 @@
+"""passlib.apps"""
+
 from .context import CryptContext
 
 __all__ = [

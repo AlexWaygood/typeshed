@@ -1,3 +1,5 @@
+"""Constants for fixed paths in a file and xml namespace urls."""
+
 from typing import Final
 
 MIN_ROW: Final = 0

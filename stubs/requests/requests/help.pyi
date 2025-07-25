@@ -1,3 +1,5 @@
+"""Module containing bug report helper(s)."""
+
 from typing import TypedDict
 
 class _VersionDict(TypedDict):
@@ -30,5 +32,8 @@ class _InfoDict(TypedDict):
     idna: _VersionDict
     requests: _VersionDict
 
-def info() -> _InfoDict: ...
-def main() -> None: ...
+def info() -> _InfoDict:
+    """Generate information for a bug report."""
+
+def main() -> None:
+    """Pretty-print the bug information as JSON."""

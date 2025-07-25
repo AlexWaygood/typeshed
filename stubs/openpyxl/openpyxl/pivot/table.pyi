@@ -418,7 +418,13 @@ class ConditionalFormatList(Serialisable):
     conditionalFormat: Incomplete
     __attrs__: ClassVar[tuple[str, ...]]
     def __init__(self, conditionalFormat=..., count: Incomplete | None = ...) -> None: ...
-    def by_priority(self): ...
+    def by_priority(self):
+        """
+        Return a dictionary of format objects keyed by (field id and format property).
+        This can be used to map the formats to field but also to dedupe to match
+        worksheet definitions which are grouped by cell range
+        """
+
     @property
     def count(self) -> int: ...
     def to_tree(self, tagname: str | None = None) -> Element: ...  # type: ignore[override]
@@ -954,6 +960,11 @@ class TableDefinition(Serialisable):
     def to_tree(self) -> Element: ...  # type: ignore[override]
     @property
     def path(self) -> str: ...
-    def formatted_fields(self) -> dict[Incomplete, list[Incomplete]]: ...
+    def formatted_fields(self) -> dict[Incomplete, list[Incomplete]]:
+        """Map fields to associated conditional formats by priority"""
+
     @property
-    def summary(self) -> str: ...
+    def summary(self) -> str:
+        """
+        Provide a simplified summary of the table
+        """

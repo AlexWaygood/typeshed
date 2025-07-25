@@ -11,6 +11,12 @@ from wtforms.utils import UnsetValue
 __all__ = ("IntegerField", "DecimalField", "FloatField", "IntegerRangeField", "DecimalRangeField")
 
 class LocaleAwareNumberField(Field):
+    """
+    Base class for implementing locale-aware number parsing.
+
+    Locale-aware numbers require the 'babel' package to be present.
+    """
+
     use_locale: bool
     number_format: Any | None
     locale: str
@@ -38,6 +44,11 @@ class LocaleAwareNumberField(Field):
     ) -> None: ...
 
 class IntegerField(Field):
+    """
+    A text field, except all input is coerced to an integer.  Erroneous input
+    is ignored and will not be accepted as a value.
+    """
+
     data: int | None
     # technically this is not as strict and will accept anything
     # that can be passed into int(), but we might as well be
@@ -61,6 +72,25 @@ class IntegerField(Field):
     ) -> None: ...
 
 class DecimalField(LocaleAwareNumberField):
+    """
+    A text field which displays and coerces data of the `decimal.Decimal` type.
+
+    :param places:
+        How many decimal places to quantize the value to for display on form.
+        If unset, use 2 decimal places.
+        If explicitely set to `None`, does not quantize value.
+    :param rounding:
+        How to round the value during quantize, for example
+        `decimal.ROUND_UP`. If unset, uses the rounding value from the
+        current thread's context.
+    :param use_locale:
+        If True, use locale-based number formatting. Locale-based number
+        formatting requires the 'babel' package.
+    :param number_format:
+        Optional number format for locale. If omitted, use the default decimal
+        format for the locale.
+    """
+
     data: Decimal | None
     # technically this is not as strict and will accept anything
     # that can be passed into Decimal(), but we might as well be
@@ -119,6 +149,11 @@ class DecimalField(LocaleAwareNumberField):
     ) -> None: ...
 
 class FloatField(Field):
+    """
+    A text field, except all input is coerced to an float.  Erroneous input
+    is ignored and will not be accepted as a value.
+    """
+
     data: float | None
     # technically this is not as strict and will accept anything
     # that can be passed into float(), but we might as well be
@@ -141,5 +176,12 @@ class FloatField(Field):
         _meta: DefaultMeta | None = None,
     ) -> None: ...
 
-class IntegerRangeField(IntegerField): ...
-class DecimalRangeField(DecimalField): ...
+class IntegerRangeField(IntegerField):
+    """
+    Represents an ``<input type="range">``.
+    """
+
+class DecimalRangeField(DecimalField):
+    """
+    Represents an ``<input type="range">``.
+    """

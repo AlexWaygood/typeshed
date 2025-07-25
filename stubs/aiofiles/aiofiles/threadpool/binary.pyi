@@ -31,25 +31,37 @@ class _UnknownAsyncBinaryIO(AsyncBase[bytes]):
     def name(self) -> FileDescriptorOrPath: ...
 
 class AsyncBufferedIOBase(_UnknownAsyncBinaryIO):
+    """The asyncio executor version of io.BufferedWriter and BufferedIOBase."""
+
     async def read1(self, size: int = ..., /) -> bytes: ...
     def detach(self) -> FileIO: ...
     @property
     def raw(self) -> FileIO: ...
 
 class AsyncIndirectBufferedIOBase(AsyncIndirectBase[bytes], _UnknownAsyncBinaryIO):
+    """The indirect asyncio executor version of io.BufferedWriter and BufferedIOBase."""
+
     async def read1(self, size: int = ..., /) -> bytes: ...
     def detach(self) -> FileIO: ...
     @property
     def raw(self) -> FileIO: ...
 
 class AsyncBufferedReader(AsyncBufferedIOBase):
+    """The asyncio executor version of io.BufferedReader and Random."""
+
     async def peek(self, size: int = ..., /) -> bytes: ...
 
 class AsyncIndirectBufferedReader(AsyncIndirectBufferedIOBase):
+    """The indirect asyncio executor version of io.BufferedReader and Random."""
+
     async def peek(self, size: int = ..., /) -> bytes: ...
 
 class AsyncFileIO(_UnknownAsyncBinaryIO):
+    """The asyncio executor version of io.FileIO."""
+
     async def readall(self) -> bytes: ...
 
 class AsyncIndirectFileIO(AsyncIndirectBase[bytes], _UnknownAsyncBinaryIO):
+    """The indirect asyncio executor version of io.FileIO."""
+
     async def readall(self) -> bytes: ...

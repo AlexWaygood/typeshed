@@ -1,3 +1,10 @@
+"""
+Scotland calendar mixins.
+
+There are so many of them that it became necessary to move them to a different
+module.
+"""
+
 from .autumn_holiday import (
     AutumnHolidayFirstMondayOctober as AutumnHolidayFirstMondayOctober,
     AutumnHolidayLastMondaySeptember as AutumnHolidayLastMondaySeptember,
@@ -27,10 +34,16 @@ from .victoria_day import (
 )
 
 class LateSummer:
-    def get_variable_days(self, year): ...
+    def get_variable_days(self, year):
+        """
+        Add Late Summer holiday (First Monday of September)
+        """
 
 class BattleStirlingBridge:
-    def get_variable_days(self, year): ...
+    def get_variable_days(self, year):
+        """
+        Add Battle of Stirling Bridge holiday (Second Monday of September)
+        """
 
 class AyrGoldCup:
     def get_variable_days(self, year): ...

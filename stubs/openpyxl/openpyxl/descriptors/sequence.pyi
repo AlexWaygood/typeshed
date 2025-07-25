@@ -23,6 +23,11 @@ class _SupportsToTree(Protocol):
 # `_ContainerT` is the internal container type (which defaults to `list`), or
 # `IndexedList` if unique is `True`.
 class Sequence(Descriptor[_ContainerT]):
+    """
+    A sequence (list or tuple) that may only contain objects of the declared
+    type
+    """
+
     expected_type: type[Any]  # expected type of the sequence elements
     seq_types: tuple[type, ...]  # allowed settable sequence types, defaults to `list`, `tuple`
     idx_base: int
@@ -30,17 +35,27 @@ class Sequence(Descriptor[_ContainerT]):
     container: type  # internal container type, defaults to `list`
     # seq must be an instance of any of the declared `seq_types`.
     def __set__(self, instance: Serialisable | Strict, seq: Any) -> None: ...
-    def to_tree(
-        self, tagname: str | None, obj: Iterable[object], namespace: str | None = None
-    ) -> Generator[Element, None, None]: ...
+    def to_tree(self, tagname: str | None, obj: Iterable[object], namespace: str | None = None) -> Generator[Element, None, None]:
+        """
+        Convert the sequence represented by the descriptor to an XML element
+        """
 
 # `_T` is the type of the elements in the sequence.
 class UniqueSequence(Sequence[set[_T]]):
+    """
+    Use a set to keep values unique
+    """
+
     seq_types: tuple[type[list[_T]], type[tuple[_T, ...]], type[set[_T]]]
     container: type[set[_T]]
 
 # See `Sequence` for the meaning of `_ContainerT`.
 class ValueSequence(Sequence[_ContainerT]):
+    """
+    A sequence of primitive types that are stored as a single attribute.
+    "val" is the default attribute
+    """
+
     attribute: str
     def to_tree(
         self, tagname: str, obj: Iterable[object], namespace: str | None = None  # type: ignore[override]
@@ -51,6 +66,10 @@ class _NestedSequenceToTreeObj(Sized, Iterable[_SupportsToTree], Protocol): ...
 
 # See `Sequence` for the meaning of `_ContainerT`.
 class NestedSequence(Sequence[_ContainerT]):
+    """
+    Wrap a sequence in an containing object
+    """
+
     count: bool
     expected_type: type[_SupportsFromTree]
     def to_tree(  # type: ignore[override]
@@ -62,12 +81,25 @@ class NestedSequence(Sequence[_ContainerT]):
 
 # `_T` is the type of the elements in the sequence.
 class MultiSequence(Sequence[list[_T]]):
+    """
+    Sequences can contain objects with different tags
+    """
+
     def __set__(self, instance: Serialisable | Strict, seq: tuple[_T, ...] | list[_T]) -> None: ...
     def to_tree(
         self, tagname: Unused, obj: Iterable[_SupportsToTree], namespace: str | None = None  # type: ignore[override]
-    ) -> Generator[Element, None, None]: ...
+    ) -> Generator[Element, None, None]:
+        """
+        Convert the sequence represented by the descriptor to an XML element
+        """
 
 class MultiSequencePart(Alias):
+    """
+    Allow a multisequence to be built up from parts
+
+    Excluded from the instance __elements__ or __attrs__ as is effectively an Alias
+    """
+
     expected_type: type[Incomplete]
     store: Incomplete
     def __init__(self, expected_type, store) -> None: ...

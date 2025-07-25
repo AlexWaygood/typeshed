@@ -1,3 +1,7 @@
+"""
+Provide the class Message and its subclasses.
+"""
+
 import ast
 from typing import Any, ClassVar
 
@@ -68,30 +72,79 @@ class LateFutureImport(Message):
     def __init__(self, filename: str, loc: ast.AST) -> None: ...
 
 class FutureFeatureNotDefined(Message):
+    """An undefined __future__ feature name was imported."""
+
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, name: str) -> None: ...
 
 class UnusedVariable(Message):
+    """
+    Indicates that a variable has been explicitly assigned to but not actually
+    used.
+    """
+
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, names: str) -> None: ...
 
 class UnusedAnnotation(Message):
+    """
+    Indicates that a variable has been explicitly annotated to but not actually
+    used.
+    """
+
     message_args: tuple[str]
     def __init__(self, filename: str, loc: ast.AST, names: str) -> None: ...
 
 class UnusedIndirectAssignment(Message):
+    """A `global` or `nonlocal` statement where the name is never reassigned"""
+
     message_args: tuple[str, str]
     def __init__(self, filename: str, loc: ast.AST, name: str) -> None: ...
 
-class ReturnOutsideFunction(Message): ...
-class YieldOutsideFunction(Message): ...
-class ContinueOutsideLoop(Message): ...
-class BreakOutsideLoop(Message): ...
-class DefaultExceptNotLast(Message): ...
-class TwoStarredExpressions(Message): ...
-class TooManyExpressionsInStarredAssignment(Message): ...
-class IfTuple(Message): ...
-class AssertTuple(Message): ...
+class ReturnOutsideFunction(Message):
+    """
+    Indicates a return statement outside of a function/method.
+    """
+
+class YieldOutsideFunction(Message):
+    """
+    Indicates a yield or yield from statement outside of a function/method.
+    """
+
+class ContinueOutsideLoop(Message):
+    """
+    Indicates a continue statement outside of a while or for loop.
+    """
+
+class BreakOutsideLoop(Message):
+    """
+    Indicates a break statement outside of a while or for loop.
+    """
+
+class DefaultExceptNotLast(Message):
+    """
+    Indicates an except: block as not the last exception handler.
+    """
+
+class TwoStarredExpressions(Message):
+    """
+    Two or more starred expressions in an assignment (a, *b, *c = d).
+    """
+
+class TooManyExpressionsInStarredAssignment(Message):
+    """
+    Too many expressions in an assignment with star-unpacking
+    """
+
+class IfTuple(Message):
+    """
+    Conditional test is a non-empty tuple literal, which are always True.
+    """
+
+class AssertTuple(Message):
+    """
+    Assertion test is a non-empty tuple literal, which are always True.
+    """
 
 class ForwardAnnotationSyntaxError(Message):
     message_args: tuple[str]

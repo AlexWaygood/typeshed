@@ -1,3 +1,18 @@
+"""
+Tables are created by passing the constructor a tuple of column widths, a tuple of row heights and the data in
+row order. Drawing of the table can be controlled by using a TableStyle instance. This allows control of the
+color and weight of the lines (if any), and the font, alignment and padding of the text.
+
+None values in the sequence of row heights or column widths, mean that the corresponding rows
+or columns should be automatically sized.
+
+All the cell values should be convertible to strings; embedded newline '\\n' characters
+cause the value to wrap (ie are like a traditional linefeed).
+
+See the test output from running this module as a script for a discussion of the method for constructing
+tables and table styles.
+"""
+
 from _typeshed import Incomplete
 from abc import abstractmethod
 from collections.abc import Collection, Iterable, Sequence
@@ -90,17 +105,36 @@ class Table(Flowable):
         cornerRadii: _CornerRadii | _UNSET_ | None = ...,
         renderCB: TableRenderCB | None = None,
     ) -> None: ...
-    def identity(self, maxLen: int | None = 30) -> str: ...
-    def normalizeData(self, data: Iterable[Iterable[Any]]) -> list[list[Any]]: ...
+    def identity(self, maxLen: int | None = 30) -> str:
+        """Identify our selves as well as possible"""
+
+    def normalizeData(self, data: Iterable[Iterable[Any]]) -> list[list[Any]]:
+        """Takes a block of input data (list of lists etc.) and
+        - coerces unicode strings to non-unicode UTF8
+        - coerces nulls to ''
+        -
+
+        """
+
     def minWidth(self) -> float: ...
     def setStyle(self, tblstyle: TableStyle | Iterable[_TableCommand]) -> None: ...
-    def normCellRange(self, sc: int, ec: int, sr: int, er: int) -> tuple[int, int, int, int]: ...
-    def onSplit(self, T: Table, byRow: int = 1) -> None: ...
+    def normCellRange(self, sc: int, ec: int, sr: int, er: int) -> tuple[int, int, int, int]:
+        """ensure cell range ends are with the table bounds"""
+
+    def onSplit(self, T: Table, byRow: int = 1) -> None:
+        """
+        This method will be called when the Table is split.
+        Special purpose tables can override to do special stuff.
+        """
+
     def draw(self) -> None: ...
 
-class LongTable(Table): ...
+class LongTable(Table):
+    """Henning von Bargen's changes will be active"""
 
 class TableRenderCB:
+    """table render callback abstract base klass to be called in Table.draw"""
+
     def __call__(self, T: Table, cmd: str, *args: Any) -> None: ...
     @abstractmethod
     def startTable(self, T: Table) -> None: ...

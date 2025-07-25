@@ -1,3 +1,5 @@
+""" """
+
 from ...extend.operation import ExtendedOperation
 from ...protocol.rfc3062 import PasswdModifyRequestValue, PasswdModifyResponseValue
 

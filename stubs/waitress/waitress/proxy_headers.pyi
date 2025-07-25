@@ -8,6 +8,8 @@ _T = TypeVar("_T")
 PROXY_HEADERS: Final[frozenset[str]]
 
 class Forwarded(NamedTuple):
+    """Forwarded(by, for_, host, proto)"""
+
     by: str
     for_: str
     host: str

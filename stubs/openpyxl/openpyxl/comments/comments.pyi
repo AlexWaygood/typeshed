@@ -10,10 +10,24 @@ class Comment:
     @property
     def parent(self) -> Any: ...  # AnyOf[Cell, MergedCell, ReadOnlyCell]
     def __eq__(self, other: Comment) -> bool: ...  # type: ignore[override]
-    def __copy__(self): ...
-    def bind(self, cell) -> None: ...
-    def unbind(self) -> None: ...
+    def __copy__(self):
+        """Create a detached copy of this comment."""
+
+    def bind(self, cell) -> None:
+        """
+        Bind comment to a particular cell
+        """
+
+    def unbind(self) -> None:
+        """
+        Unbind a comment from a cell
+        """
+
     @property
-    def text(self) -> str: ...
+    def text(self) -> str:
+        """
+        Any comment text stripped of all formatting.
+        """
+
     @text.setter
     def text(self, value: str) -> None: ...

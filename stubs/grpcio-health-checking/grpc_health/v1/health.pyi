@@ -1,3 +1,5 @@
+"""Reference implementation for health checking in gRPC Python."""
+
 from _typeshed import Incomplete
 from collections.abc import Callable
 from concurrent import futures
@@ -19,6 +21,8 @@ class _Watcher:
     def close(self) -> None: ...
 
 class HealthServicer(health_pb2_grpc.HealthServicer):
+    """Servicer handling RPCs for service statuses."""
+
     def __init__(
         self, experimental_non_blocking: bool = True, experimental_thread_pool: futures.ThreadPoolExecutor | None = None
     ) -> None: ...
@@ -31,5 +35,21 @@ class HealthServicer(health_pb2_grpc.HealthServicer):
     def Watch(
         self, request: health_pb2.HealthCheckRequest, context: ServicerContext, send_response_callback: Callable[..., Incomplete]
     ) -> None: ...
-    def set(self, service: str, status: health_pb2.HealthCheckResponse.ServingStatus) -> None: ...
-    def enter_graceful_shutdown(self) -> None: ...
+    def set(self, service: str, status: health_pb2.HealthCheckResponse.ServingStatus) -> None:
+        """Sets the status of a service.
+
+        Args:
+          service: string, the name of the service.
+          status: HealthCheckResponse.status enum value indicating the status of
+            the service
+        """
+
+    def enter_graceful_shutdown(self) -> None:
+        """Permanently sets the status of all services to NOT_SERVING.
+
+        This should be invoked when the server is entering a graceful shutdown
+        period. After this method is invoked, future attempts to set the status
+        of a service will be ignored.
+
+        This is an EXPERIMENTAL API.
+        """

@@ -33,5 +33,7 @@ tokenTypes: dict[str, int]
 tagTokenTypes: frozenset[int]
 prefixes: dict[str, str]
 
-class DataLossWarning(UserWarning): ...
+class DataLossWarning(UserWarning):
+    """Raised when the current tree is unable to represent the input data"""
+
 class _ReparseException(Exception): ...

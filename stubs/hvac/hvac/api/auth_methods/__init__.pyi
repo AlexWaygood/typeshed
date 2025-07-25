@@ -1,3 +1,5 @@
+"""Collection of classes for various Vault auth methods."""
+
 from _typeshed import Incomplete
 
 from hvac.api.auth_methods.approle import AppRole as AppRole
@@ -37,5 +39,7 @@ __all__ = (
 )
 
 class AuthMethods(VaultApiCategory):
+    """Auth Methods."""
+
     implemented_classes: Incomplete
     unimplemented_classes: Incomplete

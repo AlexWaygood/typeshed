@@ -1,6 +1,26 @@
+"""Extract reference documentation from the pypa/packaging source tree.
+
+In the process of copying, some unused methods / classes were removed.
+These include:
+
+- parse()
+- anything involving LegacyVersion
+
+This software is made available under the terms of *either* of the licenses
+found in LICENSE.APACHE or LICENSE.BSD. Contributions to this software is made
+under the terms of *both* these licenses.
+
+Vendored from:
+- https://github.com/pypa/packaging/
+- commit ba07d8287b4554754ac7178d177033ea3f75d489 (09/09/2021)
+"""
+
 __all__ = ["Version", "InvalidVersion", "VERSION_PATTERN"]
 
-class InvalidVersion(ValueError): ...
+class InvalidVersion(ValueError):
+    """
+    An invalid version was found, users should refer to PEP 440.
+    """
 
 class _BaseVersion:
     def __hash__(self) -> int: ...

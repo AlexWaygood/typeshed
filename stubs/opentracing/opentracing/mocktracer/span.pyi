@@ -7,6 +7,8 @@ from .context import SpanContext
 from .tracer import MockTracer
 
 class MockSpan(Span):
+    """MockSpan is a thread-safe implementation of opentracing.Span."""
+
     operation_name: str | None
     start_time: Any
     parent_id: int | None
@@ -24,9 +26,26 @@ class MockSpan(Span):
         start_time: float | None = None,
     ) -> None: ...
     @property
-    def tracer(self) -> MockTracer: ...
+    def tracer(self) -> MockTracer:
+        """Provides access to the :class:`Tracer` that created this
+        :class:`Span`.
+
+        :rtype: Tracer
+        :return: the :class:`Tracer` that created this :class:`Span`.
+        """
+
     @property
-    def context(self) -> SpanContext: ...
+    def context(self) -> SpanContext:
+        """Provides access to the :class:`SpanContext` associated with this
+        :class:`Span`.
+
+        The :class:`SpanContext` contains state that propagates from
+        :class:`Span` to :class:`Span` in a larger trace.
+
+        :rtype: SpanContext
+        :return: the :class:`SpanContext` associated with this :class:`Span`.
+        """
+
     def set_operation_name(self, operation_name: str) -> Self: ...
     def set_tag(self, key: str, value: str | bool | float) -> Self: ...
     def log_kv(self, key_values: dict[str, Any], timestamp: float | None = None) -> Self: ...

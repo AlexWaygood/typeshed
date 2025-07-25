@@ -1,3 +1,20 @@
+"""
+Root module.
+Gives direct access to some classes defined in submodules:
+
+* `fpdf.fpdf.FPDF`
+* `fpdf.enums.Align`
+* `fpdf.enums.TextMode`
+* `fpdf.enums.XPos`
+* `fpdf.enums.YPos`
+* `fpdf.errors.FPDFException`
+* `fpdf.fonts.FontFace`
+* `fpdf.fonts.TextStyle`
+* `fpdf.prefs.ViewerPreferences`
+* `fpdf.template.Template`
+* `fpdf.template.FlexTemplate`
+"""
+
 from pathlib import Path
 
 from .enums import Align as Align, TextMode as TextMode, XPos as XPos, YPos as YPos

@@ -1,3 +1,12 @@
+"""
+Matplotlib GUI progressbar decorator for iterators.
+
+Usage:
+>>> from tqdm.gui import trange, tqdm
+>>> for i in trange(10):
+...     ...
+"""
+
 from _typeshed import Incomplete, SupportsWrite
 from collections.abc import Iterable, Mapping
 from typing import NoReturn, TypeVar, overload
@@ -9,6 +18,8 @@ __all__ = ["tqdm_gui", "tgrange", "tqdm", "trange"]
 _T = TypeVar("_T")
 
 class tqdm_gui(std_tqdm[_T]):
+    """Experimental Matplotlib GUI version of tqdm!"""
+
     mpl: Incomplete
     plt: Incomplete
     toolbar: Incomplete
@@ -86,7 +97,8 @@ class tqdm_gui(std_tqdm[_T]):
         **kwargs,
     ) -> None: ...
 
-def tgrange(*args, **kwargs) -> tqdm_gui[int]: ...
+def tgrange(*args, **kwargs) -> tqdm_gui[int]:
+    """Shortcut for `tqdm.gui.tqdm(range(*args), **kwargs)`."""
 
 tqdm = tqdm_gui
 trange = tgrange

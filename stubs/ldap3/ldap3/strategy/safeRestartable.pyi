@@ -1,3 +1,5 @@
+""" """
+
 from .restartable import RestartableStrategy
 
 class SafeRestartableStrategy(RestartableStrategy):

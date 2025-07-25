@@ -1,3 +1,5 @@
+"""Reference implementation for reflection in gRPC Python."""
+
 from _typeshed import Incomplete
 from collections.abc import Iterable
 from typing import Final
@@ -17,12 +19,21 @@ _AnyServer: TypeAlias = grpc.Server | grpc.aio.Server
 _AnyServicerContext: TypeAlias = grpc.ServicerContext | grpc.aio.ServicerContext[Incomplete, Incomplete]
 
 class ReflectionServicer(BaseReflectionServicer):
+    """Servicer handling RPCs for service statuses."""
+
     def ServerReflectionInfo(
         self, request_iterator: Iterable[_reflection_pb2.ServerReflectionRequest], context: _AnyServicerContext
     ): ...
 
 def enable_server_reflection(
     service_names: Iterable[str], server: _AnyServer, pool: descriptor_pool.DescriptorPool | None = None
-) -> None: ...
+) -> None:
+    """Enables server reflection on a server.
+
+    Args:
+        service_names: Iterable of fully-qualified service names available.
+        server: grpc.Server to which reflection service will be added.
+        pool: DescriptorPool object to use (descriptor_pool.Default() if None).
+    """
 
 __all__ = ["SERVICE_NAME", "ReflectionServicer", "enable_server_reflection", "aio"]

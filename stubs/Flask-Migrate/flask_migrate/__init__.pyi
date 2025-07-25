@@ -77,8 +77,12 @@ class Migrate:
     ) -> Config: ...
 
 def catch_errors(f: Callable[_P, _T]) -> Callable[_P, _T]: ...
-def list_templates() -> None: ...
-def init(directory: str | None = None, multidb: bool = False, template: str | None = None, package: bool = False) -> None: ...
+def list_templates() -> None:
+    """List available templates."""
+
+def init(directory: str | None = None, multidb: bool = False, template: str | None = None, package: bool = False) -> None:
+    """Creates a new migration repository"""
+
 def revision(
     directory: str | None = None,
     message: str | None = None,
@@ -89,7 +93,9 @@ def revision(
     branch_label: str | None = None,
     version_path: str | None = None,
     rev_id: str | None = None,
-) -> None: ...
+) -> None:
+    """Create a new revision file."""
+
 def migrate(
     directory: str | None = None,
     message: str | None = None,
@@ -100,37 +106,62 @@ def migrate(
     version_path: str | None = None,
     rev_id: str | None = None,
     x_arg: str | Sequence[str] | None = None,
-) -> None: ...
-def edit(directory: str | None = None, revision: str = "current") -> None: ...
+) -> None:
+    """Alias for 'revision --autogenerate'"""
+
+def edit(directory: str | None = None, revision: str = "current") -> None:
+    """Edit current revision."""
+
 def merge(
     directory: str | None = None,
     revisions: str = "",
     message: str | None = None,
     branch_label: str | None = None,
     rev_id: str | None = None,
-) -> None: ...
+) -> None:
+    """Merge two revisions together.  Creates a new migration file"""
+
 def upgrade(
     directory: str | None = None,
     revision: str = "head",
     sql: bool = False,
     tag: str | None = None,
     x_arg: str | Sequence[str] | None = None,
-) -> None: ...
+) -> None:
+    """Upgrade to a later version"""
+
 def downgrade(
     directory: str | None = None,
     revision: str = "-1",
     sql: bool = False,
     tag: str | None = None,
     x_arg: str | Sequence[str] | None = None,
-) -> None: ...
-def show(directory: str | None = None, revision: str = "head") -> None: ...
+) -> None:
+    """Revert to a previous version"""
+
+def show(directory: str | None = None, revision: str = "head") -> None:
+    """Show the revision denoted by the given symbol."""
+
 def history(
     directory: str | None = None, rev_range: str | None = None, verbose: bool = False, indicate_current: bool = False
-) -> None: ...
-def heads(directory: str | None = None, verbose: bool = False, resolve_dependencies: bool = False) -> None: ...
-def branches(directory: str | None = None, verbose: bool = False) -> None: ...
-def current(directory: str | None = None, verbose: bool = False) -> None: ...
+) -> None:
+    """List changeset scripts in chronological order."""
+
+def heads(directory: str | None = None, verbose: bool = False, resolve_dependencies: bool = False) -> None:
+    """Show current available heads in the script directory"""
+
+def branches(directory: str | None = None, verbose: bool = False) -> None:
+    """Show current branch points"""
+
+def current(directory: str | None = None, verbose: bool = False) -> None:
+    """Display the current revision for each database."""
+
 def stamp(
     directory: str | None = None, revision: str = "head", sql: bool = False, tag: str | None = None, purge: bool = False
-) -> None: ...
-def check(directory: str | None = None) -> None: ...
+) -> None:
+    """'stamp' the revision table with the given revision; don't run any
+    migrations
+    """
+
+def check(directory: str | None = None) -> None:
+    """Check if there are any new operations to migrate"""

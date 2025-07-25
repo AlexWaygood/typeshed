@@ -1,3 +1,5 @@
+""" """
+
 def bind_operation(
     version, authentication, name: str = "", password=None, sasl_mechanism=None, sasl_credentials=None, auto_encode: bool = False
 ): ...

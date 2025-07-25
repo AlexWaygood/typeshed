@@ -3,6 +3,11 @@ from _typeshed import Incomplete
 from reportlab.graphics.barcode.common import Barcode
 
 class ECC200DataMatrix(Barcode):
+    """This code only supports a Type 12 (44x44) C40 encoded data matrix.
+    This is the size and encoding that Royal Mail wants on all mail from October 1st 2015.
+    see https://bitbucket.org/rptlab/reportlab/issues/69/implementations-of-code-128-auto-and-data
+    """
+
     barWidth: int
     row_modules: int
     col_modules: int

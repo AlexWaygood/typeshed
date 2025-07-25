@@ -15,6 +15,8 @@ horizontal_alignments: Final[tuple[_HorizontalAlignmentsType, ...]]
 vertical_aligments: Final[tuple[_VerticalAlignmentsType, ...]]
 
 class Alignment(Serialisable):
+    """Alignment options for use in styles."""
+
     tagname: ClassVar[str]
     horizontal: NoneSet[_HorizontalAlignmentsType]
     vertical: NoneSet[_VerticalAlignmentsType]

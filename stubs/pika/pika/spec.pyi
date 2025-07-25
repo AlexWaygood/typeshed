@@ -1,3 +1,15 @@
+"""
+AMQP Specification
+==================
+This module implements the constants and classes that comprise AMQP protocol
+level constructs. It should rarely be directly referenced outside of Pika's
+own internal use.
+.. note:: Auto-generated code by codegen.py, do not edit directly. Pull
+requests to this file without accompanying ``utils/codegen.py`` changes will be
+rejected.
+
+"""
+
 import builtins
 from _typeshed import Incomplete
 from collections.abc import Mapping

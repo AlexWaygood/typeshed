@@ -10,6 +10,27 @@ __all__ = ("FieldList",)
 _BoundFieldT = TypeVar("_BoundFieldT", bound=Field)
 
 class FieldList(Field, Generic[_BoundFieldT]):
+    """
+    Encapsulate an ordered list of multiple instances of the same field type,
+    keeping data as a list.
+
+    >>> authors = FieldList(StringField('Name', [validators.DataRequired()]))
+
+    :param unbound_field:
+        A partially-instantiated field definition, just like that would be
+        defined on a form directly.
+    :param min_entries:
+        if provided, always have at least this many entries on the field,
+        creating blank ones if the provided input does not specify a sufficient
+        amount.
+    :param max_entries:
+        accept no more than this many entries as input, even if more exist in
+        formdata.
+    :param separator:
+        A string which will be suffixed to this field's name to create the
+        prefix to enclosed list entries. The default is fine for most uses.
+    """
+
     unbound_field: UnboundField[_BoundFieldT]
     min_entries: int
     max_entries: int | None
@@ -42,8 +63,17 @@ class FieldList(Field, Generic[_BoundFieldT]):
         _translations: _SupportsGettextAndNgettext | None = None,
         _meta: DefaultMeta | None = None,
     ) -> None: ...
-    def append_entry(self, data: Any = ...) -> _BoundFieldT: ...
-    def pop_entry(self) -> _BoundFieldT: ...
+    def append_entry(self, data: Any = ...) -> _BoundFieldT:
+        """
+        Create a new entry with optional default data.
+
+        Entries added in this way will *not* receive formdata however, and can
+        only receive object data.
+        """
+
+    def pop_entry(self) -> _BoundFieldT:
+        """Removes the last entry from the list and returns it."""
+
     def __iter__(self) -> Iterator[_BoundFieldT]: ...
     def __len__(self) -> int: ...
     def __getitem__(self, index: int) -> _BoundFieldT: ...

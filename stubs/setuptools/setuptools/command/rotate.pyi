@@ -4,6 +4,8 @@ from typing import ClassVar
 from .. import Command
 
 class rotate(Command):
+    """Delete older distributions"""
+
     description: str
     user_options: ClassVar[list[tuple[str, str, str]]]
     boolean_options: ClassVar[list[str]]

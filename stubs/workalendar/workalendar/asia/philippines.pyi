@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import ChineseNewYearCalendar, IslamicMixin, WesternMixin
 
 class Philippines(WesternMixin, IslamicMixin, ChineseNewYearCalendar):
+    """Philippines"""
+
     include_labour_day: ClassVar[bool]
     include_new_years_eve: ClassVar[bool]
     include_holy_thursday: ClassVar[bool]

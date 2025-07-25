@@ -1,3 +1,10 @@
+"""authlib.jose
+~~~~~~~~~~~~
+
+JOSE implementation in Authlib. Tracking the status of JOSE specs at
+https://tools.ietf.org/wg/jose/
+"""
+
 from .errors import JoseError as JoseError
 from .rfc7515 import (
     JsonWebSignature as JsonWebSignature,

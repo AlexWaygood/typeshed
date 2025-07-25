@@ -1,3 +1,7 @@
+"""
+Richtext definition
+"""
+
 from _typeshed import ConvertibleToFloat, ConvertibleToInt, Incomplete
 from typing import ClassVar, Literal
 from typing_extensions import TypeAlias
@@ -36,6 +40,10 @@ class PhoneticText(Serialisable):
     def __init__(self, sb: ConvertibleToInt, eb: ConvertibleToInt, t: object = None) -> None: ...
 
 class InlineFont(Font):
+    """
+    Font for inline text because, yes what you need are different objects with the same elements but different constraints.
+    """
+
     tagname: ClassVar[str]
     rFont: NestedString[Literal[True]]
     # Same as parent
@@ -95,4 +103,7 @@ class Text(Serialisable):
     __elements__: ClassVar[tuple[str, ...]]
     def __init__(self, t: object = None, r=(), rPh=(), phoneticPr: _PhoneticProperties | None = None) -> None: ...
     @property
-    def content(self) -> str: ...
+    def content(self) -> str:
+        """
+        Text stripped of all formatting
+        """

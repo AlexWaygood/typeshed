@@ -40,6 +40,8 @@ class Selection(Serialisable):
     ) -> None: ...
 
 class SheetView(Serialisable):
+    """Information about the visible portions of this sheet."""
+
     tagname: ClassVar[str]
     windowProtection: Bool[Literal[True]]
     showFormulas: Bool[Literal[True]]
@@ -96,4 +98,7 @@ class SheetViewList(Serialisable):
     __elements__: ClassVar[tuple[str, ...]]
     def __init__(self, sheetView: SheetView | None = None, extLst: Unused = None) -> None: ...
     @property
-    def active(self) -> SheetView: ...
+    def active(self) -> SheetView:
+        """
+        Returns the first sheet view which is assumed to be active
+        """

@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class Angola(WesternCalendar):
+    """Angola"""
+
     include_labour_day: ClassVar[bool]
     labour_day_label: ClassVar[str]
     include_fat_tuesday: ClassVar[bool]

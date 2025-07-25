@@ -8,6 +8,11 @@ from .base import Key
 def get_random_bytes(num_bytes: int) -> bytes: ...
 
 class HMACKey(Key):
+    """
+    Performs signing and verification operations using HMAC
+    and the specified hash function.
+    """
+
     HASHES: dict[str, Callable[[bytes], _Hash]]
     prepared_key: bytes
     def __init__(

@@ -1,3 +1,5 @@
+"""Lazy loading of moved objects"""
+
 # Stubs for six.moves
 #
 # Note: Commented out items means they weren't implemented at the time.

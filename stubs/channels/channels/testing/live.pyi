@@ -14,6 +14,13 @@ _StaticWrapper: TypeAlias = Callable[[ProtocolTypeRouter], _ChannelApplication]
 def make_application(*, static_wrapper: _StaticWrapper | None) -> Any: ...
 
 class ChannelsLiveServerTestCase(TransactionTestCase):
+    """
+    Does basically the same as TransactionTestCase but also launches a
+    live Daphne server in a separate process, so
+    that the tests may use another test framework, such as Selenium,
+    instead of the built-in dummy client.
+    """
+
     host: ClassVar[str] = "localhost"
     ProtocolServerProcess: ClassVar[type[DaphneProcess]] = ...
     static_wrapper: ClassVar[type[ASGIStaticFilesHandler]] = ...

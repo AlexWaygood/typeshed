@@ -12,6 +12,10 @@ class DummyWorksheet:
     def __init__(self, title: str) -> None: ...
 
 class Reference(Strict):
+    """
+    Normalise cell range references
+    """
+
     min_row: MinMax[int, Literal[False]]
     max_row: MinMax[int, Literal[False]]
     min_col: MinMax[int, Literal[False]]
@@ -42,9 +46,21 @@ class Reference(Strict):
     def __len__(self) -> int: ...
     def __eq__(self, other: object) -> bool: ...
     @property
-    def rows(self) -> Generator[Reference, None, None]: ...
+    def rows(self) -> Generator[Reference, None, None]:
+        """
+        Return all rows in the range
+        """
+
     @property
-    def cols(self) -> Generator[Reference, None, None]: ...
-    def pop(self): ...
+    def cols(self) -> Generator[Reference, None, None]:
+        """
+        Return all columns in the range
+        """
+
+    def pop(self):
+        """
+        Return and remove the first cell
+        """
+
     @property
     def sheetname(self) -> str: ...

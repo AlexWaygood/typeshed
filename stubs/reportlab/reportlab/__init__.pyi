@@ -1,3 +1,5 @@
+"""The Reportlab PDF generation library."""
+
 from _typeshed import SupportsRichComparison
 from typing import Final, Literal, TypeVar
 

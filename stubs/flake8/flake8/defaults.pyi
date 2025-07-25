@@ -1,3 +1,5 @@
+"""Constants that define defaults."""
+
 from re import Pattern
 from typing import Final
 

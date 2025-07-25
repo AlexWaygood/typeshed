@@ -33,6 +33,51 @@ _CommandT = TypeVar("_CommandT", bound=_Command)
 __all__ = ["Distribution"]
 
 class Distribution(_Distribution):
+    """Distribution with support for tests and package data
+
+    This is an enhanced version of 'distutils.dist.Distribution' that
+    effectively adds the following new optional keyword arguments to 'setup()':
+
+     'install_requires' -- a string or sequence of strings specifying project
+        versions that the distribution requires when installed, in the format
+        used by 'pkg_resources.require()'.  They will be installed
+        automatically when the package is installed.  If you wish to use
+        packages that are not available in PyPI, or want to give your users an
+        alternate download location, you can add a 'find_links' option to the
+        '[easy_install]' section of your project's 'setup.cfg' file, and then
+        setuptools will scan the listed web pages for links that satisfy the
+        requirements.
+
+     'extras_require' -- a dictionary mapping names of optional "extras" to the
+        additional requirement(s) that using those extras incurs. For example,
+        this::
+
+            extras_require = dict(reST = ["docutils>=0.3", "reSTedit"])
+
+        indicates that the distribution can optionally provide an extra
+        capability called "reST", but it can only be used if docutils and
+        reSTedit are installed.  If the user installs your package using
+        EasyInstall and requests one of your extras, the corresponding
+        additional requirements will be installed if needed.
+
+     'package_data' -- a dictionary mapping package names to lists of filenames
+        or globs to use to find data files contained in the named packages.
+        If the dictionary has filenames or globs listed under '""' (the empty
+        string), those names will be searched for in every package, in addition
+        to any names for the specific package.  Data files found using these
+        names/globs will be installed along with the package, in the same
+        location as the package.  Note that globs are allowed to reference
+        the contents of non-package subdirectories, as long as you use '/' as
+        a path separator.  (Globs are automatically converted to
+        platform-specific paths at runtime.)
+
+    In addition to these new keywords, this class also has several new methods
+    for manipulating the distribution's contents.  For example, the 'include()'
+    and 'exclude()' methods can be thought of as in-place add and subtract
+    commands that add or remove packages, modules, extensions, and so on from
+    the distribution.
+    """
+
     include_package_data: bool | None
     exclude_package_data: dict[str, list[str]] | None
     src_root: str | None
@@ -40,13 +85,22 @@ class Distribution(_Distribution):
     setup_requires: list[str]
     def __init__(self, attrs: MutableMapping[str, Incomplete] | None = None) -> None: ...
     def parse_config_files(self, filenames: Iterable[StrPath] | None = None, ignore_option_errors: bool = False) -> None: ...
-    def fetch_build_eggs(self, requires: str | Iterable[str]) -> list[metadata.Distribution]: ...
+    def fetch_build_eggs(self, requires: str | Iterable[str]) -> list[metadata.Distribution]:
+        """Resolve pre-setup requirements"""
+
     def get_egg_cache_dir(self) -> str: ...
-    def fetch_build_egg(self, req): ...
+    def fetch_build_egg(self, req):
+        """Fetch an egg needed for building"""
     # NOTE: Commands that setuptools doesn't re-expose are considered deprecated (they must be imported from distutils directly)
     # So we're not listing them here. This list comes directly from the setuptools/command folder. Minus the test command.
     @overload  # type: ignore[override]
-    def get_command_obj(self, command: Literal["alias"], create: Literal[1, True] = 1) -> alias: ...
+    def get_command_obj(self, command: Literal["alias"], create: Literal[1, True] = 1) -> alias:
+        """Return the command object for 'command'.  Normally this object
+        is cached on a previous call to 'get_command_obj()'; if no command
+        object for 'command' is in the cache, then we either create and
+        return it (if 'create' is true) or return None.
+        """
+
     @overload
     def get_command_obj(self, command: Literal["bdist_egg"], create: Literal[1, True] = 1) -> bdist_egg: ...
     @overload
@@ -93,7 +147,9 @@ class Distribution(_Distribution):
     @overload
     def get_command_obj(self, command: str, create: Literal[0, False]) -> Command | None: ...
     @overload
-    def get_command_class(self, command: Literal["alias"]) -> type[alias]: ...
+    def get_command_class(self, command: Literal["alias"]) -> type[alias]:
+        """Pluggable version of get_command_class()"""
+
     @overload
     def get_command_class(self, command: Literal["bdist_egg"]) -> type[bdist_egg]: ...
     @overload
@@ -137,7 +193,26 @@ class Distribution(_Distribution):
     @overload
     def get_command_class(self, command: str) -> type[Command]: ...
     @overload  # type: ignore[override]
-    def reinitialize_command(self, command: Literal["alias"], reinit_subcommands: bool = False) -> alias: ...
+    def reinitialize_command(self, command: Literal["alias"], reinit_subcommands: bool = False) -> alias:
+        """Reinitializes a command to the state it was in when first
+        returned by 'get_command_obj()': ie., initialized but not yet
+        finalized.  This provides the opportunity to sneak option
+        values in programmatically, overriding or supplementing
+        user-supplied values from the config files and command line.
+        You'll have to re-finalize the command object (by calling
+        'finalize_options()' or 'ensure_finalized()') before using it for
+        real.
+
+        'command' should be a command name (string) or command object.  If
+        'reinit_subcommands' is true, also reinitializes the command's
+        sub-commands, as declared by the 'sub_commands' class attribute (if
+        it has one).  See the "install" command for an example.  Only
+        reinitializes the sub-commands that actually matter, ie. those
+        whose test predicates return true.
+
+        Returns the reinitialized command object.
+        """
+
     @overload
     def reinitialize_command(self, command: Literal["bdist_egg"], reinit_subcommands: bool = False) -> bdist_egg: ...
     @overload
@@ -184,12 +259,66 @@ class Distribution(_Distribution):
     def reinitialize_command(self, command: str, reinit_subcommands: bool = False) -> Command: ...
     @overload
     def reinitialize_command(self, command: _CommandT, reinit_subcommands: bool = False) -> _CommandT: ...
-    def include(self, **attrs) -> None: ...
-    def exclude_package(self, package: str) -> None: ...
-    def has_contents_for(self, package: str) -> bool: ...
-    def exclude(self, **attrs) -> None: ...
-    def get_cmdline_options(self) -> dict[str, dict[str, str | None]]: ...
-    def iter_distribution_names(self) -> Iterator[str]: ...
-    def handle_display_options(self, option_order): ...
+    def include(self, **attrs) -> None:
+        """Add items to distribution that are named in keyword arguments
 
-class DistDeprecationWarning(SetuptoolsDeprecationWarning): ...
+        For example, 'dist.include(py_modules=["x"])' would add 'x' to
+        the distribution's 'py_modules' attribute, if it was not already
+        there.
+
+        Currently, this method only supports inclusion for attributes that are
+        lists or tuples.  If you need to add support for adding to other
+        attributes in this or a subclass, you can add an '_include_X' method,
+        where 'X' is the name of the attribute.  The method will be called with
+        the value passed to 'include()'.  So, 'dist.include(foo={"bar":"baz"})'
+        will try to call 'dist._include_foo({"bar":"baz"})', which can then
+        handle whatever special inclusion logic is needed.
+        """
+
+    def exclude_package(self, package: str) -> None:
+        """Remove packages, modules, and extensions in named package"""
+
+    def has_contents_for(self, package: str) -> bool:
+        """Return true if 'exclude_package(package)' would do something"""
+
+    def exclude(self, **attrs) -> None:
+        """Remove items from distribution that are named in keyword arguments
+
+        For example, 'dist.exclude(py_modules=["x"])' would remove 'x' from
+        the distribution's 'py_modules' attribute.  Excluding packages uses
+        the 'exclude_package()' method, so all of the package's contained
+        packages, modules, and extensions are also excluded.
+
+        Currently, this method only supports exclusion from attributes that are
+        lists or tuples.  If you need to add support for excluding from other
+        attributes in this or a subclass, you can add an '_exclude_X' method,
+        where 'X' is the name of the attribute.  The method will be called with
+        the value passed to 'exclude()'.  So, 'dist.exclude(foo={"bar":"baz"})'
+        will try to call 'dist._exclude_foo({"bar":"baz"})', which can then
+        handle whatever special exclusion logic is needed.
+        """
+
+    def get_cmdline_options(self) -> dict[str, dict[str, str | None]]:
+        """Return a '{cmd: {opt:val}}' map of all command-line options
+
+        Option names are all long, but do not include the leading '--', and
+        contain dashes rather than underscores.  If the option doesn't take
+        an argument (e.g. '--quiet'), the 'val' is 'None'.
+
+        Note that options provided by config files are intentionally excluded.
+        """
+
+    def iter_distribution_names(self) -> Iterator[str]:
+        """Yield all packages, modules, and extension names in distribution"""
+
+    def handle_display_options(self, option_order):
+        """If there were any non-global "display-only" options
+        (--help-commands or the metadata display options) on the command
+        line, display the requested info and return true; else return
+        false.
+        """
+
+class DistDeprecationWarning(SetuptoolsDeprecationWarning):
+    """Class for warning about deprecations in dist in
+    setuptools. Not ignored by default, unlike DeprecationWarning.
+    """

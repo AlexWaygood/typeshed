@@ -9,6 +9,8 @@ CONTENT_TYPE_MULTI_PART: str
 log: Logger
 
 class OAuth1(AuthBase):
+    """Signs the request using OAuth 1 (RFC5849)"""
+
     client_class: type[Client]
     client: Client
     force_include_body: bool

@@ -1,3 +1,10 @@
+"""
+requests.exceptions
+~~~~~~~~~~~~~~~~~~~
+
+This module contains the set of Requests' exceptions.
+"""
+
 from typing import Any
 
 from urllib3.exceptions import HTTPError as BaseHTTPError
@@ -6,37 +13,94 @@ from .models import Request, Response
 from .sessions import PreparedRequest
 
 class RequestException(OSError):
+    """There was an ambiguous exception that occurred while handling your
+    request.
+    """
+
     response: Response | None
     request: Request | PreparedRequest | None
-    def __init__(
-        self, *args: object, request: Request | PreparedRequest | None = ..., response: Response | None = ...
-    ) -> None: ...
+    def __init__(self, *args: object, request: Request | PreparedRequest | None = ..., response: Response | None = ...) -> None:
+        """Initialize RequestException with `request` and `response` objects."""
 
-class InvalidJSONError(RequestException): ...
-class JSONDecodeError(InvalidJSONError): ...
+class InvalidJSONError(RequestException):
+    """A JSON error occurred."""
+
+class JSONDecodeError(InvalidJSONError):
+    """Couldn't decode the text into json"""
 
 class HTTPError(RequestException):
+    """An HTTP error occurred."""
+
     request: Request | PreparedRequest | Any
     response: Response | Any
 
-class ConnectionError(RequestException): ...
-class ProxyError(ConnectionError): ...
-class SSLError(ConnectionError): ...
-class Timeout(RequestException): ...
-class ConnectTimeout(ConnectionError, Timeout): ...
-class ReadTimeout(Timeout): ...
-class URLRequired(RequestException): ...
-class TooManyRedirects(RequestException): ...
-class MissingSchema(RequestException, ValueError): ...
-class InvalidSchema(RequestException, ValueError): ...
-class InvalidURL(RequestException, ValueError): ...
-class InvalidHeader(RequestException, ValueError): ...
-class InvalidProxyURL(InvalidURL): ...
-class ChunkedEncodingError(RequestException): ...
-class ContentDecodingError(RequestException, BaseHTTPError): ...
-class StreamConsumedError(RequestException, TypeError): ...
-class RetryError(RequestException): ...
-class UnrewindableBodyError(RequestException): ...
-class RequestsWarning(Warning): ...
-class FileModeWarning(RequestsWarning, DeprecationWarning): ...
-class RequestsDependencyWarning(RequestsWarning): ...
+class ConnectionError(RequestException):
+    """A Connection error occurred."""
+
+class ProxyError(ConnectionError):
+    """A proxy error occurred."""
+
+class SSLError(ConnectionError):
+    """An SSL error occurred."""
+
+class Timeout(RequestException):
+    """The request timed out.
+
+    Catching this error will catch both
+    :exc:`~requests.exceptions.ConnectTimeout` and
+    :exc:`~requests.exceptions.ReadTimeout` errors.
+    """
+
+class ConnectTimeout(ConnectionError, Timeout):
+    """The request timed out while trying to connect to the remote server.
+
+    Requests that produced this error are safe to retry.
+    """
+
+class ReadTimeout(Timeout):
+    """The server did not send any data in the allotted amount of time."""
+
+class URLRequired(RequestException):
+    """A valid URL is required to make a request."""
+
+class TooManyRedirects(RequestException):
+    """Too many redirects."""
+
+class MissingSchema(RequestException, ValueError):
+    """The URL scheme (e.g. http or https) is missing."""
+
+class InvalidSchema(RequestException, ValueError):
+    """The URL scheme provided is either invalid or unsupported."""
+
+class InvalidURL(RequestException, ValueError):
+    """The URL provided was somehow invalid."""
+
+class InvalidHeader(RequestException, ValueError):
+    """The header value provided was somehow invalid."""
+
+class InvalidProxyURL(InvalidURL):
+    """The proxy URL provided is invalid."""
+
+class ChunkedEncodingError(RequestException):
+    """The server declared chunked encoding but sent an invalid chunk."""
+
+class ContentDecodingError(RequestException, BaseHTTPError):
+    """Failed to decode response content."""
+
+class StreamConsumedError(RequestException, TypeError):
+    """The content for this response was already consumed."""
+
+class RetryError(RequestException):
+    """Custom retries logic failed"""
+
+class UnrewindableBodyError(RequestException):
+    """Requests encountered an error when trying to rewind a body."""
+
+class RequestsWarning(Warning):
+    """Base warning for Requests."""
+
+class FileModeWarning(RequestsWarning, DeprecationWarning):
+    """A file was opened in text mode, but Requests determined its binary length."""
+
+class RequestsDependencyWarning(RequestsWarning):
+    """An imported dependency doesn't match the expected version range."""

@@ -1,3 +1,5 @@
+"""Generated protocol buffer code."""
+
 from _typeshed import Incomplete
 from collections.abc import Iterable, Mapping
 from typing import ClassVar, final

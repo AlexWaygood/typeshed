@@ -1,3 +1,11 @@
+"""
+oauthlib.oauth1
+~~~~~~~~~~~~~~
+
+This module is a wrapper for the most recent implementation of OAuth 1.0 Client
+and Server classes.
+"""
+
 from .rfc5849 import (
     SIGNATURE_HMAC as SIGNATURE_HMAC,
     SIGNATURE_HMAC_SHA1 as SIGNATURE_HMAC_SHA1,

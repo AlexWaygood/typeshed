@@ -1,3 +1,10 @@
+"""proxy module passlib.hash
+
+this module is in fact an object which lazy-loads
+the requested password hash algorithm from wherever it has been stored.
+it acts as a thin wrapper around :func:`passlib.registry.get_crypt_handler`.
+"""
+
 from passlib.handlers.argon2 import argon2 as argon2
 from passlib.handlers.bcrypt import bcrypt as bcrypt, bcrypt_sha256 as bcrypt_sha256
 from passlib.handlers.cisco import cisco_asa as cisco_asa, cisco_pix as cisco_pix, cisco_type7 as cisco_type7

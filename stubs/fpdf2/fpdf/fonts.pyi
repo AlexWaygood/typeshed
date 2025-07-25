@@ -1,3 +1,12 @@
+"""
+Font-related classes & constants.
+Includes the definition of the character widths of all PDF standard fonts.
+
+The contents of this module are internal to fpdf2, and not part of the public API.
+They may change at any time without prior warning or any deprecation period,
+in non-backward-compatible ways.
+"""
+
 import dataclasses
 from _typeshed import Incomplete, Unused
 from collections import defaultdict
@@ -20,6 +29,11 @@ class HarfBuzzFont(Incomplete):  # derives from uharfbuzz.Font
 
 @dataclass
 class FontFace:
+    """
+    Represent basic font styling properties.
+    This is a subset of `fpdf.graphics_state.GraphicsStateMixin` properties.
+    """
+
     family: str | None
     emphasis: TextEmphasis | None
     size_pt: int | None
@@ -39,12 +53,24 @@ class FontFace:
 
     @overload
     @staticmethod
-    def combine(default_style: None, override_style: None) -> None: ...  # type: ignore[misc]
+    def combine(default_style: None, override_style: None) -> None:  # type: ignore[misc]
+        """
+        Create a combined FontFace with all the supplied features of the two styles. When both
+        the default and override styles provide a feature, prefer the override style.
+        Override specified FontFace style features
+        Override this FontFace's values with the values of `other`.
+        Values of `other` that are None in this FontFace will be kept unchanged.
+        """
+
     @overload
     @staticmethod
     def combine(default_style: FontFace | None, override_style: FontFace | None) -> FontFace: ...
 
 class TextStyle(FontFace):
+    """
+    Subclass of `FontFace` that allows to specify vertical & horizontal spacing
+    """
+
     t_margin: int
     l_margin: int | Align
     b_margin: int
@@ -71,7 +97,11 @@ class TextStyle(FontFace):
         t_margin: int | None = None,
         l_margin: int | None = None,
         b_margin: int | None = None,
-    ) -> TextStyle: ...
+    ) -> TextStyle:
+        """
+        Create a new TextStyle instance, with new values for some attributes.
+        Same as `dataclasses.replace()`
+        """
 
 @deprecated("fpdf.TitleStyle is deprecated since 2.7.10. It has been replaced by fpdf.TextStyle.")
 class TitleStyle(TextStyle): ...
@@ -116,10 +146,24 @@ class TTFFont:
     def __init__(self, fpdf, font_file_path, fontkey: str, style: int) -> None: ...
     def close(self) -> None: ...
     def get_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
-    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params): ...
-    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def shaped_text_width(self, text: str, font_size_pt: int, text_shaping_params):
+        """
+        When texts are shaped, the length of a string is not always the sum of all individual character widths
+        This method will invoke harfbuzz to perform the text shaping and return the sum of "x_advance"
+        and "x_offset" for each glyph. This method works for "left to right" or "right to left" texts.
+        """
+
+    def perform_harfbuzz_shaping(self, text: str, font_size_pt: int, text_shaping_params):
+        """
+        This method invokes Harfbuzz to perform text shaping of the input string
+        """
+
     def encode_text(self, text: str) -> str: ...
-    def shape_text(self, text: str, font_size_pt: int, text_shaping_params): ...
+    def shape_text(self, text: str, font_size_pt: int, text_shaping_params):
+        """
+        This method will invoke harfbuzz for text shaping, include the mapping code
+        of the glyphs on the subset and map input characters to the cluster codes
+        """
 
 class PDFFontDescriptor(PDFObject):
     type: Incomplete
@@ -136,6 +180,12 @@ class PDFFontDescriptor(PDFObject):
 
 @dataclass(order=True)
 class Glyph:
+    """
+    This represents one glyph on the font
+    Unicode is a tuple because ligatures or character substitution
+    can map a sequence of unicode characters to a single glyph
+    """
+
     glyph_id: int
     unicode: tuple[Incomplete, ...]
     glyph_name: str
@@ -143,6 +193,17 @@ class Glyph:
     def __hash__(self) -> int: ...
 
 class SubsetMap:
+    """
+    Holds a mapping of used characters and their position in the font's subset
+
+    Characters that must be mapped on their actual unicode must be part of the
+    `identities` list during object instantiation. These non-negative values should
+    only appear once in the list. `pick()` can be used to get the characters
+    corresponding position in the subset. If it's not yet part of the object, a new
+    position is acquired automatically. This implementation always tries to return
+    the lowest possible representation.
+    """
+
     font: TTFFont
     def __init__(self, font: TTFFont) -> None: ...
     def __len__(self) -> int: ...

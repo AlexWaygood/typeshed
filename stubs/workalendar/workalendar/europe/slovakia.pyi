@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class Slovakia(WesternCalendar):
+    """Slovakia"""
+
     include_epiphany: ClassVar[bool]
     include_easter_monday: ClassVar[bool]
     include_good_friday: ClassVar[bool]

@@ -33,10 +33,30 @@ class UPCA(Ean13BarcodeWidget):
     codeName: str
 
 class Ean5BarcodeWidget(Ean13BarcodeWidget):
+    """
+    EAN-5 barcodes can print the human readable price, set:
+        price=True
+    """
+
     codeName: str
     def draw(self): ...
 
 class ISBNBarcodeWidget(Ean13BarcodeWidget):
+    """
+    ISBN Barcodes optionally print the EAN-5 supplemental price
+    barcode (with the price in dollars or pounds). Set price to a string
+    that follows the EAN-5 for ISBN spec:
+
+        leading digit 0, 1 = GBP
+                      3    = AUD
+                      4    = NZD
+                      5    = USD
+                      6    = CAD
+        next 4 digits = price between 00.00 and 99.98, i.e.:
+
+        price='52499' # $24.99 USD
+    """
+
     codeName: str
     def draw(self): ...
 

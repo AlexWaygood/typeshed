@@ -10,4 +10,9 @@ DEFAULT_INTERVAL: Final = 300
 class RulePoller:
     def __init__(self, cache: RuleCache, connector: ServiceConnector) -> None: ...
     def start(self) -> None: ...
-    def wake_up(self) -> None: ...
+    def wake_up(self) -> None:
+        """
+        Force the rule poller to pull the sampling rules from the service
+        regardless of the polling interval.
+        This method is intended to be used by ``TargetPoller`` only.
+        """

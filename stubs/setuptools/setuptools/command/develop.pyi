@@ -6,6 +6,8 @@ from setuptools import Command
 from setuptools.warnings import SetuptoolsDeprecationWarning
 
 class develop(Command):
+    """Set up package for development"""
+
     user_options: ClassVar[list[tuple[str, str | None, str]]]
     boolean_options: ClassVar[list[str]]
     install_dir: Incomplete

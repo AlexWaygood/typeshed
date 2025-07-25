@@ -1,3 +1,11 @@
+"""
+This extension provides X Protocol control over the VESA Display
+Power Management Signaling (DPMS) characteristics of video boards
+under control of the X Window System.
+
+Documentation: https://www.x.org/releases/X11R7.7/doc/xextproto/dpms.html
+"""
+
 from _typeshed import Unused
 from typing import Final, Literal
 

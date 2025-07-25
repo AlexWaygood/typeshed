@@ -8,6 +8,8 @@ from reportlab.lib.validators import *
 __version__: Final[str]
 
 class TableWidget(Widget):
+    """A two dimensions table of labels"""
+
     x: Incomplete
     y: Incomplete
     width: int
@@ -27,6 +29,15 @@ class TableWidget(Widget):
     alignment: str
     textAnchor: str
     def __init__(self, x: int = 10, y: int = 10, **kw) -> None: ...
-    def demo(self): ...
-    def draw(self): ...
-    def preProcessData(self, data): ...
+    def demo(self):
+        """returns a sample of this widget with data"""
+
+    def draw(self):
+        """returns a group of shapes"""
+
+    def preProcessData(self, data):
+        """preprocess and return a new array with at least one row
+        and column (use a None) if needed, and all rows the same
+        length (adding Nones if needed)
+
+        """

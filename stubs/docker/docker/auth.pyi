@@ -20,11 +20,31 @@ class AuthConfig(dict[str, Incomplete]):
     @classmethod
     def parse_auth(
         cls, entries: Mapping[str, dict[Incomplete, Incomplete]], raise_on_error: bool = False
-    ) -> dict[str, Incomplete]: ...
+    ) -> dict[str, Incomplete]:
+        """
+        Parses authentication entries
+
+        Args:
+          entries:        Dict of authentication entries.
+          raise_on_error: If set to true, an invalid format will raise
+                          InvalidConfigFile
+
+        Returns:
+          Authentication registry.
+        """
+
     @classmethod
     def load_config(
         cls, config_path: FileDescriptorOrPath | None, config_dict: dict[str, Incomplete] | None, credstore_env=None
-    ) -> Self: ...
+    ) -> Self:
+        """
+        Loads authentication data from a Docker configuration file in the given
+        root directory or if config_path is passed use given path.
+        Lookup priority:
+            explicit config_path parameter > DOCKER_CONFIG environment
+            variable > ~/.docker/config.json > ~/.dockercfg
+        """
+
     @property
     def auths(self) -> dict[str, Incomplete]: ...
     @property
@@ -33,7 +53,14 @@ class AuthConfig(dict[str, Incomplete]):
     def cred_helpers(self): ...
     @property
     def is_empty(self) -> bool: ...
-    def resolve_authconfig(self, registry: str | None = None): ...
+    def resolve_authconfig(self, registry: str | None = None):
+        """
+        Returns the authentication data from the given auth configuration for a
+        specific registry. As with the Docker client, legacy entries in the
+        config with full URLs are stripped down to hostnames before checking
+        for a match. Returns None if no match was found.
+        """
+
     def get_credential_store(self, registry: str | None): ...
     def get_all_credentials(self): ...
     def add_auth(self, reg: str, data) -> None: ...
@@ -42,7 +69,19 @@ def resolve_authconfig(authconfig, registry: str | None = None, credstore_env=No
 def convert_to_hostname(url: str) -> str: ...
 def decode_auth(auth: str | ReadableBuffer) -> tuple[str, str]: ...
 def encode_header(auth) -> bytes: ...
-def parse_auth(entries: Mapping[str, dict[Incomplete, Incomplete]], raise_on_error: bool = False): ...
+def parse_auth(entries: Mapping[str, dict[Incomplete, Incomplete]], raise_on_error: bool = False):
+    """
+    Parses authentication entries
+
+    Args:
+      entries:        Dict of authentication entries.
+      raise_on_error: If set to true, an invalid format will raise
+                      InvalidConfigFile
+
+    Returns:
+      Authentication registry.
+    """
+
 def load_config(
     config_path: FileDescriptorOrPath | None = None, config_dict: dict[str, Incomplete] | None = None, credstore_env=None
 ) -> AuthConfig: ...

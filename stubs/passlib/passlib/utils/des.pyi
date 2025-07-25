@@ -1,3 +1,9 @@
+"""
+passlib.utils.des - DEPRECATED LOCATION, WILL BE REMOVED IN 2.0
+
+This has been moved to :mod:`passlib.crypto.des`.
+"""
+
 from passlib.crypto.des import (
     des_encrypt_block as des_encrypt_block,
     des_encrypt_int_block as des_encrypt_int_block,

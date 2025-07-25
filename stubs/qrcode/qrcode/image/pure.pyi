@@ -9,13 +9,25 @@ from . import base
 _Writer: TypeAlias = Any
 
 class PyPNGImage(base.BaseImage):
+    """
+    pyPNG image builder.
+    """
+
     kind: str
     allowed_kinds: tuple[Literal["PNG"]]
     # the new_image and get_image methods accept arbitrary keyword arguments to
     # accommodate subclasses with additional arguments.
     def new_image(self, **kwargs: Any) -> _Writer: ...
-    def get_image(self, **kwargs: Any) -> _Writer: ...
-    def drawrect(self, row: int, col: int) -> None: ...
+    def get_image(self, **kwargs: Any) -> _Writer:
+        """
+        Return the image class for further processing.
+        """
+
+    def drawrect(self, row: int, col: int) -> None:
+        """
+        Not used.
+        """
+
     def save(self, stream: SupportsWrite[bytes], kind: str | None = None) -> None: ...
     def rows_iter(self) -> Generator[list[int], Any, None]: ...
     def border_rows_iter(self) -> Generator[list[int], Any, None]: ...

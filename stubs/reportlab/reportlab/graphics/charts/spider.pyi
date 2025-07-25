@@ -1,3 +1,10 @@
+"""Spider Chart
+
+Normal use shows variation of 5-10 parameters against some 'norm' or target.
+When there is more than one series, place the series with the largest
+numbers first, as it will be overdrawn by each successive one.
+"""
+
 from _typeshed import Incomplete
 from typing import Final
 
@@ -37,7 +44,8 @@ class StrandLabel(SpokeLabel):
 
 class SpiderChart(PlotArea):
     def makeSwatchSample(self, rowNo, x, y, width, height): ...
-    def getSeriesName(self, i, default=None): ...
+    def getSeriesName(self, i, default=None):
+        """return series name i or default"""
     data: Incomplete
     labels: Incomplete
     startAngle: int
@@ -52,9 +60,16 @@ class SpiderChart(PlotArea):
     height: int
     def __init__(self) -> None: ...
     def demo(self): ...
-    def normalizeData(self, outer: float = 0.0): ...
+    def normalizeData(self, outer: float = 0.0):
+        """Turns data into normalized ones where each datum is < 1.0,
+        and 1.0 = maximum radius.  Adds 10% at outside edge by default
+        """
+
     def labelClass(self, kind): ...
     def draw(self): ...
 
-def sample1(): ...
-def sample2(): ...
+def sample1():
+    """Make a simple spider chart"""
+
+def sample2():
+    """Make a spider chart with markers, but no fill"""

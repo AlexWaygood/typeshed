@@ -40,6 +40,8 @@ def make(
 def copy_2d_array(x: Sequence[_AnySeq]) -> list[_AnySeq]: ...
 
 class ActiveWithNeighbors(NamedTuple):
+    """ActiveWithNeighbors(NW, N, NE, W, me, E, SW, S, SE)"""
+
     NW: bool
     N: bool
     NE: bool
@@ -108,19 +110,64 @@ class QRCode(Generic[GenericImage]):
     modules_count: int
     data_cache: list[int]
     data_list: list[QRData]
-    def clear(self) -> None: ...
-    def add_data(self, data: QRData | bytes | str, optimize: int = 20) -> None: ...
-    def make(self, fit: bool = True) -> None: ...
+    def clear(self) -> None:
+        """
+        Reset the internal data.
+        """
+
+    def add_data(self, data: QRData | bytes | str, optimize: int = 20) -> None:
+        """
+        Add data to this QR Code.
+
+        :param optimize: Data will be split into multiple chunks to optimize
+            the QR size by finding to more compressed modes of at least this
+            length. Set to ``0`` to avoid optimizing at all.
+        """
+
+    def make(self, fit: bool = True) -> None:
+        """
+        Compile the data into a QR Code array.
+
+        :param fit: If ``True`` (or if a size has not been provided), find the
+            best fit for the data to avoid data overflow errors.
+        """
+
     def makeImpl(self, test: bool, mask_pattern: MaskPattern) -> None: ...
     def setup_position_probe_pattern(self, row: int, col: int) -> None: ...
-    def best_fit(self, start: int | None = None) -> int: ...
-    def best_mask_pattern(self) -> int: ...
-    def print_tty(self, out: _TTYWriter | None = None) -> None: ...
-    def print_ascii(self, out: _TTYWriter | None = None, tty: bool = False, invert: bool = False) -> None: ...
+    def best_fit(self, start: int | None = None) -> int:
+        """
+        Find the minimum size required to fit in the data.
+        """
+
+    def best_mask_pattern(self) -> int:
+        """
+        Find the most efficient mask pattern.
+        """
+
+    def print_tty(self, out: _TTYWriter | None = None) -> None:
+        """
+        Output the QR Code only using TTY colors.
+
+        If the data has not been compiled yet, make it first.
+        """
+
+    def print_ascii(self, out: _TTYWriter | None = None, tty: bool = False, invert: bool = False) -> None:
+        """
+        Output the QR Code using ASCII characters.
+
+        :param tty: use fixed TTY color codes (forces invert=True)
+        :param invert: invert the ASCII characters (solid <-> transparent)
+        """
     # kwargs are passed on to the specific image factory used, and in turn passed through to
     # their make_image method.
     @overload
-    def make_image(self, image_factory: None = None, **kwargs: Any) -> GenericImage: ...
+    def make_image(self, image_factory: None = None, **kwargs: Any) -> GenericImage:
+        """
+        Make an image from the QR Code data.
+
+        If the data has not been compiled yet, make it first.
+        """
+
     @overload
     def make_image(self, image_factory: type[GenericImageLocal], **kwargs: Any) -> GenericImageLocal: ...
     def is_constrained(self, row: int, col: int) -> bool: ...
@@ -129,5 +176,11 @@ class QRCode(Generic[GenericImage]):
     def setup_type_number(self, test: bool) -> None: ...
     def setup_type_info(self, test: bool, mask_pattern: MaskPattern) -> None: ...
     def map_data(self, data: Sequence[int], mask_pattern: MaskPattern) -> None: ...
-    def get_matrix(self) -> list[list[bool]]: ...
+    def get_matrix(self) -> list[list[bool]]:
+        """
+        Return the QR Code as a multidimensional array, including the border.
+
+        To return the array without a border, set ``self.border`` to 0 first.
+        """
+
     def active_with_neighbors(self, row: int, col: int) -> ActiveWithNeighbors: ...

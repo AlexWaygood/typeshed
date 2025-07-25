@@ -1,3 +1,4 @@
 __tracebackhide__: bool
 
-class HelpersMixin: ...
+class HelpersMixin:
+    """Helpers mixin.  For internal use only."""

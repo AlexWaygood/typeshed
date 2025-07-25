@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import OrthodoxCalendar
 
 class Georgia(OrthodoxCalendar):
+    """Country of Georgia"""
+
     include_christmas: ClassVar[bool]
     include_christmas_eve: ClassVar[bool]
     include_new_years_day: ClassVar[bool]

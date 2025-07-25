@@ -1,3 +1,12 @@
+"""
+This module contains the serialization logic that produces a PDF document from a FPDF instance.
+Most of the code in this module is used when FPDF.output() is called.
+
+The contents of this module are internal to fpdf2, and not part of the public API.
+They may change at any time without prior warning or any deprecation period,
+in non-backward-compatible ways.
+"""
+
 from _typeshed import Incomplete, Unused
 from collections import defaultdict
 from logging import Logger
@@ -126,6 +135,13 @@ class PDFXObject(PDFContentStream):
     ) -> None: ...
 
 class PDFICCProfile(PDFContentStream):
+    """holds values for ICC Profile Stream
+    Args:
+        contents (str): stream content
+        n (int): [1|3|4], # the numbers for colors 1=Gray, 3=RGB, 4=CMYK
+        alternate (str): ['DeviceGray'|'DeviceRGB'|'DeviceCMYK']
+    """
+
     n: Incomplete
     alternate: Name
     def __init__(self, contents: bytes, n, alternate: str) -> None: ...
@@ -156,8 +172,12 @@ class PDFPage(PDFObject):
     def __init__(self, duration: Incomplete | None, transition, contents, index) -> None: ...
     def index(self) -> int: ...
     def set_index(self, i: int) -> None: ...
-    def dimensions(self) -> tuple[float | None, float | None]: ...
-    def set_dimensions(self, width_pt: float | None, height_pt: float | None) -> None: ...
+    def dimensions(self) -> tuple[float | None, float | None]:
+        """Return a pair (width, height) in the unit specified to FPDF constructor"""
+
+    def set_dimensions(self, width_pt: float | None, height_pt: float | None) -> None:
+        """Accepts a pair (width, height) in the unit specified to FPDF constructor"""
+
     def set_page_label(self, previous_page_label: PDFPageLabel, page_label: PDFPageLabel) -> None: ...
     def get_page_label(self) -> PDFPageLabel: ...
     def get_label(self) -> str: ...
@@ -176,6 +196,8 @@ class PDFExtGState(PDFObject):
     def serialize(self, obj_dict: Unused = None, _security_handler: StandardSecurityHandler | None = None) -> str: ...
 
 class PDFXrefAndTrailer(ContentWithoutID):
+    """Cross-reference table & file trailer"""
+
     output_builder: Incomplete
     count: int
     catalog_obj: Incomplete | None
@@ -184,6 +206,26 @@ class PDFXrefAndTrailer(ContentWithoutID):
     def serialize(self, _security_handler: StandardSecurityHandler | None = None) -> str: ...
 
 class OutputIntentDictionary:
+    """The optional OutputIntents (PDF 1.4) entry in the document
+    catalog dictionary holds an array of output intent dictionaries,
+    each describing the colour reproduction characteristics of a possible
+    output device.
+
+    Args:
+        subtype (OutputIntentSubType, required): PDFA, PDFX or ISOPDF
+        output_condition_identifier (str, required): see the Name in
+            https://www.color.org/registry.xalter
+        output_condition (str, optional): see the Definition in
+            https://www.color.org/registry.xalter
+        registry_name (str, optional): "https://www.color.org"
+        dest_output_profile (PDFICCProfile, required/optional):
+            PDFICCProfile | None # (required if
+            output_condition_identifier does not specify a standard
+            production condition; optional otherwise)
+        info (str, required/optional see dest_output_profile): human
+            readable description of profile
+    """
+
     type: Name
     s: Name
     output_condition_identifier: PDFString | None
@@ -204,6 +246,8 @@ class OutputIntentDictionary:
     def serialize(self, _security_handler: StandardSecurityHandler | None = None, _obj_id=None): ...
 
 class ResourceCatalog:
+    """Manage the indexing of resources and association to the pages they are used"""
+
     resources: defaultdict[PDFResourceType, dict[Incomplete, Incomplete]]
     resources_per_page: defaultdict[tuple[int, PDFResourceType], set[Incomplete]]
 
@@ -213,6 +257,8 @@ class ResourceCatalog:
     def get_used_resources(self, resource_type: PDFResourceType) -> set[Incomplete]: ...
 
 class OutputProducer:
+    """Generates the final bytearray representing the PDF document, based on a FPDF instance."""
+
     fpdf: FPDF
     pdf_objs: list[Incomplete]
     obj_id: int
@@ -221,7 +267,12 @@ class OutputProducer:
     sections_size_per_trace_label: defaultdict[Incomplete, int]
     buffer: bytearray
     def __init__(self, fpdf: FPDF) -> None: ...
-    def bufferize(self) -> bytearray: ...
+    def bufferize(self) -> bytearray:
+        """
+        This method alters the target FPDF instance
+        by assigning IDs to all PDF objects,
+        plus a few other properties on PDFPage instances
+        """
 
 def stream_content_for_raster_image(
     info: RasterImageInfo,

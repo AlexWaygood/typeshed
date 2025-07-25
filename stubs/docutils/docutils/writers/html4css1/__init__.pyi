@@ -1,3 +1,12 @@
+"""
+Simple HyperText Markup Language document tree Writer.
+
+The output conforms to the XHTML version 1.0 Transitional DTD
+(*almost* strict).  The output contains a minimum of formatting
+information.  The cascading style sheet "html4css1.css" is required
+for proper viewing with a modern graphical browser.
+"""
+
 from _typeshed import Incomplete
 from typing import ClassVar, Final
 
@@ -14,6 +23,48 @@ class Writer(_html_base.Writer):
     translator_class: type[HTMLTranslator]
 
 class HTMLTranslator(_html_base.HTMLTranslator):
+    """
+    The html4css1 writer has been optimized to produce visually compact
+    lists (less vertical whitespace).  HTML's mixed content models
+    allow list items to contain "<li><p>body elements</p></li>" or
+    "<li>just text</li>" or even "<li>text<p>and body
+    elements</p>combined</li>", each with different effects.  It would
+    be best to stick with strict body elements in list items, but they
+    affect vertical spacing in older browsers (although they really
+    shouldn't).
+    The html5_polyglot writer solves this using CSS2.
+
+    Here is an outline of the optimization:
+
+    - Check for and omit <p> tags in "simple" lists: list items
+      contain either a single paragraph, a nested simple list, or a
+      paragraph followed by a nested simple list.  This means that
+      this list can be compact:
+
+          - Item 1.
+          - Item 2.
+
+      But this list cannot be compact:
+
+          - Item 1.
+
+            This second paragraph forces space between list items.
+
+          - Item 2.
+
+    - In non-list contexts, omit <p> tags on a paragraph if that
+      paragraph is the only child of its parent (footnotes & citations
+      are allowed a label first).
+
+    - Regardless of the above, in definitions, table cells, field bodies,
+      option descriptions, and list items, mark the first child with
+      'class="first"' and the last child with 'class="last"'.  The stylesheet
+      sets the margins (top & bottom respectively) to 0 for these elements.
+
+    The ``no_compact_lists`` setting (``--no-compact-lists`` command-line
+    option) disables list whitespace optimization.
+    """
+
     content_type: ClassVar[str]
     content_type_mathml: ClassVar[str]
     object_image_types: ClassVar[dict[str, str]]
@@ -59,7 +110,12 @@ class HTMLTranslator(_html_base.HTMLTranslator):
     def depart_entry(self, node) -> None: ...
     compact_p: Incomplete
     compact_simple: Incomplete
-    def visit_enumerated_list(self, node) -> None: ...
+    def visit_enumerated_list(self, node) -> None:
+        """
+        The 'start' attribute does not conform to HTML 4.01's strict.dtd, but
+        cannot be emulated in CSS1 (HTML 5 reincludes it).
+        """
+
     def depart_enumerated_list(self, node) -> None: ...
     def visit_field(self, node) -> None: ...
     def depart_field(self, node) -> None: ...
@@ -92,7 +148,11 @@ class HTMLTranslator(_html_base.HTMLTranslator):
     def depart_option_list(self, node: nodes.option_list) -> None: ...
     def visit_option_list_item(self, node: nodes.option_list_item) -> None: ...
     def depart_option_list_item(self, node: nodes.option_list_item) -> None: ...
-    def should_be_compact_paragraph(self, node: nodes.Element) -> bool: ...
+    def should_be_compact_paragraph(self, node: nodes.Element) -> bool:
+        """
+        Determine if the <p> tags around paragraph ``node`` can be omitted.
+        """
+
     def visit_paragraph(self, node: nodes.paragraph) -> None: ...
     def depart_paragraph(self, node: nodes.paragraph) -> None: ...
     in_sidebar: bool
@@ -119,6 +179,13 @@ class HTMLTranslator(_html_base.HTMLTranslator):
     def section_title_tags(self, node: nodes.Element) -> tuple[str, str]: ...
 
 class SimpleListChecker(_html_base.SimpleListChecker):
+    """
+    Raise `nodes.NodeFound` if non-simple list item is encountered.
+
+    Here "simple" means a list item containing nothing other than a single
+    paragraph, a simple list, or a paragraph followed by a simple list.
+    """
+
     def visit_list_item(self, node: nodes.list_item) -> None: ...
     def visit_paragraph(self, node: nodes.paragraph) -> None: ...
     def visit_definition_list(self, node: nodes.definition_list) -> None: ...

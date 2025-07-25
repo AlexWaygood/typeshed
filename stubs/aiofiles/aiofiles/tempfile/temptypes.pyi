@@ -1,3 +1,5 @@
+"""Async wrappers for spooled temp files and temp directory objects"""
+
 from _typeshed import Incomplete, OpenBinaryMode, ReadableBuffer
 from asyncio import AbstractEventLoop
 from collections.abc import Generator, Iterable
@@ -15,6 +17,8 @@ from aiofiles.threadpool.utils import (
 _T = TypeVar("_T")
 
 class AsyncSpooledTemporaryFile(AsyncBase[_T]):
+    """Async wrapper for SpooledTemporaryFile class"""
+
     def fileno(self) -> Generator[Incomplete]: ...
     def rollover(self) -> Generator[Incomplete]: ...
     async def close(self) -> None: ...
@@ -36,10 +40,15 @@ class AsyncSpooledTemporaryFile(AsyncBase[_T]):
     def name(self) -> str | bytes: ...
     @property
     def newlines(self) -> str: ...
-    async def write(self, s: str | bytes | ReadableBuffer) -> int: ...
-    async def writelines(self, iterable: Iterable[str | bytes | ReadableBuffer]) -> None: ...
+    async def write(self, s: str | bytes | ReadableBuffer) -> int:
+        """Implementation to anticipate rollover"""
+
+    async def writelines(self, iterable: Iterable[str | bytes | ReadableBuffer]) -> None:
+        """Implementation to anticipate rollover"""
 
 class AsyncTemporaryDirectory:
+    """Async wrapper for TemporaryDirectory class"""
+
     async def cleanup(self) -> None: ...
     @property
     def name(self) -> str | bytes: ...

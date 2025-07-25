@@ -1,3 +1,5 @@
+"""This will be a collection of legends to be used with charts."""
+
 from _typeshed import Incomplete
 from typing import Final
 
@@ -19,6 +21,19 @@ class LegendColEndCallout(LegendCallout):
     def __call__(self, legend, g, x, xt, y, width, lWidth) -> None: ...  # type: ignore[override]
 
 class Legend(Widget):
+    """A simple legend containing rectangular swatches and strings.
+
+    The swatches are filled rectangles whenever the respective
+    color object in 'colorNamePairs' is a subclass of Color in
+    reportlab.lib.colors. Otherwise the object passed instead is
+    assumed to have 'x', 'y', 'width' and 'height' attributes.
+    A legend then tries to set them or catches any error. This
+    lets you plug-in any widget you like as a replacement for
+    the default rectangular swatches.
+
+    Strings can be nicely aligned left or right to the swatches.
+    """
+
     x: int
     y: int
     alignment: str
@@ -52,7 +67,8 @@ class Legend(Widget):
     colEndCallout: Incomplete
     def __init__(self) -> None: ...
     def draw(self): ...
-    def demo(self): ...
+    def demo(self):
+        """Make sample legend."""
 
 class TotalAnnotator(LegendColEndCallout):
     lText: Incomplete
@@ -85,6 +101,8 @@ class TotalAnnotator(LegendColEndCallout):
     def __call__(self, legend, g, x, xt, y, width, lWidth) -> None: ...  # type: ignore[override]
 
 class LineSwatch(Widget):
+    """basically a Line with properties added so it can be used in a LineLegend"""
+
     x: int
     y: int
     width: int
@@ -96,6 +114,12 @@ class LineSwatch(Widget):
     def draw(self): ...
 
 class LineLegend(Legend):
+    """A subclass of Legend for drawing legends with lines as the
+    swatches rather than rectangles. Useful for lineCharts and
+    linePlots. Should be similar in all other ways the the standard
+    Legend class.
+    """
+
     dx: int
     dy: int
     def __init__(self) -> None: ...
