@@ -28,6 +28,123 @@ _PlaylistAnyT = TypeVar("_PlaylistAnyT", bound=_PlaylistProtocol)
 class MalformedPlaylistError(Exception): ...
 
 class M3U8:
+    """
+    Represents a single M3U8 playlist. Should be instantiated with
+    the content as string.
+
+    Parameters:
+
+     `content`
+       the m3u8 content as string
+
+     `base_path`
+       all urls (key and segments url) will be updated with this base_path,
+       ex.:
+           base_path = "http://videoserver.com/hls"
+
+            /foo/bar/key.bin           -->  http://videoserver.com/hls/key.bin
+            http://vid.com/segment1.ts -->  http://videoserver.com/hls/segment1.ts
+
+       can be passed as parameter or setted as an attribute to ``M3U8`` object.
+     `base_uri`
+      uri the playlist comes from. it is propagated to SegmentList and Key
+      ex.: http://example.com/path/to
+
+    Attributes:
+
+     `keys`
+       Returns the list of `Key` objects used to encrypt the segments from m3u8.
+       It covers the whole list of possible situations when encryption either is
+       used or not.
+
+       1. No encryption.
+       `keys` list will only contain a `None` element.
+
+       2. Encryption enabled for all segments.
+       `keys` list will contain the key used for the segments.
+
+       3. No encryption for first element(s), encryption is applied afterwards
+       `keys` list will contain `None` and the key used for the rest of segments.
+
+       4. Multiple keys used during the m3u8 manifest.
+       `keys` list will contain the key used for each set of segments.
+
+     `session_keys`
+       Returns the list of `SessionKey` objects used to encrypt multiple segments from m3u8.
+
+     `segments`
+       a `SegmentList` object, represents the list of `Segment`s from this playlist
+
+     `is_variant`
+        Returns true if this M3U8 is a variant playlist, with links to
+        other M3U8s with different bitrates.
+
+        If true, `playlists` is a list of the playlists available,
+        and `iframe_playlists` is a list of the i-frame playlists available.
+
+     `is_endlist`
+        Returns true if EXT-X-ENDLIST tag present in M3U8.
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.8
+
+      `playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        Playlist objects
+
+      `iframe_playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        IFramePlaylist objects
+
+      `playlist_type`
+        A lower-case string representing the type of the playlist, which can be
+        one of VOD (video on demand) or EVENT.
+
+      `media`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        Media objects
+
+      `target_duration`
+        Returns the EXT-X-TARGETDURATION as an integer
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.2
+
+      `media_sequence`
+        Returns the EXT-X-MEDIA-SEQUENCE as an integer
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.3
+
+      `program_date_time`
+        Returns the EXT-X-PROGRAM-DATE-TIME as a string
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.5
+
+      `version`
+        Return the EXT-X-VERSION as is
+
+      `allow_cache`
+        Return the EXT-X-ALLOW-CACHE as is
+
+      `files`
+        Returns an iterable with all files from playlist, in order. This includes
+        segments and key uri, if present.
+
+      `base_uri`
+        It is a property (getter and setter) used by
+        SegmentList and Key to have absolute URIs.
+
+      `is_i_frames_only`
+        Returns true if EXT-X-I-FRAMES-ONLY tag present in M3U8.
+        http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.12
+
+      `is_independent_segments`
+        Returns true if EXT-X-INDEPENDENT-SEGMENTS tag present in M3U8.
+        https://tools.ietf.org/html/draft-pantos-http-live-streaming-13#section-3.4.16
+
+      `image_playlists`
+        If this is a variant playlist (`is_variant` is True), returns a list of
+        ImagePlaylist objects
+
+      `is_images_only`
+        Returns true if EXT-X-IMAGES-ONLY tag present in M3U8.
+        https://github.com/image-media-playlist/spec/blob/master/image_media_playlist_v0_4.pdf
+    """
+
     simple_attributes: tuple[tuple[str, str], ...]
     data: dict[str, Incomplete]
     keys: list[Key]
@@ -85,11 +202,92 @@ class M3U8:
     def add_media(self, media: Media) -> None: ...
     def add_segment(self, segment: Segment) -> None: ...
     def add_rendition_report(self, report: RenditionReport) -> None: ...
-    def dumps(self, timespec: str = "milliseconds", infspec: str = "auto") -> str: ...
-    def dump(self, filename: StrOrBytesPath) -> None: ...
+    def dumps(self, timespec: str = "milliseconds", infspec: str = "auto") -> str:
+        """
+        Returns the current m3u8 as a string.
+        You could also use unicode(<this obj>) or str(<this obj>)
+        """
+
+    def dump(self, filename: StrOrBytesPath) -> None:
+        """
+        Saves the current m3u8 to ``filename``
+        """
+
     def __unicode__(self) -> str: ...
 
 class Segment(BasePathMixin):
+    """
+    A video segment from a M3U8 playlist
+
+    `uri`
+      a string with the segment uri
+
+    `title`
+      title attribute from EXTINF parameter
+
+    `program_date_time`
+      Returns the EXT-X-PROGRAM-DATE-TIME as a datetime. This field is only set
+      if EXT-X-PROGRAM-DATE-TIME exists for this segment
+      http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.5
+
+    `current_program_date_time`
+      Returns a datetime of this segment, either the value of `program_date_time`
+      when EXT-X-PROGRAM-DATE-TIME is set or a calculated value based on previous
+      segments' EXT-X-PROGRAM-DATE-TIME and EXTINF values
+
+    `discontinuity`
+      Returns a boolean indicating if a EXT-X-DISCONTINUITY tag exists
+      http://tools.ietf.org/html/draft-pantos-http-live-streaming-13#section-3.4.11
+
+    `cue_out`
+      Returns a boolean indicating if a EXT-X-CUE-OUT-CONT tag exists
+      Note: for backwards compatibility, this will be True when cue_out_start
+            is True, even though this tag did not exist in the input, and
+            EXT-X-CUE-OUT-CONT will not exist in the output
+
+    `cue_out_start`
+      Returns a boolean indicating if a EXT-X-CUE-OUT tag exists
+
+    `cue_out_explicitly_duration`
+      Returns a boolean indicating if a EXT-X-CUE-OUT have the DURATION parameter when parsing
+
+    `cue_in`
+      Returns a boolean indicating if a EXT-X-CUE-IN tag exists
+
+    `scte35`
+      Base64 encoded SCTE35 metadata if available
+
+    `scte35_duration`
+      Planned SCTE35 duration
+
+    `duration`
+      duration attribute from EXTINF parameter
+
+    `base_uri`
+      uri the key comes from in URI hierarchy. ex.: http://example.com/path/to
+
+    `bitrate`
+      bitrate attribute from EXT-X-BITRATE parameter
+
+    `byterange`
+      byterange attribute from EXT-X-BYTERANGE parameter
+
+    `key`
+      Key used to encrypt the segment (EXT-X-KEY)
+
+    `parts`
+      partial segments that make up this segment
+
+    `dateranges`
+      any dateranges that should  precede the segment
+
+    `gap_tag`
+      GAP tag indicates that a Media Segment is missing
+
+    `custom_parser_values`
+        Additional values which custom_tags_parser might store per segment
+    """
+
     media_sequence: int | None
     uri: str | None
     duration: float | None
@@ -161,6 +359,44 @@ class SegmentList(list[Segment], GroupedBasePathMixin[Segment]):
     def by_key(self, key: Key) -> list[Segment]: ...
 
 class PartialSegment(BasePathMixin):
+    """
+    A partial segment from a M3U8 playlist
+
+    `uri`
+      a string with the segment uri
+
+    `program_date_time`
+      Returns the EXT-X-PROGRAM-DATE-TIME as a datetime. This field is only set
+      if EXT-X-PROGRAM-DATE-TIME exists for this segment
+      http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.5
+
+    `current_program_date_time`
+      Returns a datetime of this segment, either the value of `program_date_time`
+      when EXT-X-PROGRAM-DATE-TIME is set or a calculated value based on previous
+      segments' EXT-X-PROGRAM-DATE-TIME and EXTINF values
+
+    `duration`
+      duration attribute from EXTINF parameter
+
+    `byterange`
+      byterange attribute from EXT-X-BYTERANGE parameter
+
+    `independent`
+      the Partial Segment contains an independent frame
+
+    `gap`
+      GAP attribute indicates the Partial Segment is not available
+
+    `dateranges`
+      any dateranges that should precede the partial segment
+
+    `gap_tag`
+      GAP tag indicates one or more of the parent Media Segment's Partial
+      Segments have a GAP=YES attribute. This tag should appear immediately
+      after the first EXT-X-PART tag in the Parent Segment with a GAP=YES
+      attribute.
+    """
+
     base_uri: str
     uri: str | None
     duration: float | None
@@ -190,6 +426,23 @@ class PartialSegment(BasePathMixin):
 class PartialSegmentList(list[PartialSegment], GroupedBasePathMixin[PartialSegment]): ...
 
 class Key(BasePathMixin):
+    """
+    Key used to encrypt the segments in a m3u8 playlist (EXT-X-KEY)
+
+    `method`
+      is a string. ex.: "AES-128"
+
+    `uri`
+      is a string. ex:: "https://priv.example.com/key.php?r=52"
+
+    `base_uri`
+      uri the key comes from in URI hierarchy. ex.: http://example.com/path/to
+
+    `iv`
+      initialization vector. a string representing a hexadecimal number. ex.: 0X12A
+
+    """
+
     tag: ClassVar[str] = ...
     method: str
     base_uri: str
@@ -212,6 +465,20 @@ class Key(BasePathMixin):
     def __ne__(self, other: object) -> bool: ...
 
 class InitializationSection(BasePathMixin):
+    """
+    Used to obtain Media Initialization Section required to
+    parse the applicable Media Segments (EXT-X-MAP)
+
+    `uri`
+      is a string. ex:: "https://priv.example.com/key.php?r=52"
+
+    `byterange`
+      value of BYTERANGE attribute
+
+    `base_uri`
+      uri the segment comes from in URI hierarchy. ex.: http://example.com/path/to
+    """
+
     tag = ext_x_map
     base_uri: str
     uri: str | None
@@ -224,6 +491,20 @@ class SessionKey(Key):
     tag = ext_x_session_key
 
 class Playlist(_PlaylistProtocol):
+    """
+    Playlist object representing a link to a variant M3U8 with a specific bitrate.
+
+    Attributes:
+
+    `stream_info` is a named tuple containing the attributes: `program_id`,
+    `bandwidth`, `average_bandwidth`, `resolution`, `codecs` and `resolution`
+    which is a a tuple (w, h) of integers
+
+    `media` is a list of related Media entries.
+
+    More info: http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.10
+    """
+
     base_uri: str | None
     uri: str | None
     stream_info: StreamInfo
@@ -231,6 +512,19 @@ class Playlist(_PlaylistProtocol):
     def __init__(self, uri: str | None, stream_info: Mapping[str, Incomplete], media: MediaList, base_uri: str) -> None: ...
 
 class IFramePlaylist(_PlaylistProtocol):
+    """
+    IFramePlaylist object representing a link to a
+    variant M3U8 i-frame playlist with a specific bitrate.
+
+    Attributes:
+
+    `iframe_stream_info` is a named tuple containing the attributes:
+     `program_id`, `bandwidth`, `average_bandwidth`, `codecs`, `video_range`,
+     `hdcp_level` and `resolution` which is a tuple (w, h) of integers
+
+    More info: http://tools.ietf.org/html/draft-pantos-http-live-streaming-07#section-3.3.13
+    """
+
     uri: str | None
     base_uri: str | None
     iframe_stream_info: StreamInfo
@@ -273,6 +567,31 @@ class StreamInfo:
     ) -> None: ...
 
 class Media(BasePathMixin):
+    """
+    A media object from a M3U8 playlist
+    https://tools.ietf.org/html/draft-pantos-http-live-streaming-16#section-4.3.4.1
+
+    `uri`
+      a string with the media uri
+
+    `type`
+    `group_id`
+    `language`
+    `assoc-language`
+    `name`
+    `default`
+    `autoselect`
+    `forced`
+    `instream_id`
+    `characteristics`
+    `channels`
+    `stable_rendition_id`
+      attributes in the EXT-MEDIA tag
+
+    `base_uri`
+      uri the media comes from in URI hierarchy. ex.: http://example.com/path/to
+    """
+
     base_uri: str | None
     uri: str | None
     type: str | None
@@ -425,12 +744,37 @@ class ContentSteering(BasePathMixin):
     def dumps(self) -> str: ...
 
 class ImagePlaylist(_PlaylistProtocol):
+    """
+    ImagePlaylist object representing a link to a
+    variant M3U8 image playlist with a specific bitrate.
+
+    Attributes:
+
+    `image_stream_info` is a named tuple containing the attributes:
+     `bandwidth`, `resolution` which is a tuple (w, h) of integers and `codecs`,
+
+    More info: https://github.com/image-media-playlist/spec/blob/master/image_media_playlist_v0_4.pdf
+    """
+
     uri: str | None
     base_uri: str | None
     image_stream_info: StreamInfo
     def __init__(self, base_uri: str | None, uri: str | None, image_stream_info: Mapping[str, Incomplete]) -> None: ...
 
 class Tiles(BasePathMixin):  # this is unused in runtime, so this is (temporary) has incomplete
+    """
+    Image tiles from a M3U8 playlist
+
+    `resolution`
+      resolution attribute from EXT-X-TILES tag
+
+    `layout`
+      layout attribute from EXT-X-TILES tag
+
+    `duration`
+      duration attribute from EXT-X-TILES tag
+    """
+
     uri: str | None
     resolution: Incomplete
     layout: Incomplete

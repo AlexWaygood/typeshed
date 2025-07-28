@@ -4,6 +4,8 @@ from typing import ClassVar
 from .. import Command, namespaces
 
 class install_egg_info(namespaces.Installer, Command):
+    """Install an .egg-info directory for the package"""
+
     description: str
     user_options: ClassVar[list[tuple[str, str, str]]]
     install_dir: Incomplete

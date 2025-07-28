@@ -24,15 +24,25 @@ COMPAT_PACKAGE_NAME: str = "ytdlp_plugins"
 
 @dataclasses.dataclass
 class PluginSpec:
+    """PluginSpec(module_name: str, suffix: str, destination: yt_dlp.globals.Indirect, plugin_destination: yt_dlp.globals.Indirect)"""
+
     module_name: str
     suffix: str
     destination: Indirect[dict[str, Any]]
     plugin_destination: Indirect[dict[str, Any]]
 
 class PluginLoader(importlib.abc.Loader):
+    """Dummy loader for virtual namespace packages"""
+
     def exec_module(self, module: ModuleType) -> None: ...
 
 class PluginFinder(importlib.abc.MetaPathFinder):
+    """
+    This class provides one or multiple namespace packages.
+    It searches in sys.path and yt-dlp config folders for
+    the existing subdirectories from which the modules can be imported
+    """
+
     packages: set[str]
     def __init__(self, *packages: str) -> None: ...
     def search_locations(self, fullname: str) -> Iterator[Path]: ...

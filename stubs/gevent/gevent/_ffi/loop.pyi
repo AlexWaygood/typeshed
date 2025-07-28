@@ -1,3 +1,7 @@
+"""
+Basic loop implementation for ffi-based cores.
+"""
+
 import sys
 from _typeshed import FileDescriptor
 from collections.abc import Callable, Sequence
@@ -19,7 +23,18 @@ _ErrorHandler: TypeAlias = _ErrorHandlerFunc | _SupportsHandleError
 
 def assign_standard_callbacks(
     ffi: object, lib: object, callbacks_class: Callable[[object], object], extras: Sequence[tuple[object, object]] = ...
-) -> object: ...
+) -> object:
+    """
+    Given the typical *ffi* and *lib* arguments, and a subclass of :class:`AbstractCallbacks`
+    in *callbacks_class*, set up the ``def_extern`` Python callbacks from C
+    into an instance of *callbacks_class*.
+
+    :param tuple extras: If given, this is a sequence of ``(name, error_function)``
+      additional callbacks to register. Each *name* is an attribute of
+      the *callbacks_class* instance. (Each element cas also be just a *name*.)
+    :return: The *callbacks_class* instance. This object must be kept alive,
+      typically at module scope.
+    """
 
 class AbstractLoop:
     CALLBACK_CHECK_COUNT: int

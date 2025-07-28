@@ -1,6 +1,17 @@
 from typing import Final
 
 class ErrorCodes:
+    """
+    A set of constants representing validation errors.  Validation error messages can change, but the codes will not.
+    See the source for a list of all errors codes.
+
+    Codes can be used to check for specific validation errors::
+
+        result = Transaction.sale({})
+        assert(result.is_success == False)
+        assert(result.errors.for_object("transaction").on("amount")[0].code == ErrorCodes.Transaction.AmountIsRequired)
+    """
+
     class Address:
         CannotBeBlank: Final = "81801"
         CompanyIsInvalid: Final = "91821"

@@ -19,4 +19,10 @@ def run_example(
     border: ConvertibleToInt = 4,
     image_factory: type[GenericImage] | None = None,
     mask_pattern: MaskPattern | None = None,
-) -> None: ...
+) -> None:
+    """
+    Build an example QR Code and display it.
+
+    There's an even easier way than the code here though: just use the ``make``
+    shortcut.
+    """

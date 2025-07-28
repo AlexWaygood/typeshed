@@ -1,3 +1,12 @@
+"""``ndb`` is a library for Google Cloud Firestore in Datastore Mode and Google Cloud Datastore.
+
+It was originally included in the Google App Engine runtime as a "new"
+version of the ``db`` API (hence ``ndb``).
+
+.. autodata:: __version__
+.. autodata:: __all__
+"""
+
 from google.cloud.ndb._datastore_api import EVENTUAL as EVENTUAL, EVENTUAL_CONSISTENCY as EVENTUAL_CONSISTENCY, STRONG as STRONG
 from google.cloud.ndb._datastore_query import Cursor as Cursor, QueryIterator as QueryIterator
 from google.cloud.ndb._transaction import (

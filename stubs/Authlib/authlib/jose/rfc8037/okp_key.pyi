@@ -10,6 +10,8 @@ PUBLIC_KEYS_MAP: Final[dict[str, type]]
 PRIVATE_KEYS_MAP: Final[dict[str, type]]
 
 class OKPKey(AsymmetricKey):
+    """Key class of the ``OKP`` key type."""
+
     kty: str
     REQUIRED_JSON_FIELDS: ClassVar[list[str]]
     PUBLIC_KEY_FIELDS = REQUIRED_JSON_FIELDS

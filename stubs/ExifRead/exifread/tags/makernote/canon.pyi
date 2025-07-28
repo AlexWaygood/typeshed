@@ -1,3 +1,9 @@
+"""
+Makernote (proprietary) tag definitions for Canon.
+
+http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Canon.html
+"""
+
 from collections.abc import Callable
 from typing import Any
 from typing_extensions import TypeAlias

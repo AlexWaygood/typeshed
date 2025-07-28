@@ -1,13 +1,104 @@
 from hvac.api.system_backend.system_backend_mixin import SystemBackendMixin
 
 class Key(SystemBackendMixin):
-    def read_root_generation_progress(self): ...
-    def start_root_token_generation(self, otp=None, pgp_key=None): ...
-    def generate_root(self, key, nonce): ...
-    def cancel_root_generation(self): ...
-    def get_encryption_key_status(self): ...
-    def rotate_encryption_key(self): ...
-    def read_rekey_progress(self, recovery_key: bool = False): ...
+    def read_root_generation_progress(self):
+        """Read the configuration and process of the current root generation attempt.
+
+        Supported methods:
+            GET: /sys/generate-root/attempt. Produces: 200 application/json
+
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def start_root_token_generation(self, otp=None, pgp_key=None):
+        """Initialize a new root generation attempt.
+
+        Only a single root generation attempt can take place at a time. One (and only one) of otp or pgp_key are
+        required.
+
+        Supported methods:
+            PUT: /sys/generate-root/attempt. Produces: 200 application/json
+
+        :param otp: Specifies a base64-encoded 16-byte value. The raw bytes of the token will be XOR'd with this value
+            before being returned to the final unseal key provider.
+        :type otp: str | unicode
+        :param pgp_key: Specifies a base64-encoded PGP public key. The raw bytes of the token will be encrypted with
+            this value before being returned to the final unseal key provider.
+        :type pgp_key: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def generate_root(self, key, nonce):
+        """Enter a single master key share to progress the root generation attempt.
+
+        If the threshold number of master key shares is reached, Vault will complete the root generation and issue the
+        new token. Otherwise, this API must be called multiple times until that threshold is met. The attempt nonce must
+        be provided with each call.
+
+        Supported methods:
+            PUT: /sys/generate-root/update. Produces: 200 application/json
+
+        :param key: Specifies a single master key share.
+        :type key: str | unicode
+        :param nonce: The nonce of the attempt.
+        :type nonce: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def cancel_root_generation(self):
+        """Cancel any in-progress root generation attempt.
+
+        This clears any progress made. This must be called to change the OTP or PGP key being used.
+
+        Supported methods:
+            DELETE: /sys/generate-root/attempt. Produces: 204 (empty body)
+
+        :return: The response of the request.
+        :rtype: request.Response
+        """
+
+    def get_encryption_key_status(self):
+        """Read information about the current encryption key used by Vault.
+
+        Supported methods:
+            GET: /sys/key-status. Produces: 200 application/json
+
+        :return: JSON response with information regarding the current encryption key used by Vault.
+        :rtype: dict
+        """
+
+    def rotate_encryption_key(self):
+        """Trigger a rotation of the backend encryption key.
+
+        This is the key that is used to encrypt data written to the storage backend, and is not provided to operators.
+        This operation is done online. Future values are encrypted with the new key, while old values are decrypted with
+        previous encryption keys.
+
+        This path requires sudo capability in addition to update.
+
+        Supported methods:
+            PUT: /sys/rorate. Produces: 204 (empty body)
+
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+
+    def read_rekey_progress(self, recovery_key: bool = False):
+        """Read the configuration and progress of the current rekey attempt.
+
+        Supported methods:
+            GET: /sys/rekey-recovery-key/init. Produces: 200 application/json
+            GET: /sys/rekey/init. Produces: 200 application/json
+
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :return: The JSON response of the request.
+        :rtype: requests.Response
+        """
+
     def start_rekey(
         self,
         secret_shares: int = 5,
@@ -16,12 +107,167 @@ class Key(SystemBackendMixin):
         backup: bool = False,
         require_verification: bool = False,
         recovery_key: bool = False,
-    ): ...
-    def cancel_rekey(self, recovery_key: bool = False): ...
-    def rekey(self, key, nonce=None, recovery_key: bool = False): ...
-    def rekey_multi(self, keys, nonce=None, recovery_key: bool = False): ...
-    def read_backup_keys(self, recovery_key: bool = False): ...
-    def cancel_rekey_verify(self): ...
-    def rekey_verify(self, key, nonce): ...
-    def rekey_verify_multi(self, keys, nonce): ...
-    def read_rekey_verify_progress(self): ...
+    ):
+        """Initializes a new rekey attempt.
+
+        Only a single recovery key rekeyattempt can take place at a time, and changing the parameters of a rekey
+        requires canceling and starting a new rekey, which will also provide a new nonce.
+
+        Supported methods:
+            PUT: /sys/rekey/init. Produces: 204 (empty body)
+            PUT: /sys/rekey-recovery-key/init. Produces: 204 (empty body)
+
+        :param secret_shares: Specifies the number of shares to split the master key into.
+        :type secret_shares: int
+        :param secret_threshold: Specifies the number of shares required to reconstruct the master key. This must be
+            less than or equal to secret_shares.
+        :type secret_threshold: int
+        :param pgp_keys: Specifies an array of PGP public keys used to encrypt the output unseal keys. Ordering is
+            preserved. The keys must be base64-encoded from their original binary representation. The size of this array
+            must be the same as secret_shares.
+        :type pgp_keys: list
+        :param backup: Specifies if using PGP-encrypted keys, whether Vault should also store a plaintext backup of the
+            PGP-encrypted keys at core/unseal-keys-backup in the physical storage backend. These can then be retrieved
+            and removed via the sys/rekey/backup endpoint.
+        :type backup: bool
+        :param require_verification: This turns on verification functionality. When verification is turned on, after
+            successful authorization with the current unseal keys, the new unseal keys are returned but the master key
+            is not actually rotated. The new keys must be provided to authorize the actual rotation of the master key.
+            This ensures that the new keys have been successfully saved and protects against a risk of the keys being
+            lost after rotation but before they can be persisted. This can be used with without pgp_keys, and when used
+            with it, it allows ensuring that the returned keys can be successfully decrypted before committing to the
+            new shares, which the backup functionality does not provide.
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :type require_verification: bool
+        :return: The JSON dict of the response.
+        :rtype: dict | request.Response
+        """
+
+    def cancel_rekey(self, recovery_key: bool = False):
+        """Cancel any in-progress rekey.
+
+        This clears the rekey settings as well as any progress made. This must be called to change the parameters of the
+        rekey.
+
+        Note: Verification is still a part of a rekey. If rekeying is canceled during the verification flow, the current
+        unseal keys remain valid.
+
+        Supported methods:
+            DELETE: /sys/rekey/init. Produces: 204 (empty body)
+            DELETE: /sys/rekey-recovery-key/init. Produces: 204 (empty body)
+
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+
+    def rekey(self, key, nonce=None, recovery_key: bool = False):
+        """Enter a single recovery key share to progress the rekey of the Vault.
+
+        If the threshold number of recovery key shares is reached, Vault will complete the rekey. Otherwise, this API
+        must be called multiple times until that threshold is met. The rekey nonce operation must be provided with each
+        call.
+
+        Supported methods:
+            PUT: /sys/rekey/update. Produces: 200 application/json
+            PUT: /sys/rekey-recovery-key/update. Produces: 200 application/json
+
+        :param key: Specifies a single recovery share key.
+        :type key: str | unicode
+        :param nonce: Specifies the nonce of the rekey operation.
+        :type nonce: str | unicode
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def rekey_multi(self, keys, nonce=None, recovery_key: bool = False):
+        """Enter multiple recovery key shares to progress the rekey of the Vault.
+
+        If the threshold number of recovery key shares is reached, Vault will complete the rekey.
+
+        :param keys: Specifies multiple recovery share keys.
+        :type keys: list
+        :param nonce: Specifies the nonce of the rekey operation.
+        :type nonce: str | unicode
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :return: The last response of the rekey request.
+        :rtype: response.Request
+        """
+
+    def read_backup_keys(self, recovery_key: bool = False):
+        """Retrieve the backup copy of PGP-encrypted unseal keys.
+
+        The returned value is the nonce of the rekey operation and a map of PGP key fingerprint to hex-encoded
+        PGP-encrypted key.
+
+        Supported methods:
+            PUT: /sys/rekey/backup. Produces: 200 application/json
+            PUT: /sys/rekey-recovery-key/backup. Produces: 200 application/json
+
+        :param recovery_key: If true, send requests to "rekey-recovery-key" instead of "rekey" api path.
+        :type recovery_key: bool
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def cancel_rekey_verify(self):
+        """Cancel any in-progress rekey verification.
+        This clears any progress made and resets the nonce. Unlike cancel_rekey, this only resets
+        the current verification operation, not the entire rekey atttempt.
+        The return value is the same as GET along with the new nonce.
+
+        Supported methods:
+            DELETE: /sys/rekey/verify. Produces: 204 (empty body)
+
+        :return: The response of the request.
+        :rtype: requests.Response
+        """
+
+    def rekey_verify(self, key, nonce):
+        """Enter a single new recovery key share to progress the rekey verification of the Vault.
+        If the threshold number of new recovery key shares is reached, Vault will complete the
+        rekey. Otherwise, this API must be called multiple times until that threshold is met.
+        The rekey verification nonce must be provided with each call.
+
+        Supported methods:
+            PUT: /sys/rekey/verify. Produces: 200 application/json
+
+        :param key: Specifies multiple recovery share keys.
+        :type key: str | unicode
+        :param nonce: Specifies the nonce of the rekey verify operation.
+        :type nonce: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def rekey_verify_multi(self, keys, nonce):
+        """Enter multiple new recovery key shares to progress the rekey verification of the Vault.
+        If the threshold number of new recovery key shares is reached, Vault will complete the
+        rekey. Otherwise, this API must be called multiple times until that threshold is met.
+        The rekey verification nonce must be provided with each call.
+
+        Supported methods:
+            PUT: /sys/rekey/verify. Produces: 200 application/json
+
+        :param keys: Specifies multiple recovery share keys.
+        :type keys: list
+        :param nonce: Specifies the nonce of the rekey verify operation.
+        :type nonce: str | unicode
+        :return: The JSON response of the request.
+        :rtype: dict
+        """
+
+    def read_rekey_verify_progress(self):
+        """Read the configuration and progress of the current rekey verify attempt.
+
+        Supported methods:
+            GET: /sys/rekey/verify. Produces: 200 application/json
+
+        :return: The JSON response of the request.
+        :rtype: requests.Response
+        """

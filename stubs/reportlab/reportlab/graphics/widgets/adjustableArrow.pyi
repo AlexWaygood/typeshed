@@ -4,6 +4,13 @@ from reportlab.lib.attrmap import *
 from reportlab.lib.validators import *
 
 class AdjustableArrow(Widget):
+    """This widget draws an arrow (style one).
+
+    possible attributes:
+    'x', 'y', 'size', 'fillColor'
+
+    """
+
     def __init__(self, **kwds) -> None: ...
     def draw(self): ...
 

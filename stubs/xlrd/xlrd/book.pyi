@@ -36,6 +36,15 @@ def open_workbook_xls(
 ) -> Book: ...
 
 class Name(BaseObject):
+    """
+    Information relating to a named reference, formula, macro, etc.
+
+    .. note::
+
+      Name information is **not** extracted from files older than
+      Excel 5.0 (``Book.biff_version < 50``)
+    """
+
     _repr_these: list[str]
     book: Book | None = None
     hidden: Literal[0, 1]
@@ -51,10 +60,47 @@ class Name(BaseObject):
     raw_formula: bytes
     scope: Literal[-1, -2, -3, 0]
     result: Operand | None
-    def cell(self) -> Cell: ...
-    def area2d(self, clipped: bool = True) -> tuple[Sheet, int, int, int, int]: ...
+    def cell(self) -> Cell:
+        """
+        This is a convenience method for the frequent use case where the name
+        refers to a single cell.
+
+        :returns: An instance of the :class:`~xlrd.sheet.Cell` class.
+
+        :raises xlrd.biffh.XLRDError:
+          The name is not a constant absolute reference
+          to a single cell.
+        """
+
+    def area2d(self, clipped: bool = True) -> tuple[Sheet, int, int, int, int]:
+        """
+        This is a convenience method for the use case where the name
+        refers to one rectangular area in one worksheet.
+
+        :param clipped:
+          If ``True``, the default, the returned rectangle is clipped
+          to fit in ``(0, sheet.nrows, 0, sheet.ncols)``.
+          it is guaranteed that ``0 <= rowxlo <= rowxhi <= sheet.nrows`` and
+          that the number of usable rows in the area (which may be zero) is
+          ``rowxhi - rowxlo``; likewise for columns.
+
+        :returns: a tuple ``(sheet_object, rowxlo, rowxhi, colxlo, colxhi)``.
+
+        :raises xlrd.biffh.XLRDError:
+           The name is not a constant absolute reference
+           to a single area in a single sheet.
+        """
 
 class Book(BaseObject):
+    """
+    Contents of a "workbook".
+
+    .. warning::
+
+      You should not instantiate this class yourself. You use the :class:`Book`
+      object that was returned when you called :func:`~xlrd.open_workbook`.
+    """
+
     nsheets: int
     datemode: Literal[0, 1]
     biff_version: int
@@ -72,17 +118,75 @@ class Book(BaseObject):
     palette_record: list[tuple[int, int, int]]
     load_time_stage_1: float
     load_time_stage_2: float
-    def sheets(self) -> list[Sheet]: ...
-    def sheet_by_index(self, sheetx: int) -> Sheet: ...
-    def __iter__(self) -> Iterator[Sheet]: ...
-    def sheet_by_name(self, sheet_name: str) -> Sheet: ...
-    def __getitem__(self, item: int | str) -> Sheet: ...
-    def sheet_names(self) -> list[str]: ...
-    def sheet_loaded(self, sheet_name_or_index: int | str) -> bool: ...
-    def unload_sheet(self, sheet_name_or_index: int | str) -> None: ...
+    def sheets(self) -> list[Sheet]:
+        """
+        :returns: A list of all sheets in the book.
+
+        All sheets not already loaded will be loaded.
+        """
+
+    def sheet_by_index(self, sheetx: int) -> Sheet:
+        """
+        :param sheetx: Sheet index in ``range(nsheets)``
+        :returns: A :class:`~xlrd.sheet.Sheet`.
+        """
+
+    def __iter__(self) -> Iterator[Sheet]:
+        """
+        Makes iteration through sheets of a book a little more straightforward.
+        Don't free resources after use since it can be called like `list(book)`
+        """
+
+    def sheet_by_name(self, sheet_name: str) -> Sheet:
+        """
+        :param sheet_name: Name of the sheet required.
+        :returns: A :class:`~xlrd.sheet.Sheet`.
+        """
+
+    def __getitem__(self, item: int | str) -> Sheet:
+        """
+        Allow indexing with sheet name or index.
+        :param item: Name or index of sheet enquired upon
+        :return: :class:`~xlrd.sheet.Sheet`.
+        """
+
+    def sheet_names(self) -> list[str]:
+        """
+        :returns:
+          A list of the names of all the worksheets in the workbook file.
+          This information is available even when no sheets have yet been
+          loaded.
+        """
+
+    def sheet_loaded(self, sheet_name_or_index: int | str) -> bool:
+        """
+        :param sheet_name_or_index: Name or index of sheet enquired upon
+        :returns: ``True`` if sheet is loaded, ``False`` otherwise.
+
+        .. versionadded:: 0.7.1
+        """
+
+    def unload_sheet(self, sheet_name_or_index: int | str) -> None:
+        """
+        :param sheet_name_or_index: Name or index of sheet to be unloaded.
+
+        .. versionadded:: 0.7.1
+        """
     mem: bytes | None = None
     filestr: bytes | None = None
-    def release_resources(self) -> None: ...
+    def release_resources(self) -> None:
+        """
+        This method has a dual purpose. You can call it to release
+        memory-consuming objects and (possibly) a memory-mapped file
+        (:class:`mmap.mmap` object) when you have finished loading sheets in
+        ``on_demand`` mode, but still require the :class:`Book` object to
+        examine the loaded sheets. It is also called automatically (a) when
+        :func:`~xlrd.open_workbook`
+        raises an exception and (b) if you are using a ``with`` statement, when
+        the ``with`` block is exited. Calling this method multiple times on the
+        same object has no ill effect.
+        """
+
     def __enter__(self) -> Self: ...
     def __exit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, exc_tb: TracebackType | None
@@ -148,4 +252,5 @@ class Book(BaseObject):
 # Helper functions
 def expand_cell_address(inrow: int, incol: int) -> tuple[int, int, int, int]: ...
 def display_cell_address(rowx: int, colx: int, relrow: int, relcol: int) -> str: ...
-def unpack_SST_table(datatab: list[bytes], nstrings: int) -> tuple[list[str], dict[int, list[tuple[int, int]]]]: ...
+def unpack_SST_table(datatab: list[bytes], nstrings: int) -> tuple[list[str], dict[int, list[tuple[int, int]]]]:
+    """Return list of strings"""

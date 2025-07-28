@@ -1,3 +1,5 @@
+"""Constants related to the Transit secrets engine."""
+
 from collections.abc import Iterable
 from re import Pattern
 

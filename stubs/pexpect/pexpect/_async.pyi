@@ -1,3 +1,15 @@
+"""Facade that provides coroutines implementation pertinent to running Py version.
+
+Python 3.5 introduced the async def/await syntax keyword.
+With later versions coroutines and methods to get the running asyncio loop are
+being deprecated, not supported anymore.
+
+For Python versions later than 3.6, coroutines and objects that are defined via
+``async def``/``await`` keywords are imported.
+
+Here the code is just imported, to provide the same interface to older code.
+"""
+
 import asyncio
 from typing import AnyStr, Generic
 

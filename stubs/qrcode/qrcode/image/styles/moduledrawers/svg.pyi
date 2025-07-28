@@ -10,6 +10,8 @@ from .base import QRModuleDrawer
 ANTIALIASING_FACTOR: int
 
 class Coords(NamedTuple):
+    """Coords(x0, y0, x1, y1, xh, yh)"""
+
     x0: Decimal
     y0: Decimal
     x1: Decimal

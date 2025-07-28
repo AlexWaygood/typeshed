@@ -1,3 +1,5 @@
+"""Data Chunk Receiver"""
+
 from io import BytesIO
 
 from waitress.buffers import OverflowableBuffer
@@ -10,7 +12,9 @@ class FixedStreamReceiver:
     buf: OverflowableBuffer
     def __init__(self, cl: int, buf: OverflowableBuffer) -> None: ...
     def __len__(self) -> int: ...
-    def received(self, data: bytes) -> int: ...
+    def received(self, data: bytes) -> int:
+        """See IStreamConsumer"""
+
     def getfile(self) -> BytesIO: ...
     def getbuf(self) -> OverflowableBuffer: ...
 

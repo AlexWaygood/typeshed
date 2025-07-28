@@ -2,6 +2,15 @@ from _typeshed import Incomplete
 from typing import ClassVar
 
 class Environment:
+    """
+    A class representing which environment the client library is using.
+    Pass in one of the following values as the first argument to
+    :class:`braintree.Configuration.configure() <braintree.configuration.Configuration>` ::
+
+        braintree.Environment.Sandbox
+        braintree.Environment.Production
+    """
+
     Development: ClassVar[Environment]
     QA: ClassVar[Environment]
     Sandbox: ClassVar[Environment]

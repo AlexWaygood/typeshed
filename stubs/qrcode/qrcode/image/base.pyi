@@ -10,6 +10,10 @@ from .styles.moduledrawers.base import QRModuleDrawer
 DrawerAliases: TypeAlias = dict[str, tuple[type[QRModuleDrawer], dict[str, Any]]]
 
 class BaseImage:
+    """
+    Base QRCode image output class.
+    """
+
     kind: str | None
     allowed_kinds: tuple[str] | None
     needs_context: bool
@@ -25,20 +29,55 @@ class BaseImage:
     def __init__(
         self, border: int, width: int, box_size: int, *args: Any, qrcode_modules: ModulesType | None, **kwargs: Any
     ) -> None: ...
-    def drawrect(self, row: int, col: int) -> None: ...
-    def drawrect_context(self, row: int, col: int, qr: QRCode[Any]) -> None: ...
-    def process(self) -> None: ...
-    def save(self, stream: IO[bytes], kind: str | None = None) -> None: ...
-    def pixel_box(self, row: int, col: int) -> tuple[tuple[int, int], tuple[int, int]]: ...
+    def drawrect(self, row: int, col: int) -> None:
+        """
+        Draw a single rectangle of the QR code.
+        """
+
+    def drawrect_context(self, row: int, col: int, qr: QRCode[Any]) -> None:
+        """
+        Draw a single rectangle of the QR code given the surrounding context
+        """
+
+    def process(self) -> None:
+        """
+        Processes QR code after completion
+        """
+
+    def save(self, stream: IO[bytes], kind: str | None = None) -> None:
+        """
+        Save the image file.
+        """
+
+    def pixel_box(self, row: int, col: int) -> tuple[tuple[int, int], tuple[int, int]]:
+        """
+        A helper method for pixel-based image generators that specifies the
+        four pixel coordinates for a single rect.
+        """
     # the new_image method accepts arbitrary keyword arguments to accommodate
     # subclasses with additional arguments.
-    def new_image(self, **kwargs: Any) -> Any: ...
+    def new_image(self, **kwargs: Any) -> Any:
+        """
+        Build the image class. Subclasses should return the class created.
+        """
+
     def init_new_image(self) -> None: ...
     # the get_image method accepts arbitrary keyword arguments to accommodate
     # subclasses with additional arguments.
-    def get_image(self, **kwargs: Any) -> Any: ...
-    def check_kind(self, kind: str | None, transform: Callable[[str | None], str | None] | None = None) -> str | None: ...
-    def is_eye(self, row: int, col: int) -> bool: ...
+    def get_image(self, **kwargs: Any) -> Any:
+        """
+        Return the image class for further processing.
+        """
+
+    def check_kind(self, kind: str | None, transform: Callable[[str | None], str | None] | None = None) -> str | None:
+        """
+        Get the image type.
+        """
+
+    def is_eye(self, row: int, col: int) -> bool:
+        """
+        Find whether the referenced module is in an eye.
+        """
 
 class BaseImageWithDrawer(BaseImage):
     default_drawer_class: type[QRModuleDrawer]

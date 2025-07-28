@@ -1,9 +1,13 @@
+"""Defused xml.sax.expatreader"""
+
 from typing import Final
 from xml.sax.expatreader import ExpatParser as _ExpatParser, _BoolType
 
 __origin__: Final = "xml.sax.expatreader"
 
 class DefusedExpatParser(_ExpatParser):
+    """Defused SAX driver for the pyexpat C module."""
+
     forbid_dtd: bool
     forbid_entities: bool
     forbid_external: bool

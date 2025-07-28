@@ -30,6 +30,11 @@ class SeriesLabel(Serialisable):
     def __init__(self, strRef: StrRef | None = None, v: object = None) -> None: ...
 
 class Series(Serialisable):
+    """
+    Generic series object. Should not be instantiated directly.
+    User the chart.Series factory instead.
+    """
+
     tagname: ClassVar[str]
     idx: NestedInteger[Literal[False]]
     order: NestedInteger[Literal[False]]
@@ -85,9 +90,12 @@ class Series(Serialisable):
     ) -> None: ...
     def to_tree(  # type: ignore[override]
         self, tagname: str | None = None, idx: _HasTagAndGet[ConvertibleToInt] | ConvertibleToInt | None = None
-    ) -> Element: ...
+    ) -> Element:
+        """The index can need rebasing"""
 
 class XYSeries(Series):
+    """Dedicated series for charts that have x and y series"""
+
     # Same as parent
     # idx = Series.idx
     # order = Series.order

@@ -1,8 +1,16 @@
+"""
+Reference tzinfo implementations from the Python docs.
+Used for testing against as they are only correct for the years
+1987 to 2006. Do not use these for real code.
+"""
+
 import datetime
 
 from pytz import UTC as UTC
 
 class FixedOffset(datetime.tzinfo):
+    """Fixed offset in minutes east from UTC."""
+
     def __init__(self, offset: float, name: str) -> None: ...
     def utcoffset(self, dt: datetime.datetime | None) -> datetime.timedelta: ...
     def tzname(self, dt: datetime.datetime | None) -> str: ...

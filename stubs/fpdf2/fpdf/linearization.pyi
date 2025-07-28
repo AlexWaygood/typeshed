@@ -1,3 +1,10 @@
+"""
+This module is in work-in-progress state.
+Hint tables / hint streams have not been implemented yet,
+and there are a few "TODO" comment remaining.
+cf. https://github.com/py-pdf/fpdf2/issues/62
+"""
+
 from _typeshed import Incomplete
 from typing import Final
 

@@ -61,11 +61,23 @@ class DefinedName(Serialisable):
     def __iter__(self) -> Iterator[tuple[str, str]]: ...
 
 class DefinedNameDict(dict[str, DefinedName]):
-    def add(self, value: DefinedName) -> None: ...
+    """
+    Utility class for storing defined names.
+    Allows access by name and separation of global and scoped names
+    """
+
+    def add(self, value: DefinedName) -> None:
+        """
+        Add names without worrying about key and name matching.
+        """
 
 class DefinedNameList(Serialisable):
     tagname: ClassVar[str]
     definedName: Sequence[list[DefinedName]]
     def __init__(self, definedName: list[DefinedName] | tuple[DefinedName, ...] = ()) -> None: ...
-    def by_sheet(self) -> defaultdict[int, DefinedNameDict]: ...
+    def by_sheet(self) -> defaultdict[int, DefinedNameDict]:
+        """
+        Break names down into sheet locals and globals
+        """
+
     def __len__(self) -> int: ...

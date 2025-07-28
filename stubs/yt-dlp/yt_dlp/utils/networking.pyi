@@ -9,6 +9,13 @@ def random_user_agent() -> str: ...
 _T = TypeVar("_T")
 
 class HTTPHeaderDict(dict[str, str]):
+    """
+    Store and access keys case-insensitively.
+    The constructor can take multiple dicts, in which keys in the latter are prioritised.
+
+    Retains a case sensitive mapping of the headers, which can be accessed via `.sensitive()`.
+    """
+
     # *args and **kwargs are passed to dict.__init__().
     def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
     # *args is passed to filter: filter(None, args)
@@ -39,6 +46,11 @@ std_headers: HTTPHeaderDict
 def clean_proxies(proxies: dict[str, Any], headers: HTTPHeaderDict) -> None: ...
 def clean_headers(headers: HTTPHeaderDict) -> None: ...
 def remove_dot_segments(path: str) -> str: ...
-def escape_rfc3986(s: str) -> str: ...
-def normalize_url(url: str) -> str: ...
-def select_proxy(url: str, proxies: Mapping[str, Any]) -> str: ...
+def escape_rfc3986(s: str) -> str:
+    """Escape non-ASCII characters as suggested by RFC 3986"""
+
+def normalize_url(url: str) -> str:
+    """Normalize URL as suggested by RFC 3986"""
+
+def select_proxy(url: str, proxies: Mapping[str, Any]) -> str:
+    """Unified proxy selector for all backends"""

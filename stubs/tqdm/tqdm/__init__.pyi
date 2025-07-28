@@ -37,5 +37,8 @@ __all__ = [
     "__version__",
 ]
 
-def tqdm_notebook(*args, **kwargs) -> tqdm_notebook_cls[Incomplete]: ...
-def tnrange(*args, **kwargs) -> tqdm_notebook_cls[int]: ...
+def tqdm_notebook(*args, **kwargs) -> tqdm_notebook_cls[Incomplete]:
+    """See tqdm.notebook.tqdm for full documentation"""
+
+def tnrange(*args, **kwargs) -> tqdm_notebook_cls[int]:
+    """Shortcut for `tqdm.notebook.tqdm(range(*args), **kwargs)`."""

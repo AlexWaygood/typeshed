@@ -1,3 +1,5 @@
+"""No longer used and new code should not use. Exists only for API compat."""
+
 import ssl
 import types
 import urllib.request
@@ -21,6 +23,8 @@ has_websockets: bool
 _T = TypeVar("_T")
 
 class WebSocketsWrapper(Generic[_T]):
+    """Wraps websockets module to use in non-async scopes"""
+
     pool: _T | None
     loop: AbstractEventLoop
     conn: connect
@@ -80,7 +84,9 @@ class WebSocketsWrapper(Generic[_T]):
 def load_plugins(name: str, suffix: str, namespace: dict[str, Any]) -> dict[str, type[Any]]: ...
 def traverse_dict(dictn: Mapping[str, Any], keys: Collection[str], casesense: bool = True) -> Any: ...
 def decode_base(value: str, digits: str) -> int: ...
-def platform_name() -> str: ...
+def platform_name() -> str:
+    """Returns the platform name as a str"""
+
 def get_subprocess_encoding() -> str: ...
 def register_socks_protocols() -> None: ...
 def handle_youtubedl_headers(headers: dict[str, Any]) -> dict[str, Any]: ...

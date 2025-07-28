@@ -52,9 +52,12 @@ class AnnotationMixin:
         default_appearance: str | None = None,
     ) -> None: ...
 
-class PDFAnnotation(AnnotationMixin, PDFObject): ...
+class PDFAnnotation(AnnotationMixin, PDFObject):
+    """A PDF annotation that get serialized as an obj<</>>endobj block"""
 
 class AnnotationDict(AnnotationMixin):
+    """A PDF annotation that get serialized as an inline <<dictionary>>"""
+
     def serialize(self) -> str: ...
 
 class PDFEmbeddedFile(PDFContentStream):
@@ -76,6 +79,8 @@ class PDFEmbeddedFile(PDFContentStream):
     def file_spec(self) -> FileSpec: ...
 
 class FileSpec(NamedTuple):
+    """FileSpec(embedded_file, basename, desc)"""
+
     embedded_file: PDFEmbeddedFile
     basename: str
     desc: str

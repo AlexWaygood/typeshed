@@ -1,3 +1,5 @@
+"""Useful constants and regexes used by the package."""
+
 from re import Pattern
 from typing import Final
 

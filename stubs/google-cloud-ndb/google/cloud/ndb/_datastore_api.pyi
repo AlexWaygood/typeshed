@@ -1,3 +1,5 @@
+"""Functions that interact with Datastore backend."""
+
 from typing import Literal
 
 EVENTUAL: Literal[2]

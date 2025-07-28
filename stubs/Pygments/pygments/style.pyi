@@ -1,3 +1,13 @@
+"""
+pygments.style
+~~~~~~~~~~~~~~
+
+Basic style object.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from collections.abc import Iterator, Mapping, Set as AbstractSet
 from typing import TypedDict
 

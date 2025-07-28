@@ -1,3 +1,8 @@
+"""
+Ephemeral Elliptic Curve Diffie-Hellman (ECDH) key exchange
+RFC 5656, Section 4
+"""
+
 from _typeshed import ReadableBuffer
 from collections.abc import Callable
 from hashlib import _Hash

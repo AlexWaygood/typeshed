@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import IslamoWesternCalendar
 
 class Benin(IslamoWesternCalendar):
+    """Benin"""
+
     include_labour_day: ClassVar[bool]
     include_easter_monday: ClassVar[bool]
     include_ascension: ClassVar[bool]

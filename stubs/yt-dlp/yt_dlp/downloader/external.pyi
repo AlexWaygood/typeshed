@@ -52,11 +52,14 @@ class FFmpegFD(ExternalFD):
     SUPPORTED_FEATURES: tuple[Features, ...]
     @classmethod
     def available(cls, path: str | None = None) -> bool: ...  # type: ignore[override]
-    def on_process_started(self, proc: Unused, stdin: Unused) -> None: ...
+    def on_process_started(self, proc: Unused, stdin: Unused) -> None:
+        """Override this in subclasses"""
+
     @classmethod
     def can_merge_formats(cls, info_dict: _InfoDict, params: Mapping[str, Any]) -> bool: ...
 
 class AVconvFD(FFmpegFD): ...
 
 def list_external_downloaders() -> list[str]: ...
-def get_external_downloader(external_downloader: str) -> type[ExternalFD]: ...
+def get_external_downloader(external_downloader: str) -> type[ExternalFD]:
+    """Given the name of the executable, see whether we support the given downloader"""

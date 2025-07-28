@@ -32,6 +32,8 @@ Record_Range: rq.Struct
 Record_ClientInfo: rq.Struct
 
 class RawField(rq.ValueField):
+    """A field with raw data, stored as a string"""
+
     structcode: None
     def pack_value(self, val: _S) -> tuple[_S, int, None]: ...  # type: ignore[override]
     def parse_binary_value(self, data: _T, display: Unused, length: Unused, format: Unused) -> tuple[_T, Literal[""]]: ...  # type: ignore[override]  # See: https://github.com/python-xlib/python-xlib/pull/249

@@ -49,6 +49,8 @@ class ProxyType:
     SOCKS5: int
 
 class Proxy(NamedTuple):
+    """Proxy(type, host, port, username, password, remote_dns)"""
+
     type: ProxyType
     host: str
     port: int

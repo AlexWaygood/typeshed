@@ -17,6 +17,8 @@ class _EnvKWArgs(TypedDict, total=False):
     tls: TLSConfig
 
 class URLComponents(NamedTuple):
+    """URLComponents(scheme, netloc, url, params, query, fragment)"""
+
     scheme: str | None
     netloc: str | None
     url: str
@@ -29,7 +31,19 @@ def create_ipam_pool(*args, **kwargs) -> NoReturn: ...
 @deprecated("utils.create_ipam_config has been removed. Please use a docker.types.IPAMConfig object instead.")
 def create_ipam_config(*args, **kwargs) -> NoReturn: ...
 def decode_json_header(header: str | ReadableBuffer): ...
-def compare_version(v1: str, v2: str) -> Literal[0, -1, 1]: ...
+def compare_version(v1: str, v2: str) -> Literal[0, -1, 1]:
+    """Compare docker versions
+
+    >>> v1 = '1.9'
+    >>> v2 = '1.10'
+    >>> compare_version(v1, v2)
+    1
+    >>> compare_version(v2, v1)
+    -1
+    >>> compare_version(v2, v2)
+    0
+    """
+
 def version_lt(v1: str, v2: str) -> bool: ...
 def version_gte(v1: str, v2: str) -> bool: ...
 def convert_port_bindings(
@@ -59,10 +73,17 @@ def parse_host(addr: str | None, is_win32: bool = False, tls: bool = False) -> s
 def parse_devices(devices: Iterable[str | dict[str, Incomplete]]) -> list[dict[str, Incomplete]]: ...
 def kwargs_from_env(environment: Mapping[str, Incomplete] | None = None) -> _EnvKWArgs: ...
 def convert_filters(filters) -> str: ...
-def datetime_to_timestamp(dt: datetime.datetime) -> int: ...
+def datetime_to_timestamp(dt: datetime.datetime) -> int:
+    """Convert a datetime to a Unix timestamp"""
+
 def parse_bytes(s: float | str) -> float: ...
 def normalize_links(links: dict[str, str] | dict[str, None] | dict[str, str | None] | Iterable[tuple[str, str | None]]): ...
-def parse_env_file(env_file: FileDescriptorOrPath) -> dict[str, str]: ...
+def parse_env_file(env_file: FileDescriptorOrPath) -> dict[str, str]:
+    """
+    Reads a line-separated environment file.
+    The format of each line should be "key=value".
+    """
+
 def split_command(command: str | _ShlexInstream) -> list[str]: ...
 def format_environment(environment: Mapping[str, object | None]) -> list[str]: ...
 def format_extra_hosts(

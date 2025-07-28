@@ -1,3 +1,5 @@
+"""Utilities for certificate management."""
+
 from collections.abc import Callable
 from typing import Final
 

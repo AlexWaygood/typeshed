@@ -1,3 +1,5 @@
+"""Collection of Vault system backend API endpoint classes."""
+
 from _typeshed import Incomplete
 
 from hvac.api.system_backend.audit import Audit as Audit

@@ -60,10 +60,13 @@ class Version(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["major", b"major", "minor", b"minor", "patch", b"patch", "suffix", b"suffix"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+
     def ClearField(
         self, field_name: typing.Literal["major", b"major", "minor", b"minor", "patch", b"patch", "suffix", b"suffix"]
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
 
 global___Version = Version
 
@@ -136,7 +139,9 @@ class CodeGeneratorRequest(google.protobuf.message.Message):
     ) -> None: ...
     def HasField(
         self, field_name: typing.Literal["compiler_version", b"compiler_version", "parameter", b"parameter"]
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -151,7 +156,8 @@ class CodeGeneratorRequest(google.protobuf.message.Message):
             "source_file_descriptors",
             b"source_file_descriptors",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
 
 global___CodeGeneratorRequest = CodeGeneratorRequest
 
@@ -271,7 +277,9 @@ class CodeGeneratorResponse(google.protobuf.message.Message):
                 "name",
                 b"name",
             ],
-        ) -> builtins.bool: ...
+        ) -> builtins.bool:
+            """Checks if a message field is set."""
+
         def ClearField(
             self,
             field_name: typing.Literal[
@@ -284,7 +292,8 @@ class CodeGeneratorResponse(google.protobuf.message.Message):
                 "name",
                 b"name",
             ],
-        ) -> None: ...
+        ) -> None:
+            """Clears a message field."""
 
     ERROR_FIELD_NUMBER: builtins.int
     SUPPORTED_FEATURES_FIELD_NUMBER: builtins.int
@@ -342,7 +351,9 @@ class CodeGeneratorResponse(google.protobuf.message.Message):
             "supported_features",
             b"supported_features",
         ],
-    ) -> builtins.bool: ...
+    ) -> builtins.bool:
+        """Checks if a message field is set."""
+
     def ClearField(
         self,
         field_name: typing.Literal[
@@ -357,6 +368,7 @@ class CodeGeneratorResponse(google.protobuf.message.Message):
             "supported_features",
             b"supported_features",
         ],
-    ) -> None: ...
+    ) -> None:
+        """Clears a message field."""
 
 global___CodeGeneratorResponse = CodeGeneratorResponse

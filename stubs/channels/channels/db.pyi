@@ -12,6 +12,10 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 class DatabaseSyncToAsync(SyncToAsync[_P, _R]):
+    """
+    SyncToAsync version that cleans up old database connections when it exits.
+    """
+
     def thread_handler(
         self,
         loop: BaseEventLoop,
@@ -28,5 +32,9 @@ class DatabaseSyncToAsync(SyncToAsync[_P, _R]):
 # A direct assignment would result in incorrect type inference for the wrapped function.
 def database_sync_to_async(
     func: Callable[_P, _R], thread_sensitive: bool = True, executor: ThreadPoolExecutor | None = None
-) -> Callable[_P, Coroutine[Any, Any, _R]]: ...
+) -> Callable[_P, Coroutine[Any, Any, _R]]:
+    """
+    SyncToAsync version that cleans up old database connections when it exits.
+    """
+
 async def aclose_old_connections() -> None: ...

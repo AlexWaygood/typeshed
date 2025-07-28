@@ -1,7 +1,10 @@
+"""passlib.crypto._blowfish._gen_files - meta script that generates unrolled.py"""
+
 from typing import Any
 
 def varlist(name, count): ...
-def indent_block(block, padding): ...
+def indent_block(block, padding):
+    """ident block of text"""
 
 BFSTR: Any
 

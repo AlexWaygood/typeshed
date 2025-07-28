@@ -1,3 +1,5 @@
+"""Core of the graphics library - defines Drawing and Shapes"""
+
 from _typeshed import Incomplete, SupportsItems
 from abc import abstractmethod
 from collections.abc import Iterable, Sequence
@@ -98,52 +100,138 @@ NON_ZERO_WINDING: Final[str]
 EVEN_ODD: Final[str]
 STATE_DEFAULTS: Final[Incomplete]
 
-class _DrawTimeResizeable: ...
+class _DrawTimeResizeable:
+    """Addin class to provide the horribleness of _drawTimeResize"""
 
 class _SetKeyWordArgs:
-    def __init__(self, keywords: SupportsItems[str, Any] = {}) -> None: ...
+    def __init__(self, keywords: SupportsItems[str, Any] = {}) -> None:
+        """In general properties may be supplied to the constructor."""
 
 def getRectsBounds(rectList): ...
 def getPathBounds(points): ...
-def getPointsBounds(pointList): ...
+def getPointsBounds(pointList):
+    """Helper function for list of points"""
 
 class Shape(_SetKeyWordArgs, _DrawTimeResizeable):
+    """Base class for all nodes in the tree. Nodes are simply
+    packets of data to be created, stored, and ultimately
+    rendered - they don't do anything active.  They provide
+    convenience methods for verification but do not
+    check attribiute assignments or use any clever setattr
+    tricks this time.
+    """
+
     @abstractmethod
-    def copy(self) -> Self: ...
-    def getProperties(self, recur: int = 1) -> dict[str, Any]: ...
-    def setProperties(self, props) -> None: ...
-    def dumpProperties(self, prefix: str = "") -> None: ...
-    def verify(self) -> None: ...
+    def copy(self) -> Self:
+        """Return a clone of this shape."""
+
+    def getProperties(self, recur: int = 1) -> dict[str, Any]:
+        """Interface to make it easy to extract automatic
+        documentation
+        """
+
+    def setProperties(self, props) -> None:
+        """Supports the bulk setting if properties from,
+        for example, a GUI application or a config file.
+        """
+
+    def dumpProperties(self, prefix: str = "") -> None:
+        """Convenience. Lists them on standard output.  You
+        may provide a prefix - mostly helps to generate code
+        samples for documentation.
+        """
+
+    def verify(self) -> None:
+        """If the programmer has provided the optional
+        _attrMap attribute, this checks all expected
+        attributes are present; no unwanted attributes
+        are present; and (if a checking function is found)
+        checks each attribute.  Either succeeds or raises
+        an informative exception.
+        """
+
     @abstractmethod
-    def getBounds(self) -> tuple[float, float, float, float]: ...
+    def getBounds(self) -> tuple[float, float, float, float]:
+        """Returns bounding rectangle of object as (x1,y1,x2,y2)"""
 
 class Group(Shape):
+    """Groups elements together.  May apply a transform
+    to its contents.  Has a publicly accessible property
+    'contents' which may be used to iterate over contents.
+    In addition, child nodes may be given a name in which
+    case they are subsequently accessible as properties.
+    """
+
     contents: list[Shape]
     transform: tuple[float, float, float, float, float, float] | list[float] | list[int]
-    def __init__(self, *elements: Shape | UserNode, **keywords: Unpack[_GroupKwArgs]) -> None: ...
-    def add(self, node: Shape | UserNode, name: str | None = None) -> None: ...
-    def insert(self, i: int, n: Shape | UserNode, name: str | None = None) -> None: ...
-    def expandUserNodes(self) -> Group: ...
-    def copy(self) -> Self: ...
-    def rotate(self, theta: float, cx: float = 0, cy: float = 0) -> None: ...
-    def translate(self, dx: float, dy: float = 0) -> None: ...
-    def scale(self, sx: float, sy: float = 1) -> None: ...
-    def skew(self, kx: float, ky: float = 0) -> None: ...
-    def shift(self, x: float, y: float = 0) -> None: ...
+    def __init__(self, *elements: Shape | UserNode, **keywords: Unpack[_GroupKwArgs]) -> None:
+        """Initial lists of elements may be provided to allow
+        compact definitions in literal Python code.  May or
+        may not be useful.
+        """
+
+    def add(self, node: Shape | UserNode, name: str | None = None) -> None:
+        """Appends non-None child node to the 'contents' attribute. In addition,
+        if a name is provided, it is subsequently accessible by name
+        """
+
+    def insert(self, i: int, n: Shape | UserNode, name: str | None = None) -> None:
+        """Inserts sub-node n in contents at specified location"""
+
+    def expandUserNodes(self) -> Group:
+        """Return a new object which only contains primitive shapes."""
+
+    def copy(self) -> Self:
+        """returns a copy"""
+
+    def rotate(self, theta: float, cx: float = 0, cy: float = 0) -> None:
+        """Convenience to help you set transforms"""
+
+    def translate(self, dx: float, dy: float = 0) -> None:
+        """Convenience to help you set transforms"""
+
+    def scale(self, sx: float, sy: float = 1) -> None:
+        """Convenience to help you set transforms"""
+
+    def skew(self, kx: float, ky: float = 0) -> None:
+        """Convenience to help you set transforms"""
+
+    def shift(self, x: float, y: float = 0) -> None:
+        """Convenience function to set the origin arbitrarily"""
     # NOTE: This changes the object to a Drawing, rather than returning
     #       a new one, which is not ideal...
-    def asDrawing(self, width: float, height: float) -> None: ...
-    def getContents(self) -> list[Shape | UserNode]: ...
+    def asDrawing(self, width: float, height: float) -> None:
+        """Convenience function to make a drawing from a group
+        After calling this the instance will be a drawing!
+        """
+
+    def getContents(self) -> list[Shape | UserNode]:
+        """Return the list of things to be rendered
+        override to get more complicated behaviour
+        """
+
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class Drawing(Group, Flowable):
+    """Outermost container; the thing a renderer works on.
+    This has no properties except a height, width and list
+    of contents.
+    """
+
     background: Shape | UserNode | None
     renderScale: float
     def __init__(
         self, width: float = 400, height: float = 200, *nodes: Shape | UserNode, **keywords: Unpack[_DrawingKwArgs]
     ) -> None: ...
-    def draw(self, showBoundary=...) -> None: ...
-    def expandUserNodes(self) -> Drawing: ...
+    def draw(self, showBoundary=...) -> None:
+        """This is used by the Platypus framework to let the document
+        draw itself in a story.  It is specific to PDF and should not
+        be used directly.
+        """
+
+    def expandUserNodes(self) -> Drawing:
+        """Return a new drawing which only contains primitive shapes."""
+
     def asGroup(self, *args: Shape | UserNode, **kw: Unpack[_GroupKwArgs]) -> Group: ...
     def save(
         self,
@@ -153,13 +241,24 @@ class Drawing(Group, Flowable):
         outDir: str | None = None,
         title: str = "",
         **kw,
-    ): ...
-    def asString(self, format: str, verbose: bool | None = None, preview: int = 0, **kw) -> str: ...
+    ):
+        """Saves copies of self in desired location and formats.
+        Multiple formats can be supported in one call
+
+        the extra keywords can be of the form
+        _renderPM_dpi=96 (which passes dpi=96 to renderPM)
+        """
+
+    def asString(self, format: str, verbose: bool | None = None, preview: int = 0, **kw) -> str:
+        """Converts to an 8 bit string in given format."""
+
     def resized(
         self, kind: Literal["fit", "fitx", "fity"] = "fit", lpad: float = 0, rpad: float = 0, bpad: float = 0, tpad: float = 0
-    ) -> Drawing: ...
+    ) -> Drawing:
+        """return a base class drawing which ensures all the contents fits"""
 
-class _DrawingEditorMixin: ...
+class _DrawingEditorMixin:
+    """This is a mixin to provide functionality for edited drawings"""
 
 class _isStrokeDashArray(Validator):
     def test(self, x): ...
@@ -176,9 +275,12 @@ class LineShape(Shape):
     strokeOpacity: float | None
     def __init__(self, kw: _LineShapeKwArgs) -> None: ...
     @abstractmethod
-    def copy(self) -> Self: ...
+    def copy(self) -> Self:
+        """Return a clone of this shape."""
+
     @abstractmethod
-    def getBounds(self) -> tuple[float, float, float, float]: ...
+    def getBounds(self) -> tuple[float, float, float, float]:
+        """Returns bounding rectangle of object as (x1,y1,x2,y2)"""
 
 class Line(LineShape):
     x1: float
@@ -187,19 +289,27 @@ class Line(LineShape):
     y2: float
     def __init__(self, x1: float, y1: float, x2: float, y2: float, **kw: Unpack[_LineShapeKwArgs]) -> None: ...
     # NOTE: For some reason Line doesn't implement copy
-    def copy(self) -> NoReturn: ...
-    def getBounds(self) -> tuple[float, float, float, float]: ...
+    def copy(self) -> NoReturn:
+        """Return a clone of this shape."""
+
+    def getBounds(self) -> tuple[float, float, float, float]:
+        """Returns bounding rectangle of object as (x1,y1,x2,y2)"""
 
 class SolidShape(LineShape):
     fillColor: Color | None
     fillOpacity: float | None
     def __init__(self, kw: _SolidShapeKwArgs) -> None: ...
     @abstractmethod
-    def copy(self) -> Self: ...
+    def copy(self) -> Self:
+        """Return a clone of this shape."""
+
     @abstractmethod
-    def getBounds(self) -> tuple[float, float, float, float]: ...
+    def getBounds(self) -> tuple[float, float, float, float]:
+        """Returns bounding rectangle of object as (x1,y1,x2,y2)"""
 
 class Path(SolidShape):
+    """Path, made up of straight lines and bezier curves."""
+
     points: list[float]
     operators: list[float]
     isClipPath: _BoolLike
@@ -235,6 +345,8 @@ def getArcPoints(
 ) -> list[float]: ...
 
 class ArcPath(Path):
+    """Path with an addArc method"""
+
     def addArc(
         self,
         centerx: float,
@@ -253,6 +365,8 @@ def definePath(
 ) -> Path: ...
 
 class Rect(SolidShape):
+    """Rectangle, possibly with rounded corners."""
+
     x: float
     y: float
     width: float
@@ -266,6 +380,8 @@ class Rect(SolidShape):
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class Image(SolidShape):
+    """Bitmap image."""
+
     x: float
     y: float
     width: float
@@ -293,6 +409,10 @@ class Ellipse(SolidShape):
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class Wedge(SolidShape):
+    """A "slice of a pie" by default translates to a polygon moves anticlockwise
+    from start angle to end angle
+    """
+
     centerx: float
     centery: float
     radius: float
@@ -319,18 +439,29 @@ class Wedge(SolidShape):
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class Polygon(SolidShape):
+    """Defines a closed shape; Is implicitly
+    joined back to the start for you.
+    """
+
     points: list[float]
     def __init__(self, points: list[float] = [], **kw: Unpack[_SolidShapeKwArgs]) -> None: ...
     def copy(self) -> Self: ...
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class PolyLine(LineShape):
+    """Series of line segments.  Does not define a
+    closed shape; never filled even if apparently joined.
+    Put the numbers in the list, not two-tuples.
+    """
+
     points: list[float]
     def __init__(self, points: list[float] = [], **kw: Unpack[_SolidShapeKwArgs]) -> None: ...
     def copy(self) -> Self: ...
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class Hatching(Path):
+    """define a hatching of a set of polygons defined by lists of the form [x0,y0,x1,y1,....,xn,yn]"""
+
     xyLists: Sequence[tuple[float, float]]
     angles: Sequence[float]
     spacings: Sequence[float]
@@ -347,6 +478,10 @@ def numericXShift(
 ) -> float: ...
 
 class String(Shape):
+    """Not checked against the spec, just a way to make something work.
+    Can be anchored left, middle or end.
+    """
+
     encoding: str
     x: float
     y: float
@@ -361,10 +496,24 @@ class String(Shape):
     def getBounds(self) -> tuple[float, float, float, float]: ...
 
 class UserNode(_DrawTimeResizeable):
+    """A simple template for creating a new node.  The user (Python
+    programmer) may subclasses this.  provideNode() must be defined to
+    provide a Shape primitive when called by a renderer.  It does
+    NOT inherit from Shape, as the renderer always replaces it, and
+    your own classes can safely inherit from it without getting
+    lots of unintended behaviour.
+    """
+
     @abstractmethod
-    def provideNode(self) -> Shape: ...
+    def provideNode(self) -> Shape:
+        """Override this to create your own node. This lets widgets be
+        added to drawings; they must create a shape (typically a group)
+        so that the renderer can draw the custom node.
+        """
 
 class DirectDraw(Shape):
+    """try to draw directly on the canvas"""
+
     @abstractmethod
     def drawDirectly(self, canvas: Canvas) -> None: ...
 

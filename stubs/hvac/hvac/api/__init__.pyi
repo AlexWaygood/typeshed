@@ -1,3 +1,5 @@
+"""Collection of Vault API endpoint classes."""
+
 from hvac.api.auth_methods import AuthMethods as AuthMethods
 from hvac.api.secrets_engines import SecretsEngines as SecretsEngines
 from hvac.api.system_backend import SystemBackend as SystemBackend

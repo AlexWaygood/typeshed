@@ -7,14 +7,95 @@ _F = TypeVar("_F", bound=_FormatCheckCallable)
 _RaisesType: TypeAlias = type[Exception] | tuple[type[Exception], ...]
 
 class FormatChecker:
+    """
+    A ``format`` property checker.
+
+    JSON Schema does not mandate that the ``format`` property actually do any
+    validation. If validation is desired however, instances of this class can
+    be hooked into validators to enable format validation.
+
+    `FormatChecker` objects always return ``True`` when asked about
+    formats that they do not know how to validate.
+
+    To add a check for a custom format use the `FormatChecker.checks`
+    decorator.
+
+    Arguments:
+
+        formats:
+
+            The known formats to validate. This argument can be used to
+            limit which formats will be used during validation.
+
+    """
+
     checkers: dict[str, tuple[_FormatCheckCallable, _RaisesType]]
 
     def __init__(self, formats: Iterable[str] | None = None) -> None: ...
-    def checks(self, format: str, raises: _RaisesType = ()) -> Callable[[_F], _F]: ...
+    def checks(self, format: str, raises: _RaisesType = ()) -> Callable[[_F], _F]:
+        """
+        Register a decorated function as validating a new format.
+
+        Arguments:
+
+            format:
+
+                The format that the decorated function will check.
+
+            raises:
+
+                The exception(s) raised by the decorated function when an
+                invalid instance is found.
+
+                The exception object will be accessible as the
+                `jsonschema.exceptions.ValidationError.cause` attribute of the
+                resulting validation error.
+
+        """
+
     @classmethod
     def cls_checks(cls, format: str, raises: _RaisesType = ()) -> Callable[[_F], _F]: ...
-    def check(self, instance: object, format: str) -> None: ...
-    def conforms(self, instance: object, format: str) -> bool: ...
+    def check(self, instance: object, format: str) -> None:
+        """
+        Check whether the instance conforms to the given format.
+
+        Arguments:
+
+            instance (*any primitive type*, i.e. str, number, bool):
+
+                The instance to check
+
+            format:
+
+                The format that instance should conform to
+
+        Raises:
+
+            FormatError:
+
+                if the instance does not conform to ``format``
+
+        """
+
+    def conforms(self, instance: object, format: str) -> bool:
+        """
+        Check whether the instance conforms to the given format.
+
+        Arguments:
+
+            instance (*any primitive type*, i.e. str, number, bool):
+
+                The instance to check
+
+            format:
+
+                The format that instance should conform to
+
+        Returns:
+
+            bool: whether it conformed
+
+        """
 
 draft3_format_checker: FormatChecker
 draft4_format_checker: FormatChecker

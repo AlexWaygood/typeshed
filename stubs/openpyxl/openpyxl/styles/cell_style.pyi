@@ -19,6 +19,10 @@ class ArrayDescriptor(Generic[_T]):
     def __set__(self, instance: MutableSequence[_T], value: _T) -> None: ...
 
 class StyleArray(array[int]):
+    """
+    Simplified named tuple with an array
+    """
+
     tagname: ClassVar[str]
     fontId: ArrayDescriptor[int]
     fillId: ArrayDescriptor[int]
@@ -75,9 +79,17 @@ class CellStyle(Serialisable):
         protection: Protection | None = None,
         extLst: Unused = None,
     ) -> None: ...
-    def to_array(self): ...
+    def to_array(self):
+        """
+        Convert to StyleArray
+        """
+
     @classmethod
-    def from_array(cls, style): ...
+    def from_array(cls, style):
+        """
+        Convert from StyleArray
+        """
+
     @property
     def applyProtection(self) -> Literal[True] | None: ...
     @property

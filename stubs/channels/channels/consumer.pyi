@@ -38,7 +38,12 @@ class _ChannelScope(WebSocketScope, total=False):
 
 # Accepts any ASGI message dict with a required "type" key (str),
 # but allows additional arbitrary keys for flexibility.
-def get_handler_name(message: dict[str, Any]) -> str: ...
+def get_handler_name(message: dict[str, Any]) -> str:
+    """
+    Looks at a message, checks it has a sensible type, and returns the
+    handler name for that type.
+    """
+
 @type_check_only
 class _ASGIApplicationProtocol(Protocol):
     consumer_class: AsyncConsumer
@@ -50,6 +55,12 @@ class _ASGIApplicationProtocol(Protocol):
     def __call__(self, scope: Scope, receive: ASGIReceiveCallable, send: ASGISendCallable) -> Awaitable[None]: ...
 
 class AsyncConsumer:
+    """
+    Base consumer class. Implements the ASGI application spec, and adds on
+    channel layer management and routing of events to named methods based
+    on their type.
+    """
+
     channel_layer_alias: ClassVar[str]
 
     scope: _ChannelScope
@@ -58,18 +69,50 @@ class AsyncConsumer:
     channel_receive: ASGIReceiveCallable
     base_send: ASGISendCallable
 
-    async def __call__(self, scope: _ChannelScope, receive: ASGIReceiveCallable, send: ASGISendCallable) -> None: ...
-    async def dispatch(self, message: dict[str, Any]) -> None: ...
-    async def send(self, message: dict[str, Any]) -> None: ...
+    async def __call__(self, scope: _ChannelScope, receive: ASGIReceiveCallable, send: ASGISendCallable) -> None:
+        """
+        Dispatches incoming messages to type-based handlers asynchronously.
+        """
 
+    async def dispatch(self, message: dict[str, Any]) -> None:
+        """
+        Works out what to do with a message.
+        """
+
+    async def send(self, message: dict[str, Any]) -> None:
+        """
+        Overrideable/callable-by-subclasses send method.
+        """
     # initkwargs will be used to instantiate the consumer instance.
     @classmethod
-    def as_asgi(cls, **initkwargs: Any) -> _ASGIApplicationProtocol: ...
+    def as_asgi(cls, **initkwargs: Any) -> _ASGIApplicationProtocol:
+        """
+        Return an ASGI v3 single callable that instantiates a consumer instance
+        per scope. Similar in purpose to Django's as_view().
+
+        initkwargs will be used to instantiate the consumer instance.
+        """
 
 class SyncConsumer(AsyncConsumer):
+    """
+    Synchronous version of the consumer, which is what we write most of the
+    generic consumers against (for now). Calls handlers in a threadpool and
+    uses CallBouncer to get the send method out to the main event loop.
+
+    It would have been possible to have "mixed" consumers and auto-detect
+    if a handler was awaitable or not, but that would have made the API
+    for user-called methods very confusing as there'd be two types of each.
+    """
 
     # Since we're overriding asynchronous methods with synchronous ones,
     # we need to use `# type: ignore[override]` to suppress mypy errors.
     @database_sync_to_async
-    def dispatch(self, message: dict[str, Any]) -> None: ...  # type: ignore[override]
-    def send(self, message: dict[str, Any]) -> None: ...  # type: ignore[override]
+    def dispatch(self, message: dict[str, Any]) -> None:  # type: ignore[override]
+        """
+        Dispatches incoming messages to type-based handlers asynchronously.
+        """
+
+    def send(self, message: dict[str, Any]) -> None:  # type: ignore[override]
+        """
+        Overrideable/callable-by-subclasses send method.
+        """

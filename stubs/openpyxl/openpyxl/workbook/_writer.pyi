@@ -1,8 +1,14 @@
+"""Write the workbook global settings to the archive."""
+
 from _typeshed import Incomplete
 
 from openpyxl.workbook.workbook import Workbook
 
-def get_active_sheet(wb: Workbook) -> int | None: ...
+def get_active_sheet(wb: Workbook) -> int | None:
+    """
+    Return the index of the active sheet.
+    If the sheet set to active is hidden return the next visible sheet or None
+    """
 
 class WorkbookWriter:
     wb: Workbook
@@ -15,6 +21,11 @@ class WorkbookWriter:
     def write_names(self) -> None: ...
     def write_pivots(self) -> None: ...
     def write_views(self) -> None: ...
-    def write(self): ...
-    def write_rels(self): ...
-    def write_root_rels(self): ...
+    def write(self):
+        """Write the core workbook xml."""
+
+    def write_rels(self):
+        """Write the workbook relationships xml."""
+
+    def write_root_rels(self):
+        """Write the package relationships"""

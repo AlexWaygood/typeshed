@@ -6,10 +6,15 @@ class ResultRow:
     column_names: tuple[str, ...]
     column_values: tuple[Any, ...]
 
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return len(self)."""
+
     @overload
-    def __getitem__(self, index: int) -> Any: ...
+    def __getitem__(self, index: int) -> Any:
+        """Return self[key]."""
+
     @overload
     def __getitem__(self, index: slice) -> Sequence[Any]: ...
-    def __iter__(self) -> Iterator[Any]: ...
+    def __iter__(self) -> Iterator[Any]:
+        """Implement iter(self)."""
     # __next__, __delitem__, __setitem__ are technically defined but lead always to an error

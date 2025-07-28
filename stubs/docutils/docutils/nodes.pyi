@@ -1,3 +1,20 @@
+"""
+Docutils document tree element class library.
+
+Classes in CamelCase are abstract base classes or auxiliary classes. The one
+exception is `Text`, for a text (PCDATA) node; uppercase is used to
+differentiate from element classes.  Classes in lower_case_with_underscores
+are element classes, matching the XML element generic identifiers in the DTD_.
+
+The position of each node (the level at which it can occur) is significant and
+is represented by abstract base classes (`Root`, `Structural`, `Body`,
+`Inline`, etc.).  Certain transformations will be easier because we can use
+``isinstance(node, base_class)`` to determine the position of the node in the
+hierarchy.
+
+.. _DTD: https://docutils.sourceforge.io/docs/ref/docutils.dtd
+"""
+
 import sys
 import xml.dom.minidom
 from abc import abstractmethod
@@ -20,6 +37,8 @@ __docformat__: Final = "reStructuredText"
 # Functional Node Base Classes
 
 class Node:
+    """Abstract base class of nodes in a document tree."""
+
     # children is initialized by the subclasses
     children: Sequence[Node]
     # TODO: `parent` is actually `Element | None``, but `None`` only happens rarely,
@@ -29,30 +48,127 @@ class Node:
     source: str | None
     line: int | None
     @property
-    def document(self) -> document | None: ...
+    def document(self) -> document | None:
+        """Return the `document` root node of the tree containing this Node."""
+
     @document.setter
     def document(self, value: document) -> None: ...
-    def __bool__(self) -> Literal[True]: ...
-    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element: ...
+    def __bool__(self) -> Literal[True]:
+        """
+        Node instances are always true, even if they're empty.  A node is more
+        than a simple container.  Its boolean "truth" does not depend on
+        having one or more subnodes in the doctree.
+
+        Use `len()` to check node length.
+        """
+
+    def asdom(self, dom: _DomModule | None = None) -> xml.dom.minidom.Element:
+        """Return a DOM **fragment** representation of this Node."""
     # While docutils documents the Node class to be abstract it does not
     # actually use the ABCMeta metaclass. We still set @abstractmethod here
     # (although it's not used in the docutils implementation) because it
     # makes Mypy reject Node() with "Cannot instantiate abstract class".
     @abstractmethod
-    def copy(self) -> Self: ...
+    def copy(self) -> Self:
+        """Return a copy of self."""
+
     @abstractmethod
-    def deepcopy(self) -> Self: ...
+    def deepcopy(self) -> Self:
+        """Return a deep copy of self (also copying children)."""
+
     @abstractmethod
-    def pformat(self, indent: str = "    ", level: int = 0) -> str: ...
+    def pformat(self, indent: str = "    ", level: int = 0) -> str:
+        """
+        Return an indented pseudo-XML representation, for test purposes.
+
+        Override in subclasses.
+        """
+
     @abstractmethod
-    def astext(self) -> str: ...
+    def astext(self) -> str:
+        """Return a string representation of this Node."""
+
     def setup_child(self, child: Node) -> None: ...
-    def walk(self, visitor: NodeVisitor) -> bool: ...
-    def walkabout(self, visitor: NodeVisitor) -> bool: ...
+    def walk(self, visitor: NodeVisitor) -> bool:
+        """
+        Traverse a tree of `Node` objects, calling the
+        `dispatch_visit()` method of `visitor` when entering each
+        node.  (The `walkabout()` method is similar, except it also
+        calls the `dispatch_departure()` method before exiting each
+        node.)
+
+        This tree traversal supports limited in-place tree
+        modifications.  Replacing one node with one or more nodes is
+        OK, as is removing an element.  However, if the node removed
+        or replaced occurs after the current node, the old node will
+        still be traversed, and any new nodes will not.
+
+        Within ``visit`` methods (and ``depart`` methods for
+        `walkabout()`), `TreePruningException` subclasses may be raised
+        (`SkipChildren`, `SkipSiblings`, `SkipNode`, `SkipDeparture`).
+
+        Parameter `visitor`: A `NodeVisitor` object, containing a
+        ``visit`` implementation for each `Node` subclass encountered.
+
+        Return true if we should stop the traversal.
+        """
+
+    def walkabout(self, visitor: NodeVisitor) -> bool:
+        """
+        Perform a tree traversal similarly to `Node.walk()` (which
+        see), except also call the `dispatch_departure()` method
+        before exiting each node.
+
+        Parameter `visitor`: A `NodeVisitor` object, containing a
+        ``visit`` and ``depart`` implementation for each `Node`
+        subclass encountered.
+
+        Return true if we should stop the traversal.
+        """
+
     @overload
     def findall(
         self, condition: type[_N], include_self: bool = True, descend: bool = True, siblings: bool = False, ascend: bool = False
-    ) -> Generator[_N, None, None]: ...
+    ) -> Generator[_N, None, None]:
+        """
+        Return an iterator yielding nodes following `self`:
+
+        * self (if `include_self` is true)
+        * all descendants in tree traversal order (if `descend` is true)
+        * the following siblings (if `siblings` is true) and their
+          descendants (if also `descend` is true)
+        * the following siblings of the parent (if `ascend` is true) and
+          their descendants (if also `descend` is true), and so on.
+
+        If `condition` is not None, the iterator yields only nodes
+        for which ``condition(node)`` is true.  If `condition` is a
+        node class ``cls``, it is equivalent to a function consisting
+        of ``return isinstance(node, cls)``.
+
+        If `ascend` is true, assume `siblings` to be true as well.
+
+        If the tree structure is modified during iteration, the result
+        is undefined.
+
+        For example, given the following tree::
+
+            <paragraph>
+                <emphasis>      <--- emphasis.traverse() and
+                    <strong>    <--- strong.traverse() are called.
+                        Foo
+                    Bar
+                <reference name="Baz" refid="baz">
+                    Baz
+
+        Then tuple(emphasis.traverse()) equals ::
+
+            (<emphasis>, <strong>, <#text: Foo>, <#text: Bar>)
+
+        and list(strong.traverse(ascend=True) equals ::
+
+            [<strong>, <#text: Foo>, <#text: Bar>, <reference>, <#text: Baz>]
+        """
+
     @overload
     def findall(
         self,
@@ -65,7 +181,12 @@ class Node:
     @overload
     def traverse(
         self, condition: type[_N], include_self: bool = True, descend: bool = True, siblings: bool = False, ascend: bool = False
-    ) -> list[_N]: ...
+    ) -> list[_N]:
+        """Return list of nodes following `self`.
+
+        For looping, Node.findall() is faster and more memory efficient.
+        """
+
     @overload
     def traverse(
         self,
@@ -78,7 +199,15 @@ class Node:
     @overload
     def next_node(
         self, condition: type[_N], include_self: bool = False, descend: bool = True, siblings: bool = False, ascend: bool = False
-    ) -> _N: ...
+    ) -> _N:
+        """
+        Return the first node in the iterator returned by findall(),
+        or None if the iterable is empty.
+
+        Parameter list is the same as of `findall()`.  Note that `include_self`
+        defaults to False, though.
+        """
+
     @overload
     def next_node(
         self,
@@ -92,14 +221,30 @@ class Node:
 # Left out
 # - def ensure_str (deprecated)
 # - def unescape (canonical import from docutils.utils)
-def unescape(text: str, restore_backslashes: bool = False, respect_whitespace: bool = False) -> str: ...
+def unescape(text: str, restore_backslashes: bool = False, respect_whitespace: bool = False) -> str:
+    """
+    Return a string with nulls removed or restored to backslashes.
+    Backslash-escaped spaces are also removed.
+    """
 
 class Text(Node, str):
+    """
+    Instances are terminal nodes (leaves) containing text only; no child
+    nodes or attributes.  Initialize by passing a string to the constructor.
+
+    Access the raw (null-escaped) text with ``str(<instance>)``
+    and unescaped text with ``<instance>.astext()``.
+    """
+
     tagname: ClassVar[str]
     children: tuple[()]
 
     # we omit the rawsource parameter because it has been deprecated and is ignored
-    def __new__(cls, data: str) -> Self: ...
+    def __new__(cls, data: str) -> Self:
+        """Assert that `data` is not an array of bytes
+        and warn if the deprecated `rawsource` argument is used.
+        """
+
     def __init__(self, data: str) -> None: ...
     def shortrepr(self, maxlen: int = 18) -> str: ...
     def copy(self) -> Self: ...
@@ -112,6 +257,53 @@ class Text(Node, str):
 _T = TypeVar("_T")
 
 class Element(Node):
+    """
+    `Element` is the superclass to all specific elements.
+
+    Elements contain attributes and child nodes.
+    They can be described as a cross between a list and a dictionary.
+
+    Elements emulate dictionaries for external [#]_ attributes, indexing by
+    attribute name (a string). To set the attribute 'att' to 'value', do::
+
+        element['att'] = 'value'
+
+    .. [#] External attributes correspond to the XML element attributes.
+       From its `Node` superclass, Element also inherits "internal"
+       class attributes that are accessed using the standard syntax, e.g.
+       ``element.parent``.
+
+    There are two special attributes: 'ids' and 'names'.  Both are
+    lists of unique identifiers: 'ids' conform to the regular expression
+    ``[a-z](-?[a-z0-9]+)*`` (see the make_id() function for rationale and
+    details). 'names' serve as user-friendly interfaces to IDs; they are
+    case- and whitespace-normalized (see the fully_normalize_name() function).
+
+    Elements emulate lists for child nodes (element nodes and/or text
+    nodes), indexing by integer.  To get the first child node, use::
+
+        element[0]
+
+    to iterate over the child nodes (without descending), use::
+
+        for child in element:
+            ...
+
+    Elements may be constructed using the ``+=`` operator.  To add one new
+    child node to element, do::
+
+        element += node
+
+    This is equivalent to ``element.append(node)``.
+
+    To add a list of multiple child nodes at once, use the same ``+=``
+    operator::
+
+        element += [node1, node2]
+
+    This is equivalent to ``element.extend([node1, node2])``.
+    """
+
     local_attributes: ClassVar[Sequence[str]]
     basic_attributes: ClassVar[Sequence[str]]
     list_attributes: ClassVar[Sequence[str]]
@@ -143,7 +335,9 @@ class Element(Node):
     def __delitem__(self, key: str | int | slice) -> None: ...
     def __add__(self, other: list[Node]) -> list[Node]: ...
     def __radd__(self, other: list[Node]) -> list[Node]: ...
-    def __iadd__(self, other: Node | Iterable[Node]) -> Self: ...
+    def __iadd__(self, other: Node | Iterable[Node]) -> Self:
+        """Append a node or a list of nodes to `self.children`."""
+
     def astext(self) -> str: ...
     def non_default_attributes(self) -> dict[str, Any]: ...
     def attlist(self) -> list[tuple[str, Any]]: ...
@@ -158,67 +352,281 @@ class Element(Node):
     @overload
     def setdefault(self, key: str, failobj: _T) -> Any | _T: ...
     has_key = hasattr
-    def get_language_code(self, fallback: str = "") -> str: ...
+    def get_language_code(self, fallback: str = "") -> str:
+        """Return node's language tag.
+
+        Look iteratively in self and parents for a class argument
+        starting with ``language-`` and return the remainder of it
+        (which should be a `BCP49` language tag) or the `fallback`.
+        """
+
     def append(self, item: Node) -> None: ...
     def extend(self, item: Iterable[Node]) -> None: ...
     def insert(self, index: SupportsIndex, item: Node | Iterable[Node] | None) -> None: ...
     def pop(self, i: int = -1) -> Node: ...
     def remove(self, item: Node) -> None: ...
     def index(self, item: Node, start: int = 0, stop: int = sys.maxsize) -> int: ...
-    def previous_sibling(self) -> Node | None: ...
+    def previous_sibling(self) -> Node | None:
+        """Return preceding sibling node or ``None``."""
+
     def is_not_default(self, key: str) -> bool: ...
-    def update_basic_atts(self, dict_: Mapping[str, Any] | Node) -> None: ...
-    def append_attr_list(self, attr: str, values: Iterable[Any]) -> None: ...
-    def coerce_append_attr_list(self, attr: str, value) -> None: ...
-    def replace_attr(self, attr: str, value: Any, force: bool = True) -> None: ...
-    def copy_attr_convert(self, attr: str, value: Any, replace: bool = True) -> None: ...
-    def copy_attr_coerce(self, attr: str, value: Any, replace: bool) -> None: ...
-    def copy_attr_concatenate(self, attr: str, value: Any, replace: bool) -> None: ...
-    def copy_attr_consistent(self, attr: str, value: Any, replace: bool) -> None: ...
+    def update_basic_atts(self, dict_: Mapping[str, Any] | Node) -> None:
+        """
+        Update basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') from node or dictionary `dict_`.
+        """
+
+    def append_attr_list(self, attr: str, values: Iterable[Any]) -> None:
+        """
+        For each element in values, if it does not exist in self[attr], append
+        it.
+
+        NOTE: Requires self[attr] and values to be sequence type and the
+        former should specifically be a list.
+        """
+
+    def coerce_append_attr_list(self, attr: str, value) -> None:
+        """
+        First, convert both self[attr] and value to a non-string sequence
+        type; if either is not already a sequence, convert it to a list of one
+        element.  Then call append_attr_list.
+
+        NOTE: self[attr] and value both must not be None.
+        """
+
+    def replace_attr(self, attr: str, value: Any, force: bool = True) -> None:
+        """
+        If self[attr] does not exist or force is True or omitted, set
+        self[attr] to value, otherwise do nothing.
+        """
+
+    def copy_attr_convert(self, attr: str, value: Any, replace: bool = True) -> None:
+        """
+        If attr is an attribute of self, set self[attr] to
+        [self[attr], value], otherwise set self[attr] to value.
+
+        NOTE: replace is not used by this function and is kept only for
+              compatibility with the other copy functions.
+        """
+
+    def copy_attr_coerce(self, attr: str, value: Any, replace: bool) -> None:
+        """
+        If attr is an attribute of self and either self[attr] or value is a
+        list, convert all non-sequence values to a sequence of 1 element and
+        then concatenate the two sequence, setting the result to self[attr].
+        If both self[attr] and value are non-sequences and replace is True or
+        self[attr] is None, replace self[attr] with value. Otherwise, do
+        nothing.
+        """
+
+    def copy_attr_concatenate(self, attr: str, value: Any, replace: bool) -> None:
+        """
+        If attr is an attribute of self and both self[attr] and value are
+        lists, concatenate the two sequences, setting the result to
+        self[attr].  If either self[attr] or value are non-sequences and
+        replace is True or self[attr] is None, replace self[attr] with value.
+        Otherwise, do nothing.
+        """
+
+    def copy_attr_consistent(self, attr: str, value: Any, replace: bool) -> None:
+        """
+        If replace is True or self[attr] is None, replace self[attr] with
+        value.  Otherwise, do nothing.
+        """
+
     def update_all_atts(
         self,
         dict_: Mapping[str, Any] | Node,
         update_fun: Callable[[Element, str, Any, bool], object] = ...,
         replace: bool = True,
         and_source: bool = False,
-    ) -> None: ...
+    ) -> None:
+        """
+        Updates all attributes from node or dictionary `dict_`.
+
+        Appends the basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') and then, for all other attributes in
+        dict_, updates the same attribute in self.  When attributes with the
+        same identifier appear in both self and dict_, the two values are
+        merged based on the value of update_fun.  Generally, when replace is
+        True, the values in self are replaced or merged with the values in
+        dict_; otherwise, the values in self may be preserved or merged.  When
+        and_source is True, the 'source' attribute is included in the copy.
+
+        NOTE: When replace is False, and self contains a 'source' attribute,
+              'source' is not replaced even when dict_ has a 'source'
+              attribute, though it may still be merged into a list depending
+              on the value of update_fun.
+        NOTE: It is easier to call the update-specific methods then to pass
+              the update_fun method to this function.
+        """
+
     def update_all_atts_consistantly(
         self, dict_: Mapping[str, Any] | Node, replace: bool = True, and_source: bool = False
-    ) -> None: ...
-    def update_all_atts_concatenating(
-        self, dict_: dict[str, Any] | Node, replace: bool = True, and_source: bool = False
-    ) -> None: ...
-    def update_all_atts_coercion(
-        self, dict_: Mapping[str, Any] | Node, replace: bool = True, and_source: bool = False
-    ) -> None: ...
-    def update_all_atts_convert(self, dict_: Mapping[str, Any] | Node, and_source: bool = False) -> None: ...
+    ) -> None:
+        """
+        Updates all attributes from node or dictionary `dict_`.
+
+        Appends the basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') and then, for all other attributes in
+        dict_, updates the same attribute in self.  When attributes with the
+        same identifier appear in both self and dict_ and replace is True, the
+        values in self are replaced with the values in dict_; otherwise, the
+        values in self are preserved.  When and_source is True, the 'source'
+        attribute is included in the copy.
+
+        NOTE: When replace is False, and self contains a 'source' attribute,
+              'source' is not replaced even when dict_ has a 'source'
+              attribute, though it may still be merged into a list depending
+              on the value of update_fun.
+        """
+
+    def update_all_atts_concatenating(self, dict_: dict[str, Any] | Node, replace: bool = True, and_source: bool = False) -> None:
+        """
+        Updates all attributes from node or dictionary `dict_`.
+
+        Appends the basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') and then, for all other attributes in
+        dict_, updates the same attribute in self.  When attributes with the
+        same identifier appear in both self and dict_ whose values aren't each
+        lists and replace is True, the values in self are replaced with the
+        values in dict_; if the values from self and dict_ for the given
+        identifier are both of list type, then the two lists are concatenated
+        and the result stored in self; otherwise, the values in self are
+        preserved.  When and_source is True, the 'source' attribute is
+        included in the copy.
+
+        NOTE: When replace is False, and self contains a 'source' attribute,
+              'source' is not replaced even when dict_ has a 'source'
+              attribute, though it may still be merged into a list depending
+              on the value of update_fun.
+        """
+
+    def update_all_atts_coercion(self, dict_: Mapping[str, Any] | Node, replace: bool = True, and_source: bool = False) -> None:
+        """
+        Updates all attributes from node or dictionary `dict_`.
+
+        Appends the basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') and then, for all other attributes in
+        dict_, updates the same attribute in self.  When attributes with the
+        same identifier appear in both self and dict_ whose values are both
+        not lists and replace is True, the values in self are replaced with
+        the values in dict_; if either of the values from self and dict_ for
+        the given identifier are of list type, then first any non-lists are
+        converted to 1-element lists and then the two lists are concatenated
+        and the result stored in self; otherwise, the values in self are
+        preserved.  When and_source is True, the 'source' attribute is
+        included in the copy.
+
+        NOTE: When replace is False, and self contains a 'source' attribute,
+              'source' is not replaced even when dict_ has a 'source'
+              attribute, though it may still be merged into a list depending
+              on the value of update_fun.
+        """
+
+    def update_all_atts_convert(self, dict_: Mapping[str, Any] | Node, and_source: bool = False) -> None:
+        """
+        Updates all attributes from node or dictionary `dict_`.
+
+        Appends the basic attributes ('ids', 'names', 'classes',
+        'dupnames', but not 'source') and then, for all other attributes in
+        dict_, updates the same attribute in self.  When attributes with the
+        same identifier appear in both self and dict_ then first any non-lists
+        are converted to 1-element lists and then the two lists are
+        concatenated and the result stored in self; otherwise, the values in
+        self are preserved.  When and_source is True, the 'source' attribute
+        is included in the copy.
+
+        NOTE: When replace is False, and self contains a 'source' attribute,
+              'source' is not replaced even when dict_ has a 'source'
+              attribute, though it may still be merged into a list depending
+              on the value of update_fun.
+        """
+
     def clear(self) -> None: ...
-    def replace(self, old: Node, new: Node | Sequence[Node]) -> None: ...
-    def replace_self(self, new: Node | Sequence[Node]) -> None: ...
+    def replace(self, old: Node, new: Node | Sequence[Node]) -> None:
+        """Replace one child `Node` with another child or children."""
+
+    def replace_self(self, new: Node | Sequence[Node]) -> None:
+        """
+        Replace `self` node with `new`, where `new` is a node or a
+        list of nodes.
+        """
+
     def first_child_matching_class(
         self, childclass: type[Node] | tuple[type[Node], ...], start: int = 0, end: int = sys.maxsize
-    ) -> int | None: ...
+    ) -> int | None:
+        """
+        Return the index of the first child whose class exactly matches.
+
+        Parameters:
+
+        - `childclass`: A `Node` subclass to search for, or a tuple of `Node`
+          classes. If a tuple, any of the classes may match.
+        - `start`: Initial index to check.
+        - `end`: Initial index to *not* check.
+        """
+
     def first_child_not_matching_class(
         self, childclass: type[Node] | tuple[type[Node], ...], start: int = 0, end: int = sys.maxsize
-    ) -> int | None: ...
+    ) -> int | None:
+        """
+        Return the index of the first child whose class does *not* match.
+
+        Parameters:
+
+        - `childclass`: A `Node` subclass to skip, or a tuple of `Node`
+          classes. If a tuple, none of the classes may match.
+        - `start`: Initial index to check.
+        - `end`: Initial index to *not* check.
+        """
+
     def pformat(self, indent: str = "    ", level: int = 0) -> str: ...
     def copy(self) -> Self: ...
     def deepcopy(self) -> Self: ...
-    def set_class(self, name: str) -> None: ...
-    def note_referenced_by(self, name: str | None = None, id: str | None = None) -> None: ...
-    @classmethod
-    def is_not_list_attribute(cls, attr: str) -> bool: ...
-    @classmethod
-    def is_not_known_attribute(cls, attr: str) -> bool: ...
+    def set_class(self, name: str) -> None:
+        """Add a new class to the "classes" attribute."""
 
+    def note_referenced_by(self, name: str | None = None, id: str | None = None) -> None:
+        """Note that this Element has been referenced by its name
+        `name` or id `id`.
+        """
+
+    @classmethod
+    def is_not_list_attribute(cls, attr: str) -> bool:
+        """
+        Returns True if and only if the given attribute is NOT one of the
+        basic list attributes defined for all Elements.
+        """
+
+    @classmethod
+    def is_not_known_attribute(cls, attr: str) -> bool:
+        """
+        Returns True if and only if the given attribute is NOT recognized by
+        this class.
+        """
     # '__iter__' is added as workaround, since mypy doesn't support classes that are iterable via '__getitem__'
     # see https://github.com/python/typeshed/pull/10099#issuecomment-1528789395
     def __iter__(self) -> Iterator[Node]: ...
 
 class TextElement(Element):
+    """
+    An element which directly contains text.
+
+    Its children are all `Text` or `Inline` subclass nodes.  You can
+    check whether an element's context is inline simply by checking whether
+    its immediate parent is a `TextElement` instance (including subclasses).
+    This is handy for nodes like `image` that can appear both inline and as
+    standalone body elements.
+
+    If passing children to `__init__()`, make sure to set `text` to
+    ``''`` or some other suitable value.
+    """
+
     def __init__(self, rawsource: str = "", text: str = "", *children: Node, **attributes) -> None: ...
 
-class FixedTextElement(TextElement): ...
+class FixedTextElement(TextElement):
+    """An element which directly contains preformatted text."""
 
 # Mixins
 
@@ -232,16 +640,27 @@ class BackLinkable:
 
 class Root: ...
 class Titular: ...
-class PreBibliographic: ...
+
+class PreBibliographic:
+    """Category of Node which may occur before Bibliographic Nodes."""
+
 class Bibliographic: ...
 class Decorative(PreBibliographic): ...
 class Structural: ...
 class Body: ...
 class General(Body): ...
-class Sequential(Body): ...
+
+class Sequential(Body):
+    """List-like elements."""
+
 class Admonition(Body): ...
-class Special(Body): ...
-class Invisible(PreBibliographic): ...
+
+class Special(Body):
+    """Special internal body elements."""
+
+class Invisible(PreBibliographic):
+    """Internal elements that don't appear in output."""
+
 class Part: ...
 class Inline: ...
 class Referential(Resolvable): ...
@@ -250,7 +669,8 @@ class Targetable(Resolvable):
     referenced: int
     indirect_reference_name: str | None
 
-class Labeled: ...
+class Labeled:
+    """Contains a `label` as its first element."""
 
 # Root Element
 
@@ -258,6 +678,13 @@ _Document: TypeAlias = document
 _Decoration: TypeAlias = decoration
 
 class document(Root, Structural, Element):
+    """
+    The document root element.
+
+    Do not instantiate this class directly; use
+    `docutils.utils.new_document()` instead.
+    """
+
     current_source: str | None
     current_line: int | None
     settings: Values
@@ -287,9 +714,44 @@ class document(Root, Structural, Element):
     decoration: decoration | None
     document: Self
     def __init__(self, settings: Values, reporter: Reporter, *args: Node, **kwargs: Any) -> None: ...
-    def asdom(self, dom: Any | None = None) -> Any: ...
+    def asdom(self, dom: Any | None = None) -> Any:
+        """Return a DOM representation of this document."""
+
     def set_id(self, node: Element, msgnode: Element | None = None, suggested_prefix: str = "") -> str: ...
-    def set_name_id_map(self, node: Element, id: str, msgnode: Element | None = None, explicit: bool | None = None) -> None: ...
+    def set_name_id_map(self, node: Element, id: str, msgnode: Element | None = None, explicit: bool | None = None) -> None:
+        """
+        `self.nameids` maps names to IDs, while `self.nametypes` maps names to
+        booleans representing hyperlink type (True==explicit,
+        False==implicit).  This method updates the mappings.
+
+        The following state transition table shows how `self.nameids` items
+        ("id") and `self.nametypes` items ("type") change with new input
+        (a call to this method), and what actions are performed
+        ("implicit"-type system messages are INFO/1, and
+        "explicit"-type system messages are ERROR/3):
+
+        ====  =====  ========  ========  =======  ====  =====  =====
+         Old State    Input          Action        New State   Notes
+        -----------  --------  -----------------  -----------  -----
+        id    type   new type  sys.msg.  dupname  id    type
+        ====  =====  ========  ========  =======  ====  =====  =====
+        -     -      explicit  -         -        new   True
+        -     -      implicit  -         -        new   False
+        -     False  explicit  -         -        new   True
+        old   False  explicit  implicit  old      new   True
+        -     True   explicit  explicit  new      -     True
+        old   True   explicit  explicit  new,old  -     True   [#]_
+        -     False  implicit  implicit  new      -     False
+        old   False  implicit  implicit  new,old  -     False
+        -     True   implicit  implicit  new      -     True
+        old   True   implicit  implicit  new      old   True
+        ====  =====  ========  ========  =======  ====  =====  =====
+
+        .. [#] Do not clear the name-to-id map or invalidate the old target if
+           both old and new targets are external and refer to identical URIs.
+           The new target is invalidated regardless.
+        """
+
     def set_duplicate_name_id(self, node: Element, id: str, name: str, msgnode: Element, explicit: bool) -> None: ...
     def has_name(self, name: str) -> bool: ...
     def note_implicit_target(self, target: Element, msgnode: Element | None = None) -> None: ...
@@ -323,7 +785,8 @@ class rubric(Titular, TextElement): ...
 
 # Meta-Data Element
 
-class meta(PreBibliographic, Element): ...
+class meta(PreBibliographic, Element):
+    """Container for "invisible" bibliographic data, or meta-data."""
 
 # Bibliographic Elements
 
@@ -351,8 +814,34 @@ class footer(Decorative, Element): ...
 # Structural Elements
 
 class section(Structural, Element): ...
-class topic(Structural, Element): ...
-class sidebar(Structural, Element): ...
+
+class topic(Structural, Element):
+    """
+    Topics are terminal, "leaf" mini-sections, like block quotes with titles,
+    or textual figures.  A topic is just like a section, except that it has no
+    subsections, and it doesn't have to conform to section placement rules.
+
+    Topics are allowed wherever body elements (list, table, etc.) are allowed,
+    but only at the top level of a section or document.  Topics cannot nest
+    inside topics, sidebars, or body elements; you can't have a topic inside a
+    table, list, block quote, etc.
+    """
+
+class sidebar(Structural, Element):
+    """
+    Sidebars are like miniature, parallel documents that occur inside other
+    documents, providing related or reference material.  A sidebar is
+    typically offset by a border and "floats" to the side of the page; the
+    document's main text may flow around it.  Sidebars can also be likened to
+    super-footnotes; their content is outside of the flow of the document's
+    main text.
+
+    Sidebars are allowed wherever body elements (list, table, etc.) are
+    allowed, but only at the top level of a section or document.  Sidebars
+    cannot nest inside sidebars, topics, or body elements; you can't have a
+    sidebar inside a table, list, block quote, etc.
+    """
+
 class transition(Structural, Element): ...
 
 # Body Elements
@@ -418,10 +907,43 @@ class row(Part, Element): ...
 class entry(Part, Element): ...
 
 class system_message(Special, BackLinkable, PreBibliographic, Element):
+    """
+    System message element.
+
+    Do not instantiate this class directly; use
+    ``document.reporter.info/warning/error/severe()`` instead.
+    """
+
     def __init__(self, message: str | None = None, *children: Node, **attributes) -> None: ...
     def astext(self) -> str: ...
 
 class pending(Special, Invisible, Element):
+    """
+    The "pending" element is used to encapsulate a pending operation: the
+    operation (transform), the point at which to apply it, and any data it
+    requires.  Only the pending operation's location within the document is
+    stored in the public document tree (by the "pending" object itself); the
+    operation and its data are stored in the "pending" object's internal
+    instance attributes.
+
+    For example, say you want a table of contents in your reStructuredText
+    document.  The easiest way to specify where to put it is from within the
+    document, with a directive::
+
+        .. contents::
+
+    But the "contents" directive can't do its work until the entire document
+    has been parsed and possibly transformed to some extent.  So the directive
+    code leaves a placeholder behind that will trigger the second phase of its
+    processing, something like this::
+
+        <pending ...public attributes...> + internal attributes
+
+    Use `document.note_pending()` so that the
+    `docutils.transforms.Transformer` stage of processing can run all pending
+    transforms.
+    """
+
     transform: type[Transform]
     details: Mapping[str, Any]
     def __init__(
@@ -433,7 +955,10 @@ class pending(Special, Invisible, Element):
         **attributes,
     ) -> None: ...
 
-class raw(Special, Inline, PreBibliographic, FixedTextElement): ...
+class raw(Special, Inline, PreBibliographic, FixedTextElement):
+    """
+    Raw data that is to be passed untouched to the Writer.
+    """
 
 # Inline Elements
 
@@ -460,14 +985,63 @@ class generated(Inline, TextElement): ...
 node_class_names: list[str]
 
 class NodeVisitor:
+    """
+    "Visitor" pattern [GoF95]_ abstract superclass implementation for
+    document tree traversals.
+
+    Each node class has corresponding methods, doing nothing by
+    default; override individual methods for specific and useful
+    behaviour.  The `dispatch_visit()` method is called by
+    `Node.walk()` upon entering a node.  `Node.walkabout()` also calls
+    the `dispatch_departure()` method before exiting a node.
+
+    The dispatch methods call "``visit_`` + node class name" or
+    "``depart_`` + node class name", resp.
+
+    This is a base class for visitors whose ``visit_...`` & ``depart_...``
+    methods must be implemented for *all* compulsory node types encountered
+    (such as for `docutils.writers.Writer` subclasses).
+    Unimplemented methods will raise exceptions (except for optional nodes).
+
+    For sparse traversals, where only certain node types are of interest, use
+    subclass `SparseNodeVisitor` instead.  When (mostly or entirely) uniform
+    processing is desired, subclass `GenericNodeVisitor`.
+
+    .. [GoF95] Gamma, Helm, Johnson, Vlissides. *Design Patterns: Elements of
+       Reusable Object-Oriented Software*. Addison-Wesley, Reading, MA, USA,
+       1995.
+    """
+
     optional: ClassVar[tuple[str, ...]]
     document: _Document
     def __init__(self, document: _Document) -> None: ...
-    def dispatch_visit(self, node: Node) -> Any: ...
-    def dispatch_departure(self, node: Node) -> Any: ...
-    def unknown_visit(self, node: Node) -> Any: ...
-    def unknown_departure(self, node: Node) -> Any: ...
+    def dispatch_visit(self, node: Node) -> Any:
+        """
+        Call self."``visit_`` + node class name" with `node` as
+        parameter.  If the ``visit_...`` method does not exist, call
+        self.unknown_visit.
+        """
 
+    def dispatch_departure(self, node: Node) -> Any:
+        """
+        Call self."``depart_`` + node class name" with `node` as
+        parameter.  If the ``depart_...`` method does not exist, call
+        self.unknown_departure.
+        """
+
+    def unknown_visit(self, node: Node) -> Any:
+        """
+        Called when entering unknown `Node` types.
+
+        Raise an exception unless overridden.
+        """
+
+    def unknown_departure(self, node: Node) -> Any:
+        """
+        Called before exiting unknown `Node` types.
+
+        Raise exception unless overridden.
+        """
     # These methods only exist on the subclasses `GenericNodeVisitor` and `SparseNodeVisitor` at runtime.
     # If subclassing `NodeVisitor` directly, `visit_*` methods must be implemented for nodes and children that will be called
     # with `Node.walk()` and `Node.walkabout()`.
@@ -671,28 +1245,140 @@ class NodeVisitor:
     def depart_version(self, node: version) -> Any: ...
     def depart_warning(self, node: warning) -> Any: ...
 
-class SparseNodeVisitor(NodeVisitor): ...
+class SparseNodeVisitor(NodeVisitor):
+    """
+    Base class for sparse traversals, where only certain node types are of
+    interest.  When ``visit_...`` & ``depart_...`` methods should be
+    implemented for *all* node types (such as for `docutils.writers.Writer`
+    subclasses), subclass `NodeVisitor` instead.
+    """
 
 class GenericNodeVisitor(NodeVisitor):
-    def default_visit(self, node: Node) -> None: ...
-    def default_departure(self, node: Node) -> None: ...
+    """
+    Generic "Visitor" abstract superclass, for simple traversals.
+
+    Unless overridden, each ``visit_...`` method calls `default_visit()`, and
+    each ``depart_...`` method (when using `Node.walkabout()`) calls
+    `default_departure()`. `default_visit()` (and `default_departure()`) must
+    be overridden in subclasses.
+
+    Define fully generic visitors by overriding `default_visit()` (and
+    `default_departure()`) only. Define semi-generic visitors by overriding
+    individual ``visit_...()`` (and ``depart_...()``) methods also.
+
+    `NodeVisitor.unknown_visit()` (`NodeVisitor.unknown_departure()`) should
+    be overridden for default behavior.
+    """
+
+    def default_visit(self, node: Node) -> None:
+        """Override for generic, uniform traversals."""
+
+    def default_departure(self, node: Node) -> None:
+        """Override for generic, uniform traversals."""
 
 class TreeCopyVisitor(GenericNodeVisitor):
+    """
+    Make a complete copy of a tree or branch, including element attributes.
+    """
+
     parent_stack: list[Node]
     parent: list[Node]
     def get_tree_copy(self) -> Node: ...
 
-class TreePruningException(Exception): ...
-class SkipChildren(TreePruningException): ...
-class SkipSiblings(TreePruningException): ...
-class SkipNode(TreePruningException): ...
-class SkipDeparture(TreePruningException): ...
-class NodeFound(TreePruningException): ...
-class StopTraversal(TreePruningException): ...
+class TreePruningException(Exception):
+    """
+    Base class for `NodeVisitor`-related tree pruning exceptions.
 
-def make_id(string: str) -> str: ...
+    Raise subclasses from within ``visit_...`` or ``depart_...`` methods
+    called from `Node.walk()` and `Node.walkabout()` tree traversals to prune
+    the tree traversed.
+    """
+
+class SkipChildren(TreePruningException):
+    """
+    Do not visit any children of the current node.  The current node's
+    siblings and ``depart_...`` method are not affected.
+    """
+
+class SkipSiblings(TreePruningException):
+    """
+    Do not visit any more siblings (to the right) of the current node.  The
+    current node's children and its ``depart_...`` method are not affected.
+    """
+
+class SkipNode(TreePruningException):
+    """
+    Do not visit the current node's children, and do not call the current
+    node's ``depart_...`` method.
+    """
+
+class SkipDeparture(TreePruningException):
+    """
+    Do not call the current node's ``depart_...`` method.  The current node's
+    children and siblings are not affected.
+    """
+
+class NodeFound(TreePruningException):
+    """
+    Raise to indicate that the target of a search has been found.  This
+    exception must be caught by the client; it is not caught by the traversal
+    code.
+    """
+
+class StopTraversal(TreePruningException):
+    """
+    Stop the traversal altogether.  The current node's ``depart_...`` method
+    is not affected.  The parent nodes ``depart_...`` methods are also called
+    as usual.  No other nodes are visited.  This is an alternative to
+    NodeFound that does not cause exception handling to trickle up to the
+    caller.
+    """
+
+def make_id(string: str) -> str:
+    """
+    Convert `string` into an identifier and return it.
+
+    Docutils identifiers will conform to the regular expression
+    ``[a-z](-?[a-z0-9]+)*``.  For CSS compatibility, identifiers (the "class"
+    and "id" attributes) should have no underscores, colons, or periods.
+    Hyphens may be used.
+
+    - The `HTML 4.01 spec`_ defines identifiers based on SGML tokens:
+
+          ID and NAME tokens must begin with a letter ([A-Za-z]) and may be
+          followed by any number of letters, digits ([0-9]), hyphens ("-"),
+          underscores ("_"), colons (":"), and periods (".").
+
+    - However the `CSS1 spec`_ defines identifiers based on the "name" token,
+      a tighter interpretation ("flex" tokenizer notation; "latin1" and
+      "escape" 8-bit characters have been replaced with entities)::
+
+          unicode     \\[0-9a-f]{1,4}
+          latin1      [&iexcl;-&yuml;]
+          escape      {unicode}|\\[ -~&iexcl;-&yuml;]
+          nmchar      [-a-z0-9]|{latin1}|{escape}
+          name        {nmchar}+
+
+    The CSS1 "nmchar" rule does not include underscores ("_"), colons (":"),
+    or periods ("."), therefore "class" and "id" attributes should not contain
+    these characters. They should be replaced with hyphens ("-"). Combined
+    with HTML's requirements (the first character must be a letter; no
+    "unicode", "latin1", or "escape" characters), this results in the
+    ``[a-z](-?[a-z0-9]+)*`` pattern.
+
+    .. _HTML 4.01 spec: https://www.w3.org/TR/html401
+    .. _CSS1 spec: https://www.w3.org/TR/REC-CSS1
+    """
+
 def dupname(node: Node, name: str) -> None: ...
-def fully_normalize_name(name: str) -> str: ...
-def whitespace_normalize_name(name: str) -> str: ...
-def serial_escape(value: str) -> str: ...
-def pseudo_quoteattr(value: str) -> str: ...
+def fully_normalize_name(name: str) -> str:
+    """Return a case- and whitespace-normalized name."""
+
+def whitespace_normalize_name(name: str) -> str:
+    """Return a whitespace-normalized name."""
+
+def serial_escape(value: str) -> str:
+    """Escape string values that are elements of a list, for serialization."""
+
+def pseudo_quoteattr(value: str) -> str:
+    """Quote attributes for pseudo-xml"""

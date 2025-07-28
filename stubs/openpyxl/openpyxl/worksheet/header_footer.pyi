@@ -16,6 +16,37 @@ SIZE_REGEX: Final = r"&(?P<size>\d+\s?)"
 FORMAT_REGEX: Final[Pattern[str]]
 
 class _HeaderFooterPart(Strict):
+    """
+    Individual left/center/right header/footer part
+
+    Do not use directly.
+
+    Header & Footer ampersand codes:
+
+    * &A   Inserts the worksheet name
+    * &B   Toggles bold
+    * &D or &[Date]   Inserts the current date
+    * &E   Toggles double-underline
+    * &F or &[File]   Inserts the workbook name
+    * &I   Toggles italic
+    * &N or &[Pages]   Inserts the total page count
+    * &S   Toggles strikethrough
+    * &T   Inserts the current time
+    * &[Tab]   Inserts the worksheet name
+    * &U   Toggles underline
+    * &X   Toggles superscript
+    * &Y   Toggles subscript
+    * &P or &[Page]   Inserts the current page number
+    * &P+n   Inserts the page number incremented by n
+    * &P-n   Inserts the page number decremented by n
+    * &[Path]   Inserts the workbook path
+    * &&   Escapes the ampersand character
+    * &"fontname"   Selects the named font
+    * &nn   Selects the specified 2-digit font point size
+
+    Colours are in RGB Hex
+    """
+
     text: String[Literal[True]]
     font: String[Literal[True]]
     size: Integer[Literal[True]]
@@ -26,9 +57,17 @@ class _HeaderFooterPart(Strict):
     ) -> None: ...
     def __bool__(self) -> bool: ...
     @classmethod
-    def from_str(cls, text): ...
+    def from_str(cls, text):
+        """
+        Convert from miniformat to object
+        """
 
 class HeaderFooterItem(Strict):
+    """
+    Header or footer item
+
+    """
+
     left: Typed[_HeaderFooterPart, Literal[False]]
     center: Typed[_HeaderFooterPart, Literal[False]]
     centre: Alias
@@ -40,7 +79,11 @@ class HeaderFooterItem(Strict):
         center: _HeaderFooterPart | None = None,
     ) -> None: ...
     def __bool__(self) -> bool: ...
-    def to_tree(self, tagname: str) -> Element: ...
+    def to_tree(self, tagname: str) -> Element:
+        """
+        Return as XML node
+        """
+
     @classmethod
     def from_tree(cls, node: _HasText) -> Self: ...
 

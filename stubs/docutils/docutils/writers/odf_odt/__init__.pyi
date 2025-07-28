@@ -1,3 +1,10 @@
+"""
+Open Document Format (ODF) Writer.
+
+This module is provisional:
+the API is not settled and may change with any minor Docutils version.
+"""
+
 import itertools
 import re
 import zipfile
@@ -88,13 +95,27 @@ class Writer(writers.Writer[bytes]):
     translator_class: type[ODFTranslator]
     settings: Values
     visitor: ODFTranslator
-    def assemble_my_parts(self) -> None: ...
-    def update_stylesheet(self, stylesheet_root, language_code: str | None, region_code: str | None): ...
+    def assemble_my_parts(self) -> None:
+        """Assemble the `self.parts` dictionary.  Extend in subclasses."""
+
+    def update_stylesheet(self, stylesheet_root, language_code: str | None, region_code: str | None):
+        """Update xml style sheet element with language and region/country."""
+
     def write_zip_str(self, zfile: zipfile.ZipFile, name: str, bytes: str | SizedBuffer, compress_type: int = 8) -> None: ...
     def store_embedded_files(self, zfile: zipfile.ZipFile) -> None: ...
-    def get_settings(self) -> bytes: ...
-    def get_stylesheet(self) -> bytes: ...
-    def copy_from_stylesheet(self, outzipfile: zipfile.ZipFile) -> None: ...
+    def get_settings(self) -> bytes:
+        """
+        modeled after get_stylesheet
+        """
+
+    def get_stylesheet(self) -> bytes:
+        """Get the stylesheet from the visitor.
+        Ask the visitor to setup the page.
+        """
+
+    def copy_from_stylesheet(self, outzipfile: zipfile.ZipFile) -> None:
+        """Copy images, settings, etc from the stylesheet doc into target doc."""
+
     def assemble_parts(self) -> None: ...
     def create_manifest(self) -> str: ...
     def create_meta(self) -> str: ...
@@ -156,13 +177,33 @@ class ODFTranslator(nodes.GenericNodeVisitor):
     inline_style_count_stack: list[int]
     def get_str_stylesheet(self) -> str | bytes: ...
     dom_stylesheetcontent: ElementTree.Element
-    def retrieve_styles(self, extension: str) -> None: ...
+    def retrieve_styles(self, extension: str) -> None:
+        """Retrieve the stylesheet from either a .xml file or from
+        a .odt (zip) file.  Return the content as a string.
+        """
+
     def extract_table_styles(self, styles_str: str | ReadableBuffer) -> dict[str, TableStyle]: ...
     def get_property(self, stylenode: ElementTree.Element) -> str | None: ...
     def add_doc_title(self) -> None: ...
-    def find_first_text_p(self, el: _ElementInterfaceWrapper) -> _ElementInterfaceWrapper | None: ...
-    def attach_page_style(self, el: _ElementInterfaceWrapper) -> None: ...
-    def rststyle(self, name: str, parameters: tuple[object, ...] = ()) -> str: ...
+    def find_first_text_p(self, el: _ElementInterfaceWrapper) -> _ElementInterfaceWrapper | None:
+        """Search the generated doc and return the first <text:p> element."""
+
+    def attach_page_style(self, el: _ElementInterfaceWrapper) -> None:
+        """Attach the default page style.
+
+        Create an automatic-style that refers to the current style
+        of this element and that refers to the default page style.
+        """
+
+    def rststyle(self, name: str, parameters: tuple[object, ...] = ()) -> str:
+        """
+        Returns the style name to use for the given style.
+
+        If `parameters` is given `name` must contain a matching number of
+        ``%`` and is used as a format expression with `parameters` as
+        the value.
+        """
+
     def generate_content_element(self, root: _ElementInterfaceWrapper) -> _ElementInterfaceWrapper: ...
     def setup_page(self): ...
     def get_dom_stylesheet(self) -> ElementTree.Element | None: ...
@@ -195,7 +236,9 @@ class ODFTranslator(nodes.GenericNodeVisitor):
     def generate_labeled_block(self, node: nodes.Node, label: str) -> _ElementInterfaceWrapper: ...
     def generate_labeled_line(self, node: nodes.Node, label: str) -> _ElementInterfaceWrapper: ...
     def encode(self, text: str) -> str: ...
-    def dispatch_visit(self, node: nodes.Element) -> None: ...  # type: ignore[override]
+    def dispatch_visit(self, node: nodes.Element) -> None:  # type: ignore[override]
+        """Override to catch basic attributes which many nodes have."""
+
     def handle_basic_atts(self, node: nodes.Element) -> None: ...
     def default_visit(self, node: nodes.Element) -> None: ...  # type: ignore[override]
     def default_departure(self, node: nodes.Element) -> None: ...  # type: ignore[override]
@@ -289,10 +332,20 @@ class ODFTranslator(nodes.GenericNodeVisitor):
     def visit_image(self, node: nodes.image) -> None: ...
     def depart_image(self, node: nodes.image) -> None: ...
     def get_image_width_height(self, node: nodes.image, attr: str) -> tuple[float | None, Literal["%", "cm"] | None]: ...
-    def convert_to_cm(self, size: str) -> tuple[float, Literal["cm"]]: ...
+    def convert_to_cm(self, size: str) -> tuple[float, Literal["cm"]]:
+        """Convert various units to centimeters.
+
+        Note that a call to this method should be wrapped in:
+            try: except ValueError:
+        """
+
     def get_image_scale(self, node: nodes.image) -> float: ...
-    def get_image_scaled_width_height(self, node: nodes.image, source) -> tuple[Incomplete, Incomplete]: ...
-    def get_page_width(self) -> float: ...
+    def get_image_scaled_width_height(self, node: nodes.image, source) -> tuple[Incomplete, Incomplete]:
+        """Return the image size in centimeters adjusted by image attrs."""
+
+    def get_page_width(self) -> float:
+        """Return the document's page width in centimeters."""
+
     def generate_figure(self, node: nodes.image, source, destination, current_element): ...
     def generate_image(
         self, node: nodes.image, source, destination, current_element, frame_attrs: dict[str, str] | None = None

@@ -17,6 +17,16 @@ _GraphicalPropertiesBwMode: TypeAlias = Literal[
 ]
 
 class GraphicalProperties(Serialisable):
+    """
+    Somewhat vaguely 21.2.2.197 says this:
+
+    This element specifies the formatting for the parent chart element. The
+    custGeom, prstGeom, scene3d, and xfrm elements are not supported. The
+    bwMode attribute is not supported.
+
+    This doesn't leave much. And the element is used in different places.
+    """
+
     tagname: ClassVar[str]
     bwMode: NoneSet[_GraphicalPropertiesBwMode]
     xfrm: Typed[Transform2D, Literal[True]]

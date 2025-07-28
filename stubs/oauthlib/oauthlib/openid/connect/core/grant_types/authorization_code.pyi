@@ -1,3 +1,8 @@
+"""
+oauthlib.openid.connect.core.grant_types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+
 from collections.abc import Iterable
 from logging import Logger
 
@@ -22,4 +27,11 @@ class AuthorizationCodeGrant(GrantTypeBase):
         pre_token: Iterable[_TokenValidator] | None = None,
         **kwargs,
     ) -> None: ...
-    def add_id_token(self, token, token_handler, request: Request): ...  # type: ignore[override]
+    def add_id_token(self, token, token_handler, request: Request):  # type: ignore[override]
+        """
+        Construct an initial version of id_token, and let the
+        request_validator sign or encrypt it.
+
+        The authorization_code version of this method is used to
+        retrieve the nonce accordingly to the code storage.
+        """

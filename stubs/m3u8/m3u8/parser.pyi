@@ -22,8 +22,22 @@ class ParseError(Exception):
     line: str
     def __init__(self, lineno: int, line: str) -> None: ...
 
-def parse(content: str, strict: bool = False, custom_tags_parser: _CustomTagsParser | None = None) -> dict[str, Any]: ...
+def parse(content: str, strict: bool = False, custom_tags_parser: _CustomTagsParser | None = None) -> dict[str, Any]:
+    """
+    Given a M3U8 playlist content returns a dictionary with all data found
+    """
+
 def string_to_lines(string: str) -> list[str]: ...
 def remove_quotes_parser(*attrs: repeat[Callable[[str], str]]) -> dict[repeat[Callable[[str], str]], Callable[[str], str]]: ...
-def remove_quotes(string: str) -> str: ...
+def remove_quotes(string: str) -> str:
+    """
+    Remove quotes from string.
+
+    Ex.:
+      "foo" -> foo
+      'foo' -> foo
+      'foo  -> 'foo
+
+    """
+
 def normalize_attribute(attribute: str) -> str: ...

@@ -1,3 +1,5 @@
+"""Lazy loading of moved objects in six.moves.urllib_request"""
+
 import sys
 
 # Stubs for six.moves.urllib.request

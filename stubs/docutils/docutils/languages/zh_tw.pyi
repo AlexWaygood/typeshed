@@ -1,3 +1,7 @@
+"""
+Traditional Chinese language mappings for language-dependent features.
+"""
+
 from typing import Final
 
 __docformat__: Final = "reStructuredText"

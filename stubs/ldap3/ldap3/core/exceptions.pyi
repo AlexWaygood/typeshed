@@ -1,3 +1,5 @@
+""" """
+
 import socket
 from typing import Any
 from typing_extensions import Self
@@ -125,5 +127,12 @@ class LDAPConnectionPoolNameIsMandatoryError(LDAPExceptionError): ...
 class LDAPConnectionPoolNotStartedError(LDAPExceptionError): ...
 class LDAPMaximumRetriesError(LDAPExceptionError): ...
 
-def communication_exception_factory(exc_to_raise, exc): ...
-def start_tls_exception_factory(exc): ...
+def communication_exception_factory(exc_to_raise, exc):
+    """
+    Generates a new exception class of the requested type (subclass of LDAPCommunication) merged with the exception raised by the interpreter
+    """
+
+def start_tls_exception_factory(exc):
+    """
+    Generates a new exception class of the requested type merged with the exception raised by the interpreter
+    """

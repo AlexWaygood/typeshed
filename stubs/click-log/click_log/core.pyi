@@ -12,4 +12,7 @@ class ColorFormatter(logging.Formatter):
 class ClickHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None: ...
 
-def basic_config(logger: logging.Logger | str | None = None) -> None: ...
+def basic_config(logger: logging.Logger | str | None = None) -> None:
+    """Set up the default handler (:py:class:`ClickHandler`) and formatter
+    (:py:class:`ColorFormatter`) on the given logger.
+    """

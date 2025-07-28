@@ -3,6 +3,8 @@ from typing import Any, Final, overload
 from urllib.error import HTTPError as _HTTPError
 
 class HTTPError(Exception):
+    """Base of all other errors"""
+
     status_code: int
     reason: str
     body: bytes
@@ -13,7 +15,10 @@ class HTTPError(Exception):
     def __init__(self, http_error: _HTTPError, /) -> None: ...
     def __reduce__(self) -> tuple[type[HTTPError], tuple[int, str, bytes, Message]]: ...
     @property
-    def to_dict(self) -> dict[str, Any]: ...  # dict of response error from the API
+    def to_dict(self) -> dict[str, Any]:  # dict of response error from the API
+        """
+        :return: dict of response error from the API
+        """
 
 class BadRequestsError(HTTPError): ...
 class UnauthorizedError(HTTPError): ...

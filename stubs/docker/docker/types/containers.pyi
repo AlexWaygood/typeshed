@@ -19,6 +19,39 @@ class LogConfigTypesEnum:
     NONE: Final = "none"
 
 class LogConfig(DictType):
+    """
+    Configure logging for a container, when provided as an argument to
+    :py:meth:`~docker.api.container.ContainerApiMixin.create_host_config`.
+    You may refer to the
+    `official logging driver documentation <https://docs.docker.com/config/containers/logging/configure/>`_
+    for more information.
+
+    Args:
+        type (str): Indicate which log driver to use. A set of valid drivers
+            is provided as part of the :py:attr:`LogConfig.types`
+            enum. Other values may be accepted depending on the engine version
+            and available logging plugins.
+        config (dict): A driver-dependent configuration dictionary. Please
+            refer to the driver's documentation for a list of valid config
+            keys.
+
+    Example:
+
+        >>> from docker.types import LogConfig
+        >>> lc = LogConfig(type=LogConfig.types.JSON, config={
+        ...   'max-size': '1g',
+        ...   'labels': 'production_status,geo'
+        ... })
+        >>> hc = client.create_host_config(log_config=lc)
+        >>> container = client.create_container('busybox', 'true',
+        ...    host_config=hc)
+        >>> client.inspect_container(container)['HostConfig']['LogConfig']
+        {
+            'Type': 'json-file',
+            'Config': {'labels': 'production_status,geo', 'max-size': '1g'}
+        }
+    """
+
     types: type[LogConfigTypesEnum]
     def __init__(self, **kwargs) -> None: ...
     @property
@@ -27,10 +60,38 @@ class LogConfig(DictType):
     def type(self, value) -> None: ...
     @property
     def config(self): ...
-    def set_config_value(self, key, value) -> None: ...
-    def unset_config(self, key) -> None: ...
+    def set_config_value(self, key, value) -> None:
+        """Set a the value for ``key`` to ``value`` inside the ``config``
+        dict.
+        """
+
+    def unset_config(self, key) -> None:
+        """Remove the ``key`` property from the ``config`` dict."""
 
 class Ulimit(DictType):
+    """
+    Create a ulimit declaration to be used with
+    :py:meth:`~docker.api.container.ContainerApiMixin.create_host_config`.
+
+    Args:
+
+        name (str): Which ulimit will this apply to. The valid names can be
+            found in '/etc/security/limits.conf' on a gnu/linux system.
+        soft (int): The soft limit for this ulimit. Optional.
+        hard (int): The hard limit for this ulimit. Optional.
+
+    Example:
+
+        >>> nproc_limit = docker.types.Ulimit(name='nproc', soft=1024)
+        >>> hc = client.create_host_config(ulimits=[nproc_limit])
+        >>> container = client.create_container(
+                'busybox', 'true', host_config=hc
+            )
+        >>> client.inspect_container(container)['HostConfig']['Ulimits']
+        [{'Name': 'nproc', 'Hard': 0, 'Soft': 1024}]
+
+    """
+
     def __init__(self, **kwargs) -> None: ...
     @property
     def name(self): ...
@@ -46,6 +107,26 @@ class Ulimit(DictType):
     def hard(self, value) -> None: ...
 
 class DeviceRequest(DictType):
+    """
+    Create a device request to be used with
+    :py:meth:`~docker.api.container.ContainerApiMixin.create_host_config`.
+
+    Args:
+
+        driver (str): Which driver to use for this device. Optional.
+        count (int): Number or devices to request. Optional.
+            Set to -1 to request all available devices.
+        device_ids (list): List of strings for device IDs. Optional.
+            Set either ``count`` or ``device_ids``.
+        capabilities (list): List of lists of strings to request
+            capabilities. Optional. The global list acts like an OR,
+            and the sub-lists are AND. The driver will try to satisfy
+            one of the sub-lists.
+            Available capabilities for the ``nvidia`` driver can be found
+            `here <https://github.com/NVIDIA/nvidia-container-runtime>`_.
+        options (dict): Driver-specific options. Optional.
+    """
+
     def __init__(self, **kwargs) -> None: ...
     @property
     def driver(self): ...

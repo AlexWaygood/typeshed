@@ -134,6 +134,10 @@ class TableColumn(Serialisable):
     def from_tree(cls, node: _ChildSerialisableTreeElement) -> Self: ...
 
 class TableNameDescriptor(String[Incomplete]):
+    """
+    Table names cannot have spaces in them
+    """
+
     def __set__(self, instance: Serialisable | Strict, value) -> None: ...
 
 class Table(Serialisable):
@@ -199,7 +203,11 @@ class Table(Serialisable):
     ) -> None: ...
     def to_tree(self) -> Element: ...  # type: ignore[override]
     @property
-    def path(self) -> str: ...
+    def path(self) -> str:
+        """
+        Return path within the archive
+        """
+
     @property
     def column_names(self) -> list[str]: ...
 

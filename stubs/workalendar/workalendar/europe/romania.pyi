@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import OrthodoxCalendar
 
 class Romania(OrthodoxCalendar):
+    """Romania"""
+
     include_labour_day: ClassVar[bool]
     FIXED_HOLIDAYS: Incomplete
     include_good_friday: ClassVar[bool]
@@ -16,6 +18,10 @@ class Romania(OrthodoxCalendar):
     include_boxing_day: ClassVar[bool]
     boxing_day_label: ClassVar[str]
     include_orthodox_christmas: ClassVar[bool]
-    def get_childrens_day(self, year): ...
-    def get_liberation_day(self, year): ...
+    def get_childrens_day(self, year):
+        """returns a possibly empty list of (date, holiday_name) tuples"""
+
+    def get_liberation_day(self, year):
+        """returns a possibly empty list of (date, holiday_name) tuples"""
+
     def get_variable_days(self, year): ...

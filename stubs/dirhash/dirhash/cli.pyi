@@ -1,3 +1,5 @@
+"""Get hash for the content and/or structure of a directory."""
+
 from collections.abc import Sequence
 from typing import Any
 

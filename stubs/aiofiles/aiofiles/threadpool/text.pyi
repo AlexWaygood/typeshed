@@ -38,5 +38,8 @@ class _UnknownAsyncTextIO(AsyncBase[str]):
     @property
     def mode(self) -> str: ...
 
-class AsyncTextIOWrapper(_UnknownAsyncTextIO): ...
-class AsyncTextIndirectIOWrapper(AsyncIndirectBase[str], _UnknownAsyncTextIO): ...
+class AsyncTextIOWrapper(_UnknownAsyncTextIO):
+    """The asyncio executor version of io.TextIOWrapper."""
+
+class AsyncTextIndirectIOWrapper(AsyncIndirectBase[str], _UnknownAsyncTextIO):
+    """The indirect asyncio executor version of io.TextIOWrapper."""

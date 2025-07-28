@@ -9,6 +9,11 @@ __all__ = ["ResponseHeaders", "EnvironHeaders"]
 _T = TypeVar("_T")
 
 class ResponseHeaders(MultiDict[str, str]):
+    """
+    Dictionary view on the response headerlist.
+    Keys are normalized for case and whitespace.
+    """
+
     def __getitem__(self, key: str) -> str: ...
     def getall(self, key: str) -> list[str]: ...
     def mixed(self) -> dict[str, str | list[str]]: ...
@@ -24,6 +29,16 @@ class ResponseHeaders(MultiDict[str, str]):
     def pop(self, key: str, default: _T) -> str | _T: ...
 
 class EnvironHeaders(MutableMapping[str, str]):
+    """An object that represents the headers as present in a
+    WSGI environment.
+
+    This object is a wrapper (with no internal state) for a WSGI
+    request object, representing the CGI-style HTTP_* keys as a
+    dictionary.  Because a CGI environment can only hold one value for
+    each key, this dictionary is single-valued (unlike outgoing
+    headers).
+    """
+
     environ: WSGIEnvironment
     def __init__(self, environ: WSGIEnvironment) -> None: ...
     def __getitem__(self, hname: str) -> str: ...

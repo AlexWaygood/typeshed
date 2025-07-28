@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import WesternCalendar
 
 class Mozambique(WesternCalendar):
+    """Mozambique"""
+
     FIXED_HOLIDAYS: Incomplete
     include_labour_day: ClassVar[bool]
     include_good_friday: ClassVar[bool]

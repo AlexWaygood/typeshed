@@ -19,6 +19,16 @@ class VectorVariant(Serialisable):
     __attrs__: ClassVar[tuple[str, ...]]
 
 class ExtendedProperties(Serialisable):
+    """
+    See 22.2
+
+    Most of this is irrelevant but Excel is very picky about the version number
+
+    It uses XX.YYYY (Version.Build) and expects everyone else to
+
+    We provide Major.Minor and the full version in the application name
+    """
+
     tagname: ClassVar[str]
     Template: NestedText[str, Literal[True]]
     Manager: NestedText[str, Literal[True]]

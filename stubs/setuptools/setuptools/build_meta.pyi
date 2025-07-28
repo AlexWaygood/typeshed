@@ -1,3 +1,31 @@
+"""A PEP 517 interface to setuptools
+
+Previously, when a user or a command line tool (let's call it a "frontend")
+needed to make a request of setuptools to take a certain action, for
+example, generating a list of installation requirements, the frontend
+would call "setup.py egg_info" or "setup.py bdist_wheel" on the command line.
+
+PEP 517 defines a different method of interfacing with setuptools. Rather
+than calling "setup.py" directly, the frontend should:
+
+  1. Set the current directory to the directory with a setup.py file
+  2. Import this module into a safe python interpreter (one in which
+     setuptools can potentially set global variables or crash hard).
+  3. Call one of the functions defined in PEP 517.
+
+What each function does is defined in PEP 517. However, here is a "casual"
+definition of the functions (this definition should not be relied on for
+bug reports or API stability):
+
+  - `build_wheel`: build a wheel in the folder and return the basename
+  - `get_requires_for_build_wheel`: get the `setup_requires` to build
+  - `prepare_metadata_for_build_wheel`: get the `install_requires`
+  - `build_sdist`: build an sdist in the folder and return the basename
+  - `get_requires_for_build_sdist`: get the `setup_requires` to build
+
+Again, this is not a formal definition! Just a "taste" of the module.
+"""
+
 from _typeshed import Incomplete, StrPath
 from collections.abc import Mapping
 from contextlib import _GeneratorContextManager
@@ -28,7 +56,12 @@ class SetupRequirementsError(BaseException):
 class Distribution(dist.Distribution):
     def fetch_build_eggs(self, specifiers) -> NoReturn: ...
     @classmethod
-    def patch(cls) -> _GeneratorContextManager[None]: ...
+    def patch(cls) -> _GeneratorContextManager[None]:
+        """
+        Replace
+        distutils.dist.Distribution with this class
+        for the duration of this context.
+        """
 
 class _BuildMetaBackend:
     def run_setup(self, setup_script: str = "setup.py") -> None: ...
@@ -48,6 +81,17 @@ class _BuildMetaBackend:
     ) -> str: ...
 
 class _BuildMetaLegacyBackend(_BuildMetaBackend):
+    """Compatibility backend for setuptools
+
+    This is a version of setuptools.build_meta that endeavors
+    to maintain backwards
+    compatibility with pre-PEP 517 modes of invocation. It
+    exists as a temporary
+    bridge between the old packaging mechanism and the new
+    packaging mechanism,
+    and will eventually be removed.
+    """
+
     def run_setup(self, setup_script: str = "setup.py") -> None: ...
 
 _BACKEND: _BuildMetaBackend

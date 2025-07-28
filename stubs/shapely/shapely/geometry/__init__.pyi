@@ -1,3 +1,5 @@
+"""Geometry classes and factories."""
+
 from .base import CAP_STYLE as CAP_STYLE, JOIN_STYLE as JOIN_STYLE
 from .collection import GeometryCollection as GeometryCollection
 from .geo import box as box, mapping as mapping, shape as shape

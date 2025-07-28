@@ -35,7 +35,10 @@ class RowBreak(Serialisable):
     def count(self) -> int: ...
     @property
     def manualBreakCount(self) -> int: ...
-    def append(self, brk=None) -> None: ...
+    def append(self, brk=None) -> None:
+        """
+        Add a page break
+        """
 
 PageBreak = RowBreak
 

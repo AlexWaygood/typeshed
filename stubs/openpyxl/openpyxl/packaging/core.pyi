@@ -17,10 +17,18 @@ class NestedDateTime(DateTime[Incomplete], NestedText[Incomplete, Incomplete]): 
     def to_tree(self, tagname: str, value: datetime, namespace: str | None = None) -> Element: ...
 
 class QualifiedDateTime(NestedDateTime):
+    """In certain situations Excel will complain if the additional type
+    attribute isn't set
+    """
+
     # value cannot be None or it'll raise
     def to_tree(self, tagname: str, value: datetime, namespace: str | None = None) -> Element: ...  # type: ignore[override]
 
 class DocumentProperties(Serialisable):
+    """High-level properties of the document.
+    Defined in ECMA-376 Par2 Annex D
+    """
+
     tagname: ClassVar[str]
     namespace: ClassVar[str]
     category: NestedText[str, Literal[True]]

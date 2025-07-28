@@ -19,6 +19,25 @@ from .tracer import (
 tracer: Tracer
 is_tracer_registered: bool
 
-def global_tracer() -> Tracer: ...
-def set_global_tracer(value: Tracer) -> None: ...
-def is_global_tracer_registered() -> bool: ...
+def global_tracer() -> Tracer:
+    """Returns the global tracer.
+    The default value is an instance of :class:`opentracing.Tracer`
+
+    :rtype: :class:`Tracer`
+    :return: The global tracer instance.
+    """
+
+def set_global_tracer(value: Tracer) -> None:
+    """Sets the global tracer.
+    It is an error to pass ``None``.
+
+    :param value: the :class:`Tracer` used as global instance.
+    :type value: :class:`Tracer`
+    """
+
+def is_global_tracer_registered() -> bool:
+    """Indicates if a global tracer has been registered.
+
+    :rtype: :value:bool
+    :return: True if a global tracer has been registered, otherwise False.
+    """

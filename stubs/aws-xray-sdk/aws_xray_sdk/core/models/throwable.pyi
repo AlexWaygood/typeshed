@@ -12,10 +12,28 @@ class _StackInfo(TypedDict):
 log: Logger
 
 class Throwable:
+    """
+    An object recording exception infomation under trace entity
+    `cause` section. The information includes the stack trace,
+    working directory and message from the original exception.
+    """
+
     id: str
     message: str
     type: str
     remote: bool
     stack: list[_StackInfo] | None
-    def __init__(self, exception: Exception, stack: StackSummary, remote: bool = False) -> None: ...
-    def to_dict(self) -> dict[str, Incomplete]: ...
+    def __init__(self, exception: Exception, stack: StackSummary, remote: bool = False) -> None:
+        """
+        :param Exception exception: the catched exception.
+        :param list stack: the formatted stack trace gathered
+            through `traceback` module.
+        :param bool remote: If False it means it's a client error
+            instead of a downstream service.
+        """
+
+    def to_dict(self) -> dict[str, Incomplete]:
+        """
+        Convert Throwable object to dict with required properties that
+        have non-empty values.
+        """

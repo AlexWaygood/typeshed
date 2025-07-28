@@ -1,3 +1,13 @@
+"""
+pygments.token
+~~~~~~~~~~~~~~
+
+Basic token types and the standard tokens.
+
+:copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
+:license: BSD, see LICENSE for details.
+"""
+
 from collections.abc import Mapping
 from typing import Any
 from typing_extensions import Self
@@ -27,8 +37,29 @@ Operator: _TokenType
 Comment: _TokenType
 Generic: _TokenType
 
-def is_token_subtype(ttype, other): ...
-def string_to_tokentype(s): ...
+def is_token_subtype(ttype, other):
+    """
+    Return True if ``ttype`` is a subtype of ``other``.
+
+    exists for backwards compatibility. use ``ttype in other`` now.
+    """
+
+def string_to_tokentype(s):
+    """
+    Convert a string into a token type::
+
+        >>> string_to_token('String.Double')
+        Token.Literal.String.Double
+        >>> string_to_token('Token.Literal.Number')
+        Token.Literal.Number
+        >>> string_to_token('')
+        Token
+
+    Tokens that are already tokens are returned unchanged:
+
+        >>> string_to_token(String)
+        Token.Literal.String
+    """
 
 # dict, but shouldn't be mutated
 STANDARD_TYPES: Mapping[_TokenType, str]

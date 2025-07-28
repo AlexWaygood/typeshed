@@ -1,3 +1,5 @@
+""" """
+
 from _typeshed import Incomplete, IndexableBuffer, SliceableBuffer, Unused
 from collections.abc import Callable, Mapping
 from typing import Any, Final, TypeVar, overload
@@ -23,7 +25,12 @@ class LDAPBooleanEncoder(AbstractItemEncoder):
 customTagMap: dict[TagSet, AbstractItemEncoder]
 customTypeMap: dict[int, AbstractItemEncoder]
 
-def compute_ber_size(data): ...
+def compute_ber_size(data):
+    """
+    Compute size according to BER definite length rules
+    Returns size of value and value offset
+    """
+
 def decode_message_fast(message): ...
 @overload
 def decode_sequence(message: _B, start: int, stop: int, context_decoders: Mapping[int, Callable[[_B, int, int], _R]]) -> _R: ...

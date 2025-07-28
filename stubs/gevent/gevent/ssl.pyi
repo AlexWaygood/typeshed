@@ -1,3 +1,10 @@
+"""SSL wrapper for socket objects on Python 3.
+
+For the documentation, refer to :mod:`ssl` module manual.
+
+This module implements cooperative SSL socket wrappers.
+"""
+
 import sys
 from _typeshed import StrOrBytesPath
 from ssl import *

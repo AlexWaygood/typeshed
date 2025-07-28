@@ -8,14 +8,18 @@ class RequestError(YoutubeDLError):
         self, msg: str | None = None, cause: Exception | str | None = None, handler: RequestHandler | None = None
     ) -> None: ...
 
-class UnsupportedRequest(RequestError): ...
+class UnsupportedRequest(RequestError):
+    """raised when a handler cannot handle a request"""
 
 class NoSupportingHandlers(RequestError):
+    """raised when no handlers can support a request for various reasons"""
+
     unsupported_errors: list[UnsupportedRequest]
     unexpected_errors: list[UnsupportedRequest]
     def __init__(self, unsupported_errors: list[UnsupportedRequest], unexpected_errors: list[Exception]) -> None: ...
 
-class TransportError(RequestError): ...
+class TransportError(RequestError):
+    """Network related errors"""
 
 class HTTPError(RequestError):
     response: Response
@@ -37,7 +41,10 @@ class IncompleteRead(TransportError):
     ) -> None: ...
 
 class SSLError(TransportError): ...
-class CertificateVerifyError(SSLError): ...
+
+class CertificateVerifyError(SSLError):
+    """Raised when certificate validated has failed"""
+
 class ProxyError(TransportError): ...
 
 network_exceptions: tuple[type[RequestError], ...]

@@ -8,6 +8,15 @@ from .base import Key
 # Enable when we can use stubs from installed dependencies:
 # from ecdsa.curves import Curve
 class ECDSAECKey(Key):
+    """
+    Performs signing and verification operations using
+    ECDSA and the specified hash function
+
+    This class requires the ecdsa package to be installed.
+
+    This is based off of the implementation in PyJWT 0.3.2
+    """
+
     SHA256: Callable[[bytes], _Hash]
     SHA384: Callable[[bytes], _Hash]
     SHA512: Callable[[bytes], _Hash]

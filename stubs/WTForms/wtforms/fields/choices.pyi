@@ -36,7 +36,12 @@ class SelectFieldBase(Field):
         _translations: _SupportsGettextAndNgettext | None = None,
         _meta: DefaultMeta | None = None,
     ) -> None: ...
-    def iter_choices(self) -> Iterator[_FullChoice]: ...
+    def iter_choices(self) -> Iterator[_FullChoice]:
+        """
+        Provides data for choice widget rendering. Must return a sequence or
+        iterable of (value, label, selected, render_kw) tuples.
+        """
+
     def has_groups(self) -> bool: ...
     def iter_groups(self) -> Iterator[_FullGroupedChoices]: ...
     def __iter__(self) -> Iterator[_Option]: ...
@@ -74,6 +79,18 @@ class SelectField(SelectFieldBase):
     def iter_groups(self) -> Iterator[_FullGroupedChoices]: ...
 
 class SelectMultipleField(SelectField):
+    """
+    No different from a normal select field, except this one can take (and
+    validate) multiple choices.  You'll need to specify the HTML `size`
+    attribute to the select field when rendering.
+    """
+
     data: list[Any] | None
 
-class RadioField(SelectField): ...
+class RadioField(SelectField):
+    """
+    Like a SelectField, except displays a list of radio buttons.
+
+    Iterating the field will produce subfields (each containing a label as
+    well) in order to allow custom rendering of the individual radio fields.
+    """

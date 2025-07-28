@@ -1,3 +1,5 @@
+"""Support for options."""
+
 from _typeshed import Incomplete
 
 class Options:

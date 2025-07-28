@@ -13,7 +13,15 @@ def tar(
     fileobj: _Fileobj | None = None,
     gzip: bool = False,
 ) -> _TemporaryFileWrapper[bytes] | _Fileobj: ...
-def exclude_paths(root: StrPath, patterns: MutableSequence[str], dockerfile: str | None = None) -> set[str]: ...
+def exclude_paths(root: StrPath, patterns: MutableSequence[str], dockerfile: str | None = None) -> set[str]:
+    """
+    Given a root directory path and a list of .dockerignore patterns, return
+    an iterator of all paths (both regular files and directories) in the root
+    directory that do *not* match any of the patterns.
+
+    All paths returned are relative to the root.
+    """
+
 def build_file_list(root: str) -> list[str]: ...
 def create_archive(
     root: str, files: Iterable[str] | None = None, fileobj: _Fileobj | None = None, gzip: bool = False, extra_files=None

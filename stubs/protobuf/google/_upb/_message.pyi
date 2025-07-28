@@ -1,3 +1,5 @@
+"""Protobuf Module"""
+
 from _typeshed import Incomplete
 from typing import ClassVar, final
 
@@ -36,20 +38,47 @@ class Descriptor:
 @final
 class DescriptorPool:
     def __init__(self, *args, **kwargs) -> None: ...  # incomplete
-    def Add(self, object, /): ...
-    def AddSerializedFile(self, object, /): ...
-    def FindAllExtensions(self, object, /): ...
-    def FindEnumTypeByName(self, object, /): ...
-    def FindExtensionByName(self, object, /): ...
-    def FindExtensionByNumber(self, *args, **kwargs): ...  # incomplete
-    def FindFieldByName(self, object, /): ...
-    def FindFileByName(self, object, /): ...
-    def FindFileContainingSymbol(self, object, /): ...
-    def FindMessageTypeByName(self, object, /): ...
-    def FindMethodByName(self, object, /): ...
-    def FindOneofByName(self, object, /): ...
-    def FindServiceByName(self, object, /): ...
-    def SetFeatureSetDefaults(self, object, /): ...
+    def Add(self, object, /):
+        """Adds the FileDescriptorProto and its types to this pool."""
+
+    def AddSerializedFile(self, object, /):
+        """Adds a serialized FileDescriptorProto to this pool."""
+
+    def FindAllExtensions(self, object, /):
+        """Gets all known extensions of the given message descriptor."""
+
+    def FindEnumTypeByName(self, object, /):
+        """Searches for enum type descriptor by full name."""
+
+    def FindExtensionByName(self, object, /):
+        """Searches for extension descriptor by full name."""
+
+    def FindExtensionByNumber(self, *args, **kwargs):  # incomplete
+        """Gets the extension descriptor for the given number."""
+
+    def FindFieldByName(self, object, /):
+        """Searches for a field descriptor by full name."""
+
+    def FindFileByName(self, object, /):
+        """Searches for a file descriptor by its .proto name."""
+
+    def FindFileContainingSymbol(self, object, /):
+        """Gets the FileDescriptor containing the specified symbol."""
+
+    def FindMessageTypeByName(self, object, /):
+        """Searches for a message descriptor by full name."""
+
+    def FindMethodByName(self, object, /):
+        """Searches for method descriptor by full name."""
+
+    def FindOneofByName(self, object, /):
+        """Searches for oneof descriptor by full name."""
+
+    def FindServiceByName(self, object, /):
+        """Searches for service descriptor by full name."""
+
+    def SetFeatureSetDefaults(self, object, /):
+        """Sets the default feature mappings used during the build."""
 
 @final
 class EnumDescriptor:
@@ -78,23 +107,37 @@ class EnumValueDescriptor:
 
 @final
 class ExtensionDict:
-    def __contains__(self, other) -> bool: ...
-    def __delitem__(self, other) -> None: ...
+    def __contains__(self, other) -> bool:
+        """Return bool(key in self)."""
+
+    def __delitem__(self, other) -> None:
+        """Delete self[key]."""
+
     def __eq__(self, other: object) -> bool: ...
     def __ge__(self, other: object) -> bool: ...
-    def __getitem__(self, index): ...
+    def __getitem__(self, index):
+        """Return self[key]."""
+
     def __gt__(self, other: object) -> bool: ...
-    def __iter__(self): ...
+    def __iter__(self):
+        """Implement iter(self)."""
+
     def __le__(self, other: object) -> bool: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return len(self)."""
+
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def __setitem__(self, index, object) -> None: ...
+    def __setitem__(self, index, object) -> None:
+        """Set self[key] to value."""
 
 @final
 class ExtensionIterator:
-    def __iter__(self): ...
-    def __next__(self): ...
+    def __iter__(self):
+        """Implement iter(self)."""
+
+    def __next__(self):
+        """Implement next(self)."""
 
 @final
 class FieldDescriptor:
@@ -173,36 +216,85 @@ class FileDescriptor:
 
 @final
 class MapIterator:
-    def __iter__(self): ...
-    def __next__(self): ...
+    def __iter__(self):
+        """Implement iter(self)."""
+
+    def __next__(self):
+        """Implement next(self)."""
 
 @final
 class Message:
+    """A ProtocolMessage"""
+
     Extensions: Incomplete
     def __init__(self, *args, **kwargs) -> None: ...  # incomplete  # incomplete
-    def ByteSize(self): ...
-    def Clear(self): ...
-    def ClearExtension(self, object, /): ...
-    def ClearField(self, object, /): ...
-    def CopyFrom(self, object, /): ...
-    def DiscardUnknownFields(self): ...
-    def FindInitializationErrors(self): ...
+    def ByteSize(self):
+        """Returns the size of the message in bytes."""
+
+    def Clear(self):
+        """Clears the message."""
+
+    def ClearExtension(self, object, /):
+        """Clears a message field."""
+
+    def ClearField(self, object, /):
+        """Clears a message field."""
+
+    def CopyFrom(self, object, /):
+        """Copies a protocol message into the current message."""
+
+    def DiscardUnknownFields(self):
+        """Discards the unknown fields."""
+
+    def FindInitializationErrors(self):
+        """Finds unset required fields."""
+
     @classmethod
-    def FromString(cls, object, /): ...
-    def HasExtension(self, object, /): ...
-    def HasField(self, object, /): ...
-    def IsInitialized(self, *args, **kwargs): ...  # incomplete
-    def ListFields(self): ...
-    def MergeFrom(self, object, /): ...
-    def MergeFromString(self, object, /): ...
-    def ParseFromString(self, object, /): ...
-    def SerializePartialToString(self, *args, **kwargs): ...  # incomplete
-    def SerializeToString(self, *args, **kwargs): ...  # incomplete
-    def SetInParent(self): ...
-    def UnknownFields(self): ...
-    def WhichOneof(self, object, /): ...
-    def __contains__(self, other) -> bool: ...
-    def __deepcopy__(self, memo=None): ...
+    def FromString(cls, object, /):
+        """Creates new method instance from given serialized data."""
+
+    def HasExtension(self, object, /):
+        """Checks if a message field is set."""
+
+    def HasField(self, object, /):
+        """Checks if a message field is set."""
+
+    def IsInitialized(self, *args, **kwargs):  # incomplete
+        """Checks if all required fields of a protocol message are set."""
+
+    def ListFields(self):
+        """Lists all set fields of a message."""
+
+    def MergeFrom(self, object, /):
+        """Merges a protocol message into the current message."""
+
+    def MergeFromString(self, object, /):
+        """Merges a serialized message into the current message."""
+
+    def ParseFromString(self, object, /):
+        """Parses a serialized message into the current message."""
+
+    def SerializePartialToString(self, *args, **kwargs):  # incomplete
+        """Serializes the message to a string, even if it isn't initialized."""
+
+    def SerializeToString(self, *args, **kwargs):  # incomplete
+        """Serializes the message to a string, only for initialized messages."""
+
+    def SetInParent(self):
+        """Sets the has bit of the given field in its parent message."""
+
+    def UnknownFields(self):
+        """Parse unknown field set"""
+
+    def WhichOneof(self, object, /):
+        """Returns the name of the field set inside a oneof, or None if no field is set."""
+
+    def __contains__(self, other) -> bool:
+        """Checks if a message field is set."""
+
+    def __deepcopy__(self, memo=None):
+        """Makes a deep copy of the class."""
+
     def __delattr__(self, name): ...
     def __eq__(self, other: object) -> bool: ...
     def __ge__(self, other: object) -> bool: ...
@@ -243,50 +335,104 @@ class OneofDescriptor:
 @final
 class RepeatedCompositeContainer:
     def __init__(self, *args, **kwargs) -> None: ...  # incomplete
-    def MergeFrom(self, object, /): ...
-    def add(self, *args, **kwargs): ...  # incomplete
-    def append(self, object, /): ...
-    def extend(self, object, /): ...
-    def insert(self, *args, **kwargs): ...  # incomplete
-    def pop(self, *args, **kwargs): ...  # incomplete
-    def remove(self, object, /): ...
-    def reverse(self): ...
-    def sort(self, *args, **kwargs): ...  # incomplete
-    def __deepcopy__(self, memo=None): ...
-    def __delitem__(self, other) -> None: ...
+    def MergeFrom(self, object, /):
+        """Adds objects to the repeated container."""
+
+    def add(self, *args, **kwargs):  # incomplete
+        """Adds an object to the repeated container."""
+
+    def append(self, object, /):
+        """Appends a message to the end of the repeated container."""
+
+    def extend(self, object, /):
+        """Adds objects to the repeated container."""
+
+    def insert(self, *args, **kwargs):  # incomplete
+        """Inserts a message before the specified index."""
+
+    def pop(self, *args, **kwargs):  # incomplete
+        """Removes an object from the repeated container and returns it."""
+
+    def remove(self, object, /):
+        """Removes an object from the repeated container."""
+
+    def reverse(self):
+        """Reverses elements order of the repeated container."""
+
+    def sort(self, *args, **kwargs):  # incomplete
+        """Sorts the repeated container."""
+
+    def __deepcopy__(self, memo=None):
+        """Makes a deep copy of the class."""
+
+    def __delitem__(self, other) -> None:
+        """Delete self[key]."""
+
     def __eq__(self, other: object) -> bool: ...
     def __ge__(self, other: object) -> bool: ...
-    def __getitem__(self, index): ...
+    def __getitem__(self, index):
+        """Return self[key]."""
+
     def __gt__(self, other: object) -> bool: ...
     def __le__(self, other: object) -> bool: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return len(self)."""
+
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def __setitem__(self, index, object) -> None: ...
+    def __setitem__(self, index, object) -> None:
+        """Set self[key] to value."""
 
 @final
 class RepeatedScalarContainer:
     def __init__(self, *args, **kwargs) -> None: ...  # incomplete
-    def MergeFrom(self, object, /): ...
-    def append(self, object, /): ...
-    def extend(self, object, /): ...
-    def insert(self, *args, **kwargs): ...  # incomplete
-    def pop(self, *args, **kwargs): ...  # incomplete
-    def remove(self, object, /): ...
-    def reverse(self): ...
-    def sort(self, *args, **kwargs): ...  # incomplete
-    def __deepcopy__(self, memo=None): ...
-    def __delitem__(self, other) -> None: ...
+    def MergeFrom(self, object, /):
+        """Merges a repeated container into the current container."""
+
+    def append(self, object, /):
+        """Appends an object to the repeated container."""
+
+    def extend(self, object, /):
+        """Appends objects to the repeated container."""
+
+    def insert(self, *args, **kwargs):  # incomplete
+        """Inserts an object at the specified position in the container."""
+
+    def pop(self, *args, **kwargs):  # incomplete
+        """Removes an object from the repeated container and returns it."""
+
+    def remove(self, object, /):
+        """Removes an object from the repeated container."""
+
+    def reverse(self):
+        """Reverses elements order of the repeated container."""
+
+    def sort(self, *args, **kwargs):  # incomplete
+        """Sorts the repeated container."""
+
+    def __deepcopy__(self, memo=None):
+        """Makes a deep copy of the class."""
+
+    def __delitem__(self, other) -> None:
+        """Delete self[key]."""
+
     def __eq__(self, other: object) -> bool: ...
     def __ge__(self, other: object) -> bool: ...
-    def __getitem__(self, index): ...
+    def __getitem__(self, index):
+        """Return self[key]."""
+
     def __gt__(self, other: object) -> bool: ...
     def __le__(self, other: object) -> bool: ...
-    def __len__(self) -> int: ...
+    def __len__(self) -> int:
+        """Return len(self)."""
+
     def __lt__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
-    def __reduce__(self): ...
-    def __setitem__(self, index, object) -> None: ...
+    def __reduce__(self):
+        """Outputs picklable representation of the repeated field."""
+
+    def __setitem__(self, index, object) -> None:
+        """Set self[key] to value."""
 
 @final
 class ServiceDescriptor:
@@ -304,7 +450,11 @@ class ServiceDescriptor:
 @final
 class UnknownFieldSet:
     def __init__(self, *args, **kwargs) -> None: ...  # incomplete
-    def __getitem__(self, index): ...
-    def __len__(self) -> int: ...
+    def __getitem__(self, index):
+        """Return self[key]."""
 
-def SetAllowOversizeProtos(object, /): ...  # incomplete
+    def __len__(self) -> int:
+        """Return len(self)."""
+
+def SetAllowOversizeProtos(object, /):  # incomplete
+    """Enable/disable oversize proto parsing."""

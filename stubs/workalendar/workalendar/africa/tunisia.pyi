@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import IslamicCalendar
 
 class Tunisia(IslamicCalendar):
+    """Tunisia"""
+
     include_labour_day: ClassVar[bool]
     include_prophet_birthday: ClassVar[bool]
     include_eid_al_fitr: ClassVar[bool]
@@ -13,4 +15,12 @@ class Tunisia(IslamicCalendar):
     include_islamic_new_year: ClassVar[bool]
     FIXED_HOLIDAYS: Incomplete
     WEEKEND_DAYS: Incomplete
-    def get_fixed_holidays(self, year): ...
+    def get_fixed_holidays(self, year):
+        """Get fixed holidays.
+
+        Args:
+            year (int): Year
+
+        Returns:
+            tuple: Tuple of date and label
+        """

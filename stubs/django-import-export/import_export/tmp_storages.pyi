@@ -20,6 +20,10 @@ class TempFolderStorage(BaseStorage):
     def get_full_path(self) -> str: ...
 
 class CacheStorage(BaseStorage):
+    """
+    By default memcache maximum size per key is 1MB, be careful with large files.
+    """
+
     CACHE_LIFETIME: int
     CACHE_PREFIX: str
     def save(self, data: Any) -> None: ...

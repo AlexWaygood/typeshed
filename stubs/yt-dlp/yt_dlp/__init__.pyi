@@ -251,5 +251,7 @@ class _ParsedOptions(NamedTuple):
     urls: Collection[str]
     ydl_opts: _Params
 
-def parse_options(argv: Collection[str] | None = ...) -> _ParsedOptions: ...
+def parse_options(argv: Collection[str] | None = ...) -> _ParsedOptions:
+    """@returns ParsedOptions(parser, opts, urls, ydl_opts)"""
+
 def main(argv: list[str] | None = ...) -> int: ...

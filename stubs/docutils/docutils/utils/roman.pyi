@@ -1,3 +1,5 @@
+"""Convert to and from Roman numerals"""
+
 import argparse
 import re
 from typing import Final, Literal
@@ -14,10 +16,13 @@ class InvalidRomanNumeralError(RomanError): ...
 
 romanNumeralMap: tuple[tuple[str, int], ...]
 
-def toRoman(n: int) -> str: ...
+def toRoman(n: int) -> str:
+    """convert integer to Roman numeral"""
 
 romanNumeralPattern: Final[re.Pattern[str]]
 
-def fromRoman(s: str) -> int: ...
+def fromRoman(s: str) -> int:
+    """convert Roman numeral to integer"""
+
 def parse_args() -> argparse.Namespace: ...
 def main() -> Literal[0]: ...

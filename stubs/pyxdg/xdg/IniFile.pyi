@@ -1,8 +1,13 @@
+"""
+Base Class for DesktopEntry, IconTheme and IconData
+"""
+
 import re
 from collections.abc import Iterable, KeysView
 from typing import Literal, overload
 
-def is_ascii(s: str) -> bool: ...
+def is_ascii(s: str) -> bool:
+    """Return True if a string consists entirely of ASCII characters."""
 
 class IniFile:
     defaultGroup: str
@@ -14,7 +19,12 @@ class IniFile:
     errors: list[str]
     def __init__(self, filename: str | None = None) -> None: ...
     def __cmp__(self, other: IniFile) -> bool: ...
-    def parse(self, filename: str, headers: Iterable[str] | None = None) -> None: ...
+    def parse(self, filename: str, headers: Iterable[str] | None = None) -> None:
+        """Parse an INI file.
+
+        headers -- list of headers the parser will try to select as a default header
+        """
+
     @overload
     def get(
         self,
@@ -226,7 +236,13 @@ class IniFile:
         strict: bool = False,
     ) -> list[tuple[int, int]]: ...
     def getList(self, string: str) -> list[str]: ...
-    def validate(self, report: Literal["All", "Warnings", "Errors"] = "All") -> None: ...
+    def validate(self, report: Literal["All", "Warnings", "Errors"] = "All") -> None:
+        """Validate the contents, raising :class:`~xdg.Exceptions.ValidationError`
+        if there is anything amiss.
+
+        report can be 'All' / 'Warnings' / 'Errors'
+        """
+
     def checkGroup(self, group: str) -> None: ...
     def checkKey(self, key: str, value: str, group: str) -> None: ...
     def checkValue(

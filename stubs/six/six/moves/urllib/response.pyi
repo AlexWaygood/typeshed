@@ -1,3 +1,5 @@
+"""Lazy loading of moved objects in six.moves.urllib_response"""
+
 # Stubs for six.moves.urllib.response
 #
 # Note: Commented out items means they weren't implemented at the time.

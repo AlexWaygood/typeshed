@@ -1,3 +1,5 @@
+"""Checker of PEP-8 Naming Conventions."""
+
 import argparse
 import ast
 import enum
@@ -15,6 +17,8 @@ METHOD_CONTAINER_NODES: Final[set[ast.AST]]
 FUNC_NODES: Final[tuple[type[ast.FunctionDef], type[ast.AsyncFunctionDef]]]
 
 class BaseASTCheck:
+    """Base for AST Checks."""
+
     all: list[BaseASTCheck]
     codes: tuple[str, ...]
     # Per convention, unknown kwargs are passed to the super-class. See there for the types.
@@ -22,6 +26,8 @@ class BaseASTCheck:
     def err(self, node: ast.AST, code: str, **kwargs: str) -> tuple[int, int, str, Self]: ...
 
 class NameSet(frozenset[str]):
+    """A set of names that can be matched as Unix shell-style wildcards."""
+
     def __new__(cls, iterable: Iterable[str]) -> Self: ...
     def __contains__(self, item: object, /) -> bool: ...
 
@@ -33,6 +39,8 @@ class FunctionType(enum.Enum):
     METHOD = "method"
 
 class NamingChecker:
+    """Checker of PEP-8 Naming Conventions."""
+
     name: str
     version: str
     visitors: Sequence[BaseASTCheck]
@@ -46,7 +54,9 @@ class NamingChecker:
     def run(self) -> Generator[tuple[int, int, str, Self]] | tuple[()]: ...
     def visit_tree(self, node: ast.AST, parents: deque[ast.AST]) -> Generator[tuple[int, int, str, Self]]: ...
     def visit_node(self, node: ast.AST, parents: Sequence[ast.AST]) -> Generator[tuple[int, int, str, Self]]: ...
-    def tag_class_functions(self, cls_node: ast.ClassDef) -> None: ...
+    def tag_class_functions(self, cls_node: ast.ClassDef) -> None:
+        """Tag functions if they are methods, classmethods, staticmethods"""
+
     def set_function_nodes_types(
         self, nodes: Iterator[ast.AST], ismetaclass: bool, late_decoration: dict[str, FunctionType]
     ) -> None: ...
@@ -56,6 +66,12 @@ class NamingChecker:
     def find_global_defs(func_def_node: ast.AST) -> None: ...
 
 class ClassNameCheck(BaseASTCheck):
+    """
+    Almost without exception, class names use the CapWords convention.
+
+    Classes for internal use have a leading underscore in addition.
+    """
+
     codes: tuple[Literal["N801"], Literal["N818"]]
     N801: Final[str]
     N818: Final[str]
@@ -68,6 +84,16 @@ class ClassNameCheck(BaseASTCheck):
     ) -> Generator[tuple[int, int, str, Self]]: ...
 
 class FunctionNameCheck(BaseASTCheck):
+    """
+    Function names should be lowercase, with words separated by underscores
+    as necessary to improve readability.
+
+    Functions *not* being methods '__' in front and back are not allowed.
+
+    mixedCase is allowed only in contexts where that's already the
+    prevailing style (e.g. threading.py), to retain backwards compatibility.
+    """
+
     codes: tuple[Literal["N802"], Literal["N807"]]
     N802: Final[str]
     N807: Final[str]
@@ -81,6 +107,14 @@ class FunctionNameCheck(BaseASTCheck):
     ) -> Generator[tuple[int, int, str, Self]]: ...
 
 class FunctionArgNamesCheck(BaseASTCheck):
+    """
+    The argument names of a function should be lowercase, with words separated
+    by underscores.
+
+    A classmethod should have 'cls' as first argument.
+    A method should have 'self' as first argument.
+    """
+
     codes: tuple[Literal["N803"], Literal["N804"], Literal["N805"]]
     N803: Final[str]
     N804: Final[str]
@@ -93,6 +127,10 @@ class FunctionArgNamesCheck(BaseASTCheck):
     ) -> Generator[tuple[int, int, str, Self]]: ...
 
 class ImportAsCheck(BaseASTCheck):
+    """
+    Don't change the naming convention via an import
+    """
+
     codes: tuple[Literal["N811"], Literal["N812"], Literal["N813"], Literal["N814"], Literal["N817"]]
     N811: Final[str]
     N812: Final[str]
@@ -107,6 +145,10 @@ class ImportAsCheck(BaseASTCheck):
     ) -> Generator[tuple[int, int, str, Self]]: ...
 
 class VariablesCheck(BaseASTCheck):
+    """
+    Class attributes and local variables in functions should be lowercase
+    """
+
     codes: tuple[Literal["N806"], Literal["N815"], Literal["N816"]]
     N806: Final[str]
     N815: Final[str]

@@ -5,6 +5,8 @@ from typing import ClassVar
 from ..core import OrthodoxCalendar
 
 class Bulgaria(OrthodoxCalendar):
+    """Bulgaria"""
+
     FIXED_HOLIDAYS: Incomplete
     include_labour_day: ClassVar[bool]
     labour_day_label: ClassVar[str]
@@ -19,6 +21,20 @@ class Bulgaria(OrthodoxCalendar):
     boxing_day_label: ClassVar[str]
 
     def get_shifted_holidays(self, days) -> Generator[Incomplete, None, None]: ...
-    def get_fixed_holidays(self, year): ...
-    def shift_christmas_boxing_days(self, year): ...
-    def get_variable_days(self, year): ...
+    def get_fixed_holidays(self, year):
+        """
+        Return fixed holidays, with shifts computed accordingly.
+        """
+
+    def shift_christmas_boxing_days(self, year):
+        """
+        Return Christmas shifts.
+
+        They usually follow the same rule as used in the UK, but the fact that
+        there's a second Christmas holiday requires an override.
+        """
+
+    def get_variable_days(self, year):
+        """
+        Return variable holidays, with Christmas shifts computed accordingly.
+        """

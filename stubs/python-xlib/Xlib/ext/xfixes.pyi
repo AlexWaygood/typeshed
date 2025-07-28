@@ -1,3 +1,8 @@
+"""
+A partial implementation of the XFIXES extension.  Only the HideCursor and
+ShowCursor requests and SelectionNotify events are provided.
+"""
+
 from _typeshed import Unused
 from typing import Final
 

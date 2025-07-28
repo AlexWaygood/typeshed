@@ -1,3 +1,12 @@
+"""
+requests.compat
+~~~~~~~~~~~~~~~
+
+This module previously handled import compatibility issues
+between Python 2 and Python 3. It remains for backwards
+compatibility until the next major version.
+"""
+
 from builtins import bytes as bytes, str as str
 from collections import OrderedDict as OrderedDict
 from typing import Literal

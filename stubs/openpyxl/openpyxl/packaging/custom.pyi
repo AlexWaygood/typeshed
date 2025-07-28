@@ -1,3 +1,5 @@
+"""Implementation of custom properties see § 22.3 in the specification"""
+
 from _typeshed import ConvertibleToFloat, ConvertibleToInt, Incomplete
 from collections.abc import Iterator
 from datetime import datetime
@@ -13,7 +15,10 @@ from openpyxl.xml.functions import Element
 _T = TypeVar("_T")
 
 # Does not reimplement anything, so runtime also has incompatible supertypes
-class NestedBoolText(Bool[Incomplete], NestedText[Incomplete, Incomplete]): ...  # type: ignore[misc]
+class NestedBoolText(Bool[Incomplete], NestedText[Incomplete, Incomplete]):  # type: ignore[misc]
+    """
+    Descriptor for handling nested elements with the value stored in the text part
+    """
 
 class _TypedProperty(Strict, Generic[_T]):
     name: String[Literal[False]]
@@ -55,12 +60,26 @@ class CustomPropertyList(Strict, Generic[_T]):
     props: Sequence[list[_TypedProperty[_T]]]
     def __init__(self) -> None: ...
     @classmethod
-    def from_tree(cls, tree: _ChildSerialisableTreeElement) -> Self: ...
+    def from_tree(cls, tree: _ChildSerialisableTreeElement) -> Self:
+        """
+        Create list from OOXML element
+        """
+
     def append(self, prop) -> None: ...
     def to_tree(self) -> Element: ...
     def __len__(self) -> int: ...
     @property
-    def names(self) -> list[str]: ...
-    def __getitem__(self, name): ...
-    def __delitem__(self, name) -> None: ...
+    def names(self) -> list[str]:
+        """List of property names"""
+
+    def __getitem__(self, name):
+        """
+        Get property by name
+        """
+
+    def __delitem__(self, name) -> None:
+        """
+        Delete a propery by name
+        """
+
     def __iter__(self) -> Iterator[_TypedProperty[_T]]: ...

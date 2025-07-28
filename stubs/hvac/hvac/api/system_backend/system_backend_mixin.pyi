@@ -5,4 +5,5 @@ from hvac.api.vault_api_base import VaultApiBase
 
 logger: Incomplete
 
-class SystemBackendMixin(VaultApiBase, metaclass=ABCMeta): ...
+class SystemBackendMixin(VaultApiBase, metaclass=ABCMeta):
+    """Base class for System Backend API endpoints."""

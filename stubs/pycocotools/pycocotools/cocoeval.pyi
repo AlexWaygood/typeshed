@@ -38,15 +38,46 @@ class COCOeval:
     params: Params
     stats: _NDFloatArray
     ious: dict[tuple[int, int], list[float]]
-    def __init__(self, cocoGt: COCO | None = None, cocoDt: COCO | None = None, iouType: _TIOU = "segm") -> None: ...
-    def evaluate(self) -> None: ...
+    def __init__(self, cocoGt: COCO | None = None, cocoDt: COCO | None = None, iouType: _TIOU = "segm") -> None:
+        """
+        Initialize CocoEval using coco APIs for gt and dt
+        :param cocoGt: coco object with ground truth annotations
+        :param cocoDt: coco object with detection results
+        :return: None
+        """
+
+    def evaluate(self) -> None:
+        """
+        Run per image evaluation on given images and store results (a list of dict) in self.evalImgs
+        :return: None
+        """
+
     def computeIoU(self, imgId: int, catId: int) -> list[float]: ...
     def computeOks(self, imgId: int, catId: int) -> _NDFloatArray: ...
-    def evaluateImg(self, imgId: int, catId: int, aRng: list[int], maxDet: int) -> _ImageEvaluationResult: ...
-    def accumulate(self, p: Params | None = None) -> None: ...
-    def summarize(self) -> None: ...
+    def evaluateImg(self, imgId: int, catId: int, aRng: list[int], maxDet: int) -> _ImageEvaluationResult:
+        """
+        perform evaluation for single category and image
+        :return: dict (single image results)
+        """
+
+    def accumulate(self, p: Params | None = None) -> None:
+        """
+        Accumulate per image evaluation results and store the result in self.eval
+        :param p: input params for evaluation
+        :return: None
+        """
+
+    def summarize(self) -> None:
+        """
+        Compute and display summary metrics for evaluation results.
+        Note this functin can *only* be applied on the default parameter setting
+        """
 
 class Params:
+    """
+    Params for coco evaluation api
+    """
+
     imgIds: list[int]
     catIds: list[int]
     iouThrs: _NDFloatArray

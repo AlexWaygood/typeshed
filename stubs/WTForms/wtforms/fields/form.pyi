@@ -10,6 +10,16 @@ __all__ = ("FormField",)
 _BoundFormT = TypeVar("_BoundFormT", bound=BaseForm)
 
 class FormField(Field, Generic[_BoundFormT]):
+    """
+    Encapsulate a form as a field in another form.
+
+    :param form_class:
+        A subclass of Form that will be encapsulated.
+    :param separator:
+        A string which will be suffixed to this field's name to create the
+        prefix to enclosed fields. The default is fine for most uses.
+    """
+
     form_class: type[_BoundFormT]
     form: _BoundFormT
     separator: str

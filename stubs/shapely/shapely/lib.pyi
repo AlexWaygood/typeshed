@@ -143,6 +143,8 @@ geos_version_string: str
 registry: list[type[Geometry]]
 
 class Geometry:
+    """Geometry type"""
+
     def __hash__(self) -> int: ...
     def __eq__(self, other: object) -> bool: ...
     def __ne__(self, other: object) -> bool: ...
@@ -153,21 +155,34 @@ class Geometry:
 
 @final
 class STRtree:
+    """A query-only R-tree created using the Sort-Tile-Recursive (STR) algorithm."""
+
     count: int
     def __init__(self, geoms: NDArray[np.object_], node_capacity: SupportsIndex, /, **kwargs: object) -> None: ...
-    def dwithin(self, geoms: NDArray[np.object_], distances: NDArray[np.float64], /) -> NDArray[np.int64]: ...
-    def nearest(self, geoms: NDArray[np.object_], /) -> NDArray[np.int64]: ...
-    def query(self, geoms: NDArray[np.object_], predicate: SupportsIndex, /) -> NDArray[np.int64]: ...
+    def dwithin(self, geoms: NDArray[np.object_], distances: NDArray[np.float64], /) -> NDArray[np.int64]:
+        """Queries the index for all item(s) in the tree within given distance of search geometries"""
+
+    def nearest(self, geoms: NDArray[np.object_], /) -> NDArray[np.int64]:
+        """Queries the index for the nearest item to each of the given search geometries"""
+
+    def query(self, geoms: NDArray[np.object_], predicate: SupportsIndex, /) -> NDArray[np.int64]:
+        """Queries the index for all items whose extents intersect the given search geometries, and optionally tests them against predicate function if provided."""
+
     def query_nearest(
         self, geoms: NDArray[np.object_], max_distance: float, exclusive: SupportsIndex, all_matches: SupportsIndex, /
-    ) -> tuple[NDArray[np.int64], NDArray[np.float64]]: ...
+    ) -> tuple[NDArray[np.int64], NDArray[np.float64]]:
+        """Queries the index for all nearest item(s) to each of the given search geometries"""
 
 class ShapelyError(Exception): ...
 class GEOSException(ShapelyError): ...
 
-def count_coordinates(geoms: NDArray[np.object_], /) -> int: ...
+def count_coordinates(geoms: NDArray[np.object_], /) -> int:
+    """Counts the total amount of coordinates in a array with geometry objects"""
+
 @overload
-def get_coordinates(arr: NDArray[np.object_], include_z: bool, return_index: Literal[False], /) -> NDArray[np.float64]: ...
+def get_coordinates(arr: NDArray[np.object_], include_z: bool, return_index: Literal[False], /) -> NDArray[np.float64]:
+    """Gets the coordinates as an (N, 2), (N, 3), or (N, 4) shaped ndarray of floats"""
+
 @overload
 def get_coordinates(
     arr: NDArray[np.object_], include_z: bool, return_index: Literal[True], /
@@ -176,4 +191,5 @@ def get_coordinates(
 def get_coordinates(
     arr: NDArray[np.object_], include_z: bool, return_index: bool, /
 ) -> NDArray[np.float64] | tuple[NDArray[np.float64], NDArray[np.int64]]: ...
-def set_coordinates(geoms: NDArray[np.object_], coords: NDArray[np.float64], /) -> NDArray[np.object_]: ...
+def set_coordinates(geoms: NDArray[np.object_], coords: NDArray[np.float64], /) -> NDArray[np.object_]:
+    """Sets coordinates to a geometry array"""

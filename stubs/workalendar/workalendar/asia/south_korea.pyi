@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import ChineseNewYearCalendar
 
 class SouthKorea(ChineseNewYearCalendar):
+    """South Korea"""
+
     FIXED_HOLIDAYS: Incomplete
     chinese_new_year_label: ClassVar[str]
     include_chinese_new_year_eve: ClassVar[bool]

@@ -17,24 +17,63 @@ class InvalidJWAAlgorithm(JWException):
     def __init__(self, message: str | None = None) -> None: ...
 
 class InvalidCEKeyLength(JWException):
+    """Invalid CEK Key Length.
+
+    This exception is raised when a Content Encryption Key does not match
+    the required length.
+    """
+
     def __init__(self, expected: int, obtained: int) -> None: ...
 
 class InvalidJWEOperation(JWException):
+    """Invalid JWS Object.
+
+    This exception is raised when a requested operation cannot
+    be execute due to unsatisfied conditions.
+    """
+
     def __init__(self, message: str | None = None, exception: BaseException | None = None) -> None: ...
 
 class InvalidJWEKeyType(JWException):
+    """Invalid JWE Key Type.
+
+    This exception is raised when the provided JWK Key does not match
+    the type required by the specified algorithm.
+    """
+
     def __init__(self, expected: int, obtained: int) -> None: ...
 
 class InvalidJWEKeyLength(JWException):
+    """Invalid JWE Key Length.
+
+    This exception is raised when the provided JWK Key does not match
+    the length required by the specified algorithm.
+    """
+
     def __init__(self, expected: int, obtained: int) -> None: ...
 
 class InvalidJWSERegOperation(JWException):
+    """Invalid JWSE Header Registry Operation.
+
+    This exception is raised when there is an error in trying to add a JW
+    Signature or Encryption header to the Registry.
+    """
+
     def __init__(self, message: str | None = None, exception: BaseException | None = None) -> None: ...
 
 class JWKeyNotFound(JWException):
+    """The key needed to complete the operation was not found.
+
+    This exception is raised when a JWKSet is used to perform
+    some operation and the key required to successfully complete
+    the operation is not found.
+    """
+
     def __init__(self, message: str | None = None) -> None: ...
 
 class JWSEHeaderParameter(NamedTuple):
+    """Parameter(description, mustprotect, supported, check_fn)"""
+
     description: str
     mustprotect: bool
     supported: bool

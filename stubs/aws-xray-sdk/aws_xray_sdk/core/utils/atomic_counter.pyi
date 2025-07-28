@@ -1,4 +1,8 @@
 class AtomicCounter:
+    """
+    A helper class that implements a thread-safe counter.
+    """
+
     value: int
     def __init__(self, initial: int = 0) -> None: ...
     def increment(self, num: int = 1) -> int: ...

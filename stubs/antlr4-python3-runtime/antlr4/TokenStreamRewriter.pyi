@@ -10,7 +10,13 @@ class TokenStreamRewriter:
     tokens: Incomplete
     programs: Incomplete
     lastRewriteTokenIndexes: Incomplete
-    def __init__(self, tokens) -> None: ...
+    def __init__(self, tokens) -> None:
+        """
+        :type  tokens: antlr4.BufferedTokenStream.BufferedTokenStream
+        :param tokens:
+        :return:
+        """
+
     def getTokenStream(self): ...
     def rollback(self, instruction_index, program_name) -> None: ...
     def deleteProgram(self, program_name="default") -> None: ...
@@ -31,15 +37,31 @@ class TokenStreamRewriter:
     def setLastRewriteTokenIndex(self, program_name, i) -> None: ...
     def getProgram(self, program_name): ...
     def getDefaultText(self): ...
-    def getText(self, program_name, start: int, stop: int): ...
+    def getText(self, program_name, start: int, stop: int):
+        """
+        :return: the text in tokens[start, stop](closed interval)
+        """
 
     class RewriteOperation:
         tokens: Incomplete
         index: Incomplete
         text: Incomplete
         instructionIndex: int
-        def __init__(self, tokens, index, text: str = "") -> None: ...
-        def execute(self, buf): ...
+        def __init__(self, tokens, index, text: str = "") -> None:
+            """
+            :type tokens: CommonTokenStream
+            :param tokens:
+            :param index:
+            :param text:
+            :return:
+            """
+
+        def execute(self, buf):
+            """
+            :type buf: StringIO.StringIO
+            :param buf:
+            :return:
+            """
 
     class InsertBeforeOp(RewriteOperation):
         def __init__(self, tokens, index, text: str = "") -> None: ...

@@ -3,6 +3,10 @@ from typing import Any, overload
 from braintree.graphql.unions.customer_recommendations import CustomerRecommendations
 
 class CustomerRecommendationsPayload:
+    """
+    Represents the customer recommendations information associated with a PayPal customer session.
+    """
+
     session_id: str
     is_in_paypal_network: bool
     recommendations: CustomerRecommendations

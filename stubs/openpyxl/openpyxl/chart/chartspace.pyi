@@ -1,3 +1,8 @@
+"""
+Enclosing chart object. The various chart types are actually child objects.
+Will probably need to call this indirectly
+"""
+
 from _typeshed import ConvertibleToFloat, Incomplete, Unused
 from typing import ClassVar, Literal, overload
 from typing_extensions import TypeAlias

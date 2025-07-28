@@ -17,6 +17,10 @@ TITLES_REGEX: Final[Pattern[str]]
 PRINT_AREA_RE: Final[Pattern[str]]
 
 class ColRange(Strict):
+    """
+    Represent a range of at least one column
+    """
+
     min_col: String[Literal[False]]
     max_col: String[Literal[False]]
     @overload
@@ -26,6 +30,10 @@ class ColRange(Strict):
     def __eq__(self, other: object) -> bool: ...
 
 class RowRange(Strict):
+    """
+    Represent a range of at least one row
+    """
+
     min_row: Integer[Literal[False]]
     max_row: Integer[Literal[False]]
     @overload
@@ -35,6 +43,10 @@ class RowRange(Strict):
     def __eq__(self, other: object) -> bool: ...
 
 class PrintTitles(Strict):
+    """
+    Contains at least either a range of rows or columns
+    """
+
     cols: Typed[ColRange, Literal[True]]
     rows: Typed[RowRange, Literal[True]]
     title: String[Literal[False]]

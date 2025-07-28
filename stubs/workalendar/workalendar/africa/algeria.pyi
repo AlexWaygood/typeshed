@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import IslamicCalendar
 
 class Algeria(IslamicCalendar):
+    """Algeria"""
+
     include_labour_day: ClassVar[bool]
     include_prophet_birthday: ClassVar[bool]
     include_eid_al_fitr: ClassVar[bool]

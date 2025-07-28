@@ -75,6 +75,14 @@ class CustomSplit(Serialisable):
     def __init__(self, secondPiePt=()) -> None: ...
 
 class ProjectedPieChart(_PieChartBase):
+    """
+    From the spec 21.2.2.126
+
+    This element contains the pie of pie or bar of pie series on this
+    chart. Only the first series shall be displayed. The splitType element
+    shall determine whether the splitPos and custSplit elements apply.
+    """
+
     tagname: ClassVar[str]
     # Same as parent
     # varyColors = _PieChartBase.varyColors

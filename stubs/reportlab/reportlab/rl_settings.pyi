@@ -1,3 +1,9 @@
+"""default settings for reportlab
+
+to override these drop a module rl_local_settings.py parallel to this file or
+anywhere on the path.
+"""
+
 from _typeshed import Incomplete
 from typing import Final, Literal
 

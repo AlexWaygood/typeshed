@@ -16,8 +16,19 @@ class JsonWebToken:
     SENSITIVE_VALUES: Final[Pattern[str]]
 
     def __init__(self, algorithms, private_headers=None) -> None: ...
-    def check_sensitive_data(self, payload) -> None: ...
-    def encode(self, header, payload, key, check: bool = True): ...
+    def check_sensitive_data(self, payload) -> None:
+        """Check if payload contains sensitive information."""
+
+    def encode(self, header, payload, key, check: bool = True):
+        """Encode a JWT with the given header, payload and key.
+
+        :param header: A dict of JWS header
+        :param payload: A dict to be encoded
+        :param key: key used to sign the signature
+        :param check: check if sensitive data in payload
+        :return: bytes
+        """
+
     @overload
     def decode(
         self,
@@ -26,7 +37,20 @@ class JsonWebToken:
         claims_cls: None = None,
         claims_options=None,
         claims_params=None,
-    ) -> JWTClaims: ...
+    ) -> JWTClaims:
+        """Decode the JWT with the given key. This is similar with
+        :meth:`verify`, except that it will raise BadSignatureError when
+        signature doesn't match.
+
+        :param s: text of JWT
+        :param key: key used to verify the signature
+        :param claims_cls: class to be used for JWT claims
+        :param claims_options: `options` parameters for claims_cls
+        :param claims_params: `params` parameters for claims_cls
+        :return: claims_cls instance
+        :raise: BadSignatureError
+        """
+
     @overload
     def decode(
         self,

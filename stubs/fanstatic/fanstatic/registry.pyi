@@ -25,7 +25,9 @@ prepare_lock: Lock
 class Registry(dict[str, _NamedT]):
     @property
     @abstractmethod
-    def ENTRY_POINT(self) -> str: ...
+    def ENTRY_POINT(self) -> str:
+        """The type of the NotImplemented singleton."""
+
     def __init__(self, items: Iterable[_NamedT] = ()) -> None: ...
     def add(self, item: _NamedT) -> None: ...
     def load_items_from_entry_points(self) -> None: ...
@@ -34,6 +36,17 @@ class Registry(dict[str, _NamedT]):
     def instance(cls) -> Self: ...
 
 class LibraryRegistry(Registry[Library]):
+    """A dictionary-like registry of libraries.
+
+    This is a dictionary that maintains libraries. A value is a
+    :py:class:`Library` instance, and a key is its library ``name``.
+
+    Normally there is only a single global LibraryRegistry,
+    obtained by calling ``get_library_registry()``.
+
+    :param libraries: a sequence of libraries
+    """
+
     ENTRY_POINT: ClassVar[Literal["fanstatic.libraries"]]
     prepared: bool
     def prepare(self) -> None: ...

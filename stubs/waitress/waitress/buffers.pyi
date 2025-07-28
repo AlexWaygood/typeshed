@@ -1,3 +1,5 @@
+"""Buffers"""
+
 from _typeshed import ReadableBuffer
 from io import BufferedIOBase, BufferedRandom, BytesIO
 from typing import Final, Literal, NoReturn
@@ -41,6 +43,15 @@ class ReadOnlyFileBasedBuffer(FileBasedBuffer):
     def append(self, s: ReadableBuffer) -> NoReturn: ...
 
 class OverflowableBuffer:
+    """
+    This buffer implementation has four stages:
+    - No data
+    - Bytes-based buffer
+    - BytesIO-based buffer
+    - Temporary file storage
+    The first two stages are fastest for simple transfers.
+    """
+
     overflowed: bool
     buf: BufferedIOBase | None
     strbuf: bytes
@@ -51,6 +62,11 @@ class OverflowableBuffer:
     def append(self, s: bytes) -> None: ...
     def get(self, numbytes: int = -1, skip: bool = False) -> bytes: ...
     def skip(self, numbytes: int, allow_prune: bool = False) -> None: ...
-    def prune(self) -> None: ...
+    def prune(self) -> None:
+        """
+        A potentially expensive operation that removes all data
+        already retrieved from the buffer.
+        """
+
     def getfile(self) -> BytesIO: ...
     def close(self) -> None: ...

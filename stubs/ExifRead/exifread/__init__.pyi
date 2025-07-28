@@ -1,3 +1,7 @@
+"""
+Read Exif metadata from tiff and jpeg files.
+"""
+
 from logging import Logger
 from typing import Any
 
@@ -14,4 +18,10 @@ def process_file(
     debug: bool = False,
     truncate_tags: bool = True,
     auto_seek: bool = True,
-) -> dict[str, Any]: ...
+) -> dict[str, Any]:
+    """
+    Process an image file (expects an open file object).
+
+    This is the function that has to deal with all the arbitrary nasty bits
+    of the EXIF standard.
+    """

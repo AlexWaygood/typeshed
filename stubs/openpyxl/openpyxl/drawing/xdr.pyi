@@ -1,3 +1,7 @@
+"""
+Spreadsheet Drawing has some copies of Drawing ML elements
+"""
+
 from typing import ClassVar
 
 from .geometry import Point2D, PositiveSize2D, Transform2D

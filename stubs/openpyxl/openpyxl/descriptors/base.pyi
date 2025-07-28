@@ -1,3 +1,8 @@
+"""
+Based on Python Cookbook 3rd Edition, 8.13
+http://chimera.labs.oreilly.com/books/1230000000393/ch08.html#_discussiuncion_130
+"""
+
 from _typeshed import ConvertibleToFloat, ConvertibleToInt, Incomplete, ReadableBuffer, Unused
 from collections.abc import Iterable, Sized
 from datetime import datetime
@@ -28,6 +33,8 @@ class Descriptor(Generic[_T]):
     def __set__(self, instance: Serialisable | Strict, value: _T) -> None: ...
 
 class Typed(Descriptor[_T], Generic[_T, _N]):
+    """Values must of a particular type"""
+
     __doc__: str
     # Members optional in __init__
     expected_type: type[_T]
@@ -62,6 +69,8 @@ class Typed(Descriptor[_T], Generic[_T, _N]):
     def __set__(self: Typed[_T, Literal[False]], instance: Serialisable | Strict, value: _T) -> None: ...
 
 class Convertible(Typed[_T, _N]):
+    """Values must be convertible to a particular type"""
+
     @overload
     def __init__(
         self: Convertible[_T, Literal[True]],  # pyright: ignore[reportInvalidTypeVarUse]  #11780
@@ -120,6 +129,8 @@ class Convertible(Typed[_T, _N]):
     def __set__(self: Convertible[_T, Literal[True]], instance: Serialisable | Strict, value: _T | int | Any | None) -> None: ...
 
 class Max(Convertible[_M, _N]):
+    """Values must be less than a `max` value"""
+
     expected_type: type[_M]
     allow_none: _N
     max: float
@@ -154,6 +165,8 @@ class Max(Convertible[_M, _N]):
     def __set__(self: Max[float, Literal[False]], instance: Serialisable | Strict, value: ConvertibleToFloat) -> None: ...
 
 class Min(Convertible[_M, _N]):
+    """Values must be greater than a `min` value"""
+
     expected_type: type[_M]
     allow_none: _N
     min: float
@@ -188,6 +201,8 @@ class Min(Convertible[_M, _N]):
     def __set__(self: Min[float, Literal[False]], instance: Serialisable | Strict, value: ConvertibleToFloat) -> None: ...
 
 class MinMax(Min[_M, _N], Max[_M, _N]):
+    """Values must be greater than `min` value and less than a `max` one"""
+
     expected_type: type[_M]
     allow_none: _N
     @overload
@@ -229,12 +244,16 @@ class MinMax(Min[_M, _N], Max[_M, _N]):
     ) -> None: ...
 
 class Set(Descriptor[_T]):
+    """Value can only be from a set of know values"""
+
     __doc__: str
     values: Iterable[_T]
     def __init__(self, name: str | None = None, *, values: Iterable[_T]) -> None: ...
     def __set__(self, instance: Serialisable | Strict, value: _T) -> None: ...
 
 class NoneSet(Set[_T | None]):
+    """'none' will be treated as None"""
+
     def __init__(self, name: str | None = None, *, values: Iterable[_T | None]) -> None: ...
     def __set__(self, instance: Serialisable | Strict, value: _T | Literal["none"] | None) -> None: ...
 
@@ -286,6 +305,11 @@ class Length(Descriptor[_L]):
     def __set__(self, instance: Serialisable | Strict, value: _L) -> None: ...
 
 class Default(Typed[_T, _N]):  # unused
+    """
+    When called returns an instance of the expected type.
+    Additional default values can be passed in to the descriptor
+    """
+
     def __init__(
         self, name: Unused = None, *, expected_type: _ExpectedTypeParam[_T], allow_none: bool = False, defaults: Unused = {}
     ) -> None: ...
@@ -294,12 +318,20 @@ class Default(Typed[_T, _N]):  # unused
 # Note: Aliases types can't be inferred. Anyway an alias means there's another option.
 # Incomplete: Make it generic with explicit getter/setter type arguments?
 class Alias(Descriptor[Incomplete]):
+    """
+    Aliases can be used when either the desired attribute name is not allowed
+    or confusing in Python (eg. "type") or a more descriptive name is desired
+    (eg. "underline" for "u")
+    """
+
     alias: str
     def __init__(self, alias: str) -> None: ...
     def __set__(self, instance: Serialisable | Strict, value) -> None: ...
     def __get__(self, instance: Serialisable | Strict, cls: Unused): ...
 
 class MatchPattern(Descriptor[_P], Generic[_P, _N]):
+    """Values must match a regex pattern"""
+
     allow_none: _N
     test_pattern: Pattern[bytes] | Pattern[str]
     pattern: str | Pattern[str] | bytes | Pattern[bytes]

@@ -1,3 +1,10 @@
+"""
+Main module.
+
+Implement the central Checker class.
+Also, it models the Bindings and Scopes.
+"""
+
 import ast
 import sys
 from _typeshed import StrOrLiteralStr, Unused
@@ -37,14 +44,31 @@ VALID_CONVERSIONS: frozenset[str]
 _FormatType: TypeAlias = tuple[str | None, str | None, str | None, str | None, str]
 _PercentFormat: TypeAlias = tuple[str, _FormatType | None]
 
-def parse_percent_format(s: str) -> tuple[_PercentFormat, ...]: ...
+def parse_percent_format(s: str) -> tuple[_PercentFormat, ...]:
+    """Parses the string component of a `'...' % ...` format call
+
+    Copied from https://github.com/asottile/pyupgrade at v1.20.1
+    """
 
 class _FieldsOrder(dict[type[ast.AST], tuple[str, ...]]):
+    """Fix order of AST node fields."""
+
     def __missing__(self, node_class: type[ast.AST]) -> tuple[str, ...]: ...
 
 _OmitType: TypeAlias = str | tuple[str, ...] | None
 
-def iter_child_nodes(node: ast.AST, omit: _OmitType = None, _fields_order: _FieldsOrder = ...) -> Iterator[ast.AST]: ...
+def iter_child_nodes(node: ast.AST, omit: _OmitType = None, _fields_order: _FieldsOrder = ...) -> Iterator[ast.AST]:
+    """
+    Yield all direct child nodes of *node*, that is, all fields that
+    are nodes and all items of fields that are lists of nodes.
+
+    :param node:          AST node to be iterated upon
+    :param omit:          String or tuple of strings denoting the
+                          attributes of the node to be omitted from
+                          further parsing
+    :param _fields_order: Order of AST node fields
+    """
+
 @overload
 def convert_to_value(item: ast.Constant) -> Any: ...  # type: ignore[overload-overlap]  # See ast.Constant.value for possible return types
 @overload
@@ -56,33 +80,83 @@ def convert_to_value(item: ast.AST) -> UnhandledKeyType: ...
 def is_notimplemented_name_node(node: ast.AST) -> bool: ...
 
 class Binding:
+    """
+    Represents the binding of a value to a name.
+
+    The checker uses this to keep track of which names have been bound and
+    which names have not. See L{Assignment} for a special type of binding that
+    is checked with stricter rules.
+
+    @ivar used: pair of (L{Scope}, node) indicating the scope and
+                the node that this binding was last used.
+    """
+
     name: str
     source: ast.AST | None
     used: Literal[False] | tuple[Scope, ast.AST]
     def __init__(self, name: str, source: ast.AST | None) -> None: ...
     def redefines(self, other: Binding) -> bool: ...
 
-class Definition(Binding): ...
+class Definition(Binding):
+    """
+    A binding that defines a function or a class.
+    """
 
 class Builtin(Definition):
+    """A definition created for all Python builtins."""
+
     def __init__(self, name: str) -> None: ...
 
-class UnhandledKeyType: ...
+class UnhandledKeyType:
+    """
+    A dictionary key of a type that we cannot or do not check for duplicates.
+    """
 
 class VariableKey:
+    """
+    A dictionary key which is a variable.
+
+    @ivar item: The variable AST object.
+    """
+
     name: str
     def __init__(self, item: ast.Name) -> None: ...
     def __eq__(self, compare: object) -> bool: ...
     def __hash__(self) -> int: ...
 
 class Importation(Definition):
+    """
+    A binding created by an import statement.
+
+    @ivar fullName: The complete name given to the import statement,
+        possibly including multiple dotted components.
+    @type fullName: C{str}
+    """
+
     fullName: str
     redefined: list[ast.AST]
     def __init__(self, name: str, source: ast.AST | None, full_name: str | None = None) -> None: ...
     @property
-    def source_statement(self) -> str: ...
+    def source_statement(self) -> str:
+        """Generate a source statement equivalent to the import."""
 
 class SubmoduleImportation(Importation):
+    """
+    A binding created by a submodule import statement.
+
+    A submodule import is a special case where the root module is implicitly
+    imported, without an 'as' clause, and the submodule is also imported.
+    Python does not restrict which attributes of the root module may be used.
+
+    This class is only used when the submodule import is without an 'as' clause.
+
+    pyflakes handles this case by registering the root module name in the scope,
+    allowing any attribute of the root module to be accessed.
+
+    RedefinedWhileUnused is suppressed in `redefines` unless the submodule
+    name is also the same, to avoid false positives.
+    """
+
     def __init__(self, name: str, source: ast.Import | None) -> None: ...
 
 class ImportationFrom(Importation):
@@ -91,23 +165,69 @@ class ImportationFrom(Importation):
     def __init__(self, name: str, source: ast.AST, module: str, real_name: str | None = None) -> None: ...
 
 class StarImportation(Importation):
+    """A binding created by a 'from x import *' statement."""
+
     def __init__(self, name: str, source: ast.AST) -> None: ...
 
 class FutureImportation(ImportationFrom):
+    """
+    A binding created by a from `__future__` import statement.
+
+    `__future__` imports are implicitly used.
+    """
+
     used: tuple[Scope, ast.AST]
     def __init__(self, name: str, source: ast.AST, scope: Scope) -> None: ...
 
-class Argument(Binding): ...
-class Assignment(Binding): ...
-class NamedExprAssignment(Assignment): ...
+class Argument(Binding):
+    """
+    Represents binding a name as an argument.
+    """
+
+class Assignment(Binding):
+    """
+    Represents binding a name with an explicit assignment.
+
+    The checker will raise warnings for any Assignment that isn't used. Also,
+    the checker does not consider assignments in tuple/list unpacking to be
+    Assignments, rather it treats them as simple Bindings.
+    """
+
+class NamedExprAssignment(Assignment):
+    """
+    Represents binding a name with an assignment expression.
+    """
 
 class Annotation(Binding):
-    def redefines(self, other: Binding) -> Literal[False]: ...
+    """
+    Represents binding a name to a type without an associated value.
+
+    As long as this name is not assigned a value in another binding, it is considered
+    undefined for most purposes. One notable exception is using the name as a type
+    annotation.
+    """
+
+    def redefines(self, other: Binding) -> Literal[False]:
+        """An Annotation doesn't define any name, so it cannot redefine one."""
 
 class FunctionDefinition(Definition): ...
 class ClassDefinition(Definition): ...
 
 class ExportBinding(Binding):
+    """
+    A binding created by an C{__all__} assignment.  If the names in the list
+    can be determined statically, they will be treated as names for export and
+    additional checking applied to them.
+
+    The only recognized C{__all__} assignment via list/tuple concatenation is in the
+    following format:
+
+        __all__ = ['a'] + ['b'] + ['c']
+
+    Names which are imported and not otherwise used but appear in the value of
+    C{__all__} will not have an unused import warning reported for them.
+    """
+
     names: list[str]
     def __init__(self, name: str, source: ast.AST, scope: Scope) -> None: ...
 
@@ -118,19 +238,36 @@ class ClassScope(Scope):
     def __init__(self) -> None: ...
 
 class FunctionScope(Scope):
+    """
+    I represent a name scope for a function.
+
+    @ivar globals: Names declared 'global' in this function.
+    """
+
     usesLocals: bool
     alwaysUsed: ClassVar[set[str]]
     globals: set[str]
     returnValue: ast.expr | None
     isGenerator: bool
     def __init__(self) -> None: ...
-    def unused_assignments(self) -> Iterator[tuple[str, Binding]]: ...
-    def unused_annotations(self) -> Iterator[tuple[str, Annotation]]: ...
+    def unused_assignments(self) -> Iterator[tuple[str, Binding]]:
+        """
+        Return a generator for the assignments which have not been used.
+        """
+
+    def unused_annotations(self) -> Iterator[tuple[str, Annotation]]:
+        """
+        Return a generator for the annotations which have not been used.
+        """
 
 class TypeScope(Scope): ...
 class GeneratorScope(Scope): ...
-class ModuleScope(Scope): ...
-class DoctestScope(ModuleScope): ...
+
+class ModuleScope(Scope):
+    """Scope for a module."""
+
+class DoctestScope(ModuleScope):
+    """Scope for a doctest."""
 
 class DetectClassScopedMagic:
     names: list[str]
@@ -196,6 +333,8 @@ else:
     _Interpolation: TypeAlias = Never
 
 class Checker:
+    """I check the cleanliness and sanity of Python code."""
+
     nodeDepth: int
     offset: tuple[int, int] | None
     builtIns: set[str]
@@ -214,7 +353,16 @@ class Checker:
         withDoctest: bool = False,
         file_tokens: Unused = (),
     ) -> None: ...
-    def deferFunction(self, callable: _AnyFunction) -> None: ...
+    def deferFunction(self, callable: _AnyFunction) -> None:
+        """
+        Schedule a function handler to be called just before completion.
+
+        This is used for handling function bodies, which must be deferred
+        because code later in the file might modify the global scope. When
+        `callable` is called, the scope at the time this is called will be
+        restored, however it will contain any new bindings added to it.
+        """
+
     @property
     def futuresAllowed(self) -> bool: ...
     @futuresAllowed.setter
@@ -227,21 +375,40 @@ class Checker:
     def scope(self) -> Scope: ...
     @contextmanager
     def in_scope(self, cls: Callable[[], Scope]) -> Generator[None]: ...
-    def checkDeadScopes(self) -> None: ...
+    def checkDeadScopes(self) -> None:
+        """
+        Look at scopes which have been fully examined and report names in them
+        which were imported but unused.
+        """
+
     def report(self, messageClass: Callable[_P, Message], *args: _P.args, **kwargs: _P.kwargs) -> None: ...
     def getParent(self, node: ast.AST) -> ast.AST: ...
     def getCommonAncestor(self, lnode: ast.AST, rnode: ast.AST, stop: ast.AST) -> ast.AST: ...
     def descendantOf(self, node: ast.AST, ancestors: ast.AST, stop: ast.AST) -> bool: ...
     def getScopeNode(self, node: ast.AST) -> ast.AST | None: ...
-    def differentForks(self, lnode: ast.AST, rnode: ast.AST) -> bool: ...
-    def addBinding(self, node: ast.AST, value: Binding) -> None: ...
+    def differentForks(self, lnode: ast.AST, rnode: ast.AST) -> bool:
+        """True, if lnode and rnode are located on different forks of IF/TRY"""
+
+    def addBinding(self, node: ast.AST, value: Binding) -> None:
+        """
+        Called when a binding is altered.
+
+        - `node` is the statement responsible for the change
+        - `value` is the new value, a Binding instance
+        """
+
     def getNodeHandler(self, node_class: type[ast.AST]) -> Callable[[ast.AST], None]: ...
     def handleNodeLoad(self, node: ast.AST, parent: ast.AST | None) -> None: ...
     def handleNodeStore(self, node: ast.AST) -> None: ...
     def handleNodeDelete(self, node: ast.AST) -> None: ...
     def handleChildren(self, tree: ast.AST, omit: _OmitType = None) -> None: ...
     def isLiteralTupleUnpacking(self, node: ast.AST) -> bool | None: ...
-    def isDocstring(self, node: ast.AST) -> bool: ...
+    def isDocstring(self, node: ast.AST) -> bool:
+        """
+        Determine if the given node is a docstring, as long as it is at the
+        correct place in the node tree.
+        """
+
     def getDocstring(self, node: ast.AST) -> tuple[str, int] | tuple[None, None]: ...
     def handleNode(self, node: ast.AST | None, parent: ast.AST | None) -> None: ...
     def handleDoctests(self, node: ast.AST) -> None: ...
@@ -319,13 +486,25 @@ class Checker:
     def IF(self, node: ast.If) -> None: ...
     def IFEXP(self, node: ast.If) -> None: ...
     def ASSERT(self, node: ast.Assert) -> None: ...
-    def GLOBAL(self, node: ast.Global) -> None: ...
-    def NONLOCAL(self, node: ast.Nonlocal) -> None: ...
+    def GLOBAL(self, node: ast.Global) -> None:
+        """
+        Keep track of globals declarations.
+        """
+
+    def NONLOCAL(self, node: ast.Nonlocal) -> None:
+        """
+        Keep track of globals declarations.
+        """
+
     def GENERATOREXP(self, node: ast.GeneratorExp) -> None: ...
     def LISTCOMP(self, node: ast.ListComp) -> None: ...
     def DICTCOMP(self, node: ast.DictComp) -> None: ...
     def SETCOMP(self, node: ast.SetComp) -> None: ...
-    def NAME(self, node: ast.Name) -> None: ...
+    def NAME(self, node: ast.Name) -> None:
+        """
+        Handle occurrence of Name (which can be a load/store/delete access.)
+        """
+
     def CONTINUE(self, node: ast.Continue) -> None: ...
     def BREAK(self, node: ast.Break) -> None: ...
     def RETURN(self, node: ast.Return) -> None: ...
@@ -337,7 +516,13 @@ class Checker:
     def LAMBDA(self, node: ast.Lambda) -> None: ...
     def ARGUMENTS(self, node: ast.arguments) -> None: ...
     def ARG(self, node: ast.arg) -> None: ...
-    def CLASSDEF(self, node: ast.ClassDef) -> None: ...
+    def CLASSDEF(self, node: ast.ClassDef) -> None:
+        """
+        Check names used in a class definition, including its decorators, base
+        classes, and the body of its definition.  Additionally, add its name to
+        the current scope.
+        """
+
     def AUGASSIGN(self, node: ast.AugAssign) -> None: ...
     def TUPLE(self, node: ast.Tuple) -> None: ...
     def LIST(self, node: ast.List) -> None: ...

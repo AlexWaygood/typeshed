@@ -58,7 +58,8 @@ class gpioevent_data(ctypes.Structure):
     timestamp: int
     id: int
 
-class GPIOError(IOError): ...
+class GPIOError(IOError):
+    """Base class for GPIO errors."""
 
 def chip_open(gpio_chip: str) -> int: ...
 def chip_check_info(label: str, gpio_device: str) -> int | None: ...

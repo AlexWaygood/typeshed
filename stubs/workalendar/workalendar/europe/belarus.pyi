@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import OrthodoxCalendar
 
 class Belarus(OrthodoxCalendar):
+    """Belarus"""
+
     include_labour_day: ClassVar[bool]
     include_christmas: ClassVar[bool]
     christmas_day_label: ClassVar[str]

@@ -1,9 +1,20 @@
+"""Parameter access for icalendar.
+
+Related:
+
+- :rfc:`5545`, Section 3.2. Property Parameters
+- :rfc:`7986`, Section 6. Property Parameters
+- https://github.com/collective/icalendar/issues/798
+"""
+
 from collections.abc import Callable
 from typing import TypeVar
 
 from .parser import Parameters
 
 class IcalendarProperty:
+    """Interface provided by properties in icalendar.prop."""
+
     params: Parameters
 
 _T = TypeVar("_T")
@@ -14,13 +25,15 @@ def string_parameter(
     default: Callable[..., str | None] = ...,
     convert: Callable[[str], _T] | None = None,
     convert_to: Callable[[_T], str] | None = None,
-) -> property: ...
+) -> property:
+    """Return a parameter with a quoted value (case sensitive)."""
 
 ALTREP: property
 CN: property
 CUTYPE: property
 
-def quoted_list_parameter(name: str, doc: str) -> property: ...
+def quoted_list_parameter(name: str, doc: str) -> property:
+    """Return a parameter that contains a quoted list."""
 
 DELEGATED_FROM: property
 DELEGATED_TO: property

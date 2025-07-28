@@ -1,3 +1,7 @@
+"""
+ge - Generic Event Extension
+"""
+
 from _typeshed import Unused
 from typing import Final
 

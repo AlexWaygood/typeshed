@@ -4,6 +4,8 @@ from typing import ClassVar
 from ..core import IslamicCalendar
 
 class Qatar(IslamicCalendar):
+    """Qatar"""
+
     include_new_years_day: ClassVar[bool]
     FIXED_HOLIDAYS: Incomplete
     include_start_ramadan: ClassVar[bool]

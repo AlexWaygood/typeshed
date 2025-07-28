@@ -102,9 +102,16 @@ class CommentRecord(Serialisable):
         width: int = 144,
     ) -> None: ...
     @classmethod
-    def from_cell(cls, cell: _CellOrMergedCell): ...
+    def from_cell(cls, cell: _CellOrMergedCell):
+        """
+        Class method to convert cell comment
+        """
+
     @property
-    def content(self) -> str: ...
+    def content(self) -> str:
+        """
+        Remove all inline formatting and stuff
+        """
 
 class CommentSheet(Serialisable):
     tagname: ClassVar[str]
@@ -116,9 +123,24 @@ class CommentSheet(Serialisable):
     def __init__(self, authors: AuthorList, commentList=None, extLst: Unused = None) -> None: ...
     def to_tree(self) -> Element: ...  # type: ignore[override]
     @property
-    def comments(self) -> Generator[tuple[str, Comment], None, None]: ...
+    def comments(self) -> Generator[tuple[str, Comment], None, None]:
+        """
+        Return a dictionary of comments keyed by coord
+        """
+
     @classmethod
-    def from_comments(cls, comments): ...
-    def write_shapes(self, vml=None): ...
+    def from_comments(cls, comments):
+        """
+        Create a comment sheet from a list of comments for a particular worksheet
+        """
+
+    def write_shapes(self, vml=None):
+        """
+        Create the VML for comments
+        """
+
     @property
-    def path(self) -> str: ...
+    def path(self) -> str:
+        """
+        Return path within the archive
+        """

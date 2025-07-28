@@ -10,6 +10,13 @@ from wtforms.meta import DefaultMeta, _SupportsGettextAndNgettext
 __all__ = ("DateTimeField", "DateField", "TimeField", "MonthField", "DateTimeLocalField", "WeekField")
 
 class DateTimeField(Field):
+    """
+    A text field which stores a :class:`datetime.datetime` matching one or
+    several formats. If ``format`` is a list, any input value matching any
+    format will be accepted, and the first format in the list will be used
+    to produce HTML values.
+    """
+
     format: list[str]
     strptime_format: list[str]
     data: datetime | None
@@ -34,6 +41,11 @@ class DateTimeField(Field):
     ) -> None: ...
 
 class DateField(DateTimeField):
+    """
+    Same as :class:`~wtforms.fields.DateTimeField`, except stores a
+    :class:`datetime.date`.
+    """
+
     data: date | None  # type: ignore[assignment]
     default: date | Callable[[], date] | None  # type: ignore[assignment]
     def __init__(
@@ -56,6 +68,11 @@ class DateField(DateTimeField):
     ) -> None: ...
 
 class TimeField(DateTimeField):
+    """
+    Same as :class:`~wtforms.fields.DateTimeField`, except stores a
+    :class:`datetime.time`.
+    """
+
     data: time | None  # type: ignore[assignment]
     default: time | Callable[[], time] | None  # type: ignore[assignment]
     def __init__(
@@ -78,6 +95,11 @@ class TimeField(DateTimeField):
     ) -> None: ...
 
 class MonthField(DateField):
+    """
+    Same as :class:`~wtforms.fields.DateField`, except represents a month,
+    stores a :class:`datetime.date` with `day = 1`.
+    """
+
     def __init__(
         self,
         label: str | None = None,
@@ -98,6 +120,11 @@ class MonthField(DateField):
     ) -> None: ...
 
 class WeekField(DateField):
+    """
+    Same as :class:`~wtforms.fields.DateField`, except represents a week,
+    stores a :class:`datetime.date` of the monday of the given week.
+    """
+
     def __init__(
         self,
         label: str | None = None,
@@ -118,6 +145,11 @@ class WeekField(DateField):
     ) -> None: ...
 
 class DateTimeLocalField(DateTimeField):
+    """
+    Same as :class:`~wtforms.fields.DateTimeField`, but represents an
+    ``<input type="datetime-local">``.
+    """
+
     def __init__(
         self,
         label: str | None = None,

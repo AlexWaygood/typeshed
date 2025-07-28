@@ -1,3 +1,5 @@
+"""NV-CONTROL - provide access to the NV-CONTROL extension information."""
+
 from _typeshed import Unused
 from typing import Final
 
@@ -7,32 +9,77 @@ from Xlib.xobject import resource
 
 extname: Final = "NV-CONTROL"
 
-def query_target_count(self: Display | resource.Resource, target: Target) -> int: ...
-def query_int_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> int | None: ...
-def set_int_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int, value: int) -> bool: ...
-def query_string_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> str | None: ...
+def query_target_count(self: Display | resource.Resource, target: Target) -> int:
+    """Return the target count"""
+
+def query_int_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> int | None:
+    """Return the value of an integer attribute"""
+
+def set_int_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int, value: int) -> bool:
+    """Set the value of an integer attribute"""
+
+def query_string_attribute(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> str | None:
+    """Return the value of a string attribute"""
+
 def query_valid_attr_values(
     self: Display | resource.Resource, target: Target, display_mask: int, attr: int
-) -> tuple[int, int] | None: ...
-def query_binary_data(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> bytes | None: ...
+) -> tuple[int, int] | None:
+    """Return the value of an integer attribute"""
+
+def query_binary_data(self: Display | resource.Resource, target: Target, display_mask: int, attr: int) -> bytes | None:
+    """Return binary data"""
+
 def get_coolers_used_by_gpu(self: Display | resource.Resource, target: Target) -> list[int] | None: ...
-def get_gpu_count(self: Display | resource.Resource) -> int: ...
-def get_name(self: Display | resource.Resource, target: Target) -> str | None: ...
-def get_driver_version(self: Display | resource.Resource, target: Target) -> str | None: ...
-def get_vbios_version(self: Display | resource.Resource, target: Target) -> str | None: ...
+def get_gpu_count(self: Display | resource.Resource) -> int:
+    """Return the number of GPU's present in the system."""
+
+def get_name(self: Display | resource.Resource, target: Target) -> str | None:
+    """Return the GPU product name on which the specified X screen is running"""
+
+def get_driver_version(self: Display | resource.Resource, target: Target) -> str | None:
+    """Return the NVIDIA (kernel level) driver version for the specified screen or GPU"""
+
+def get_vbios_version(self: Display | resource.Resource, target: Target) -> str | None:
+    """Return the version of the VBIOS for the specified screen or GPU"""
+
 def get_gpu_uuid(self: Display | resource.Resource, target: Target) -> str | None: ...
 def get_utilization_rates(self: Display | resource.Resource, target: Target) -> dict[str, str | int]: ...
 def get_performance_modes(self: Display | resource.Resource, target: Target) -> list[dict[str, str | int]]: ...
 def get_clock_info(self: Display | resource.Resource, target: Target) -> dict[str, str | int]: ...
 def get_vram(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_irq(self: Display | resource.Resource, target: Target) -> int | None: ...
-def supports_framelock(self: Display | resource.Resource, target: Target) -> int | None: ...
-def gvo_supported(self: Display | resource.Resource, screen: Target) -> int | None: ...
-def get_core_temp(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_core_threshold(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_default_core_threshold(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_max_core_threshold(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_ambient_temp(self: Display | resource.Resource, target: Target) -> int | None: ...
+def get_irq(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the interrupt request line used by the GPU driving the screen"""
+
+def supports_framelock(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return whether the underlying GPU supports Frame Lock.
+
+    All of the other frame lock attributes are only applicable if this returns True.
+    """
+
+def gvo_supported(self: Display | resource.Resource, screen: Target) -> int | None:
+    """Return whether this X screen supports GVO
+
+    If this screen does not support GVO output, then all other GVO attributes are unavailable.
+    """
+
+def get_core_temp(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the current core temperature of the GPU driving the X screen."""
+
+def get_core_threshold(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the current GPU core slowdown threshold temperature.
+
+    It reflects the temperature at which the GPU is throttled to prevent overheating.
+    """
+
+def get_default_core_threshold(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the default core threshold temperature."""
+
+def get_max_core_threshold(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the maximum core threshold temperature."""
+
+def get_ambient_temp(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the current temperature in the immediate neighbourhood of the GPU driving the X screen."""
+
 def get_cuda_cores(self: Display | resource.Resource, target: Target) -> int | None: ...
 def get_memory_bus_width(self: Display | resource.Resource, target: Target) -> int | None: ...
 def get_total_dedicated_gpu_memory(self: Display | resource.Resource, target: Target) -> int | None: ...
@@ -60,7 +107,14 @@ def set_cooler_manual_control_enabled(self: Display | resource.Resource, target:
 def get_fan_duty(self: Display | resource.Resource, target: Target) -> int | None: ...
 def set_fan_duty(self: Display | resource.Resource, cooler: Target, speed: int) -> bool: ...
 def get_fan_rpm(self: Display | resource.Resource, target: Target) -> int | None: ...
-def get_max_displays(self: Display | resource.Resource, target: Target) -> int | None: ...
+def get_max_displays(self: Display | resource.Resource, target: Target) -> int | None:
+    """Return the maximum number of display devices that can be driven simultaneously on a GPU.
+
+    Note that this does not indicate the maximum number of bits that can be set in
+    NV_CTRL_CONNECTED_DISPLAYS, because more display devices can be connected than are actively
+    in use.
+    """
+
 def init(disp: Display, info: Unused) -> None: ...
 
 NV_CTRL_FLATPANEL_SCALING: Final = 2
@@ -1048,13 +1102,16 @@ class Target:
     def type(self) -> int: ...
 
 class Gpu(Target):
-    def __init__(self, ngpu: int = 0) -> None: ...
+    def __init__(self, ngpu: int = 0) -> None:
+        """Target a GPU"""
 
 class Screen(Target):
-    def __init__(self, nscr: int = 0) -> None: ...
+    def __init__(self, nscr: int = 0) -> None:
+        """Target an X screen"""
 
 class Cooler(Target):
-    def __init__(self, nfan: int = 0) -> None: ...
+    def __init__(self, nfan: int = 0) -> None:
+        """Target a fann"""
 
 class NVCtrlQueryTargetCountReplyRequest(rq.ReplyRequest): ...
 class NVCtrlQueryAttributeReplyRequest(rq.ReplyRequest): ...

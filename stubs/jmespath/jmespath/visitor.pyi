@@ -7,6 +7,8 @@ from jmespath.functions import Functions
 _T = TypeVar("_T")
 
 class Options:
+    """Options to control how a JMESPath function is evaluated."""
+
     dict_cls: Callable[[], MutableMapping[Any, Any]] | None
     custom_functions: Functions | None
     def __init__(

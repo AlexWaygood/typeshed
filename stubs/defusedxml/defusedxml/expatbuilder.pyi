@@ -1,3 +1,5 @@
+"""Defused xml.dom.expatbuilder"""
+
 from _typeshed import SupportsRead
 from typing import Final
 from xml.dom.expatbuilder import ExpatBuilder as _ExpatBuilder, Namespaces as _Namespaces
@@ -8,6 +10,8 @@ from xml.parsers.expat import XMLParserType
 __origin__: Final = "xml.dom.expatbuilder"
 
 class DefusedExpatBuilder(_ExpatBuilder):
+    """Defused document builder"""
+
     forbid_dtd: bool
     forbid_entities: bool
     forbid_external: bool
@@ -34,6 +38,8 @@ class DefusedExpatBuilder(_ExpatBuilder):
     def install(self, parser: XMLParserType) -> None: ...
 
 class DefusedExpatBuilderNS(_Namespaces, DefusedExpatBuilder):
+    """Defused document builder that supports namespaces."""
+
     def install(self, parser: XMLParserType) -> None: ...
     def reset(self) -> None: ...
 
@@ -43,7 +49,15 @@ def parse(
     forbid_dtd: bool = False,
     forbid_entities: bool = True,
     forbid_external: bool = True,
-) -> Document: ...
+) -> Document:
+    """Parse a document, returning the resulting Document node.
+
+    'file' may be either a file name or an open file object.
+    """
+
 def parseString(
     string: str, namespaces: bool = True, forbid_dtd: bool = False, forbid_entities: bool = True, forbid_external: bool = True
-) -> Document: ...
+) -> Document:
+    """Parse a document from a string, returning the resulting
+    Document node.
+    """

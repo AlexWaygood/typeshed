@@ -1,3 +1,10 @@
+"""Doughnut chart
+
+Produces a circular chart like the doughnut charts produced by Excel.
+Can handle multiple series (which produce concentric 'rings' in the chart).
+
+"""
+
 from _typeshed import Incomplete
 from typing import Final
 
@@ -6,7 +13,14 @@ from reportlab.lib.attrmap import *
 
 __version__: Final[str]
 
-class SectorProperties(WedgeProperties): ...
+class SectorProperties(WedgeProperties):
+    """This holds descriptive information about the sectors in a doughnut chart.
+
+    It is not to be confused with the 'sector itself'; this just holds
+    a recipe for how to format one, and does not allow you to hack the
+    angles.  It can format a genuine Sector object for you with its
+    format method.
+    """
 
 class Doughnut(AbstractPieChart):
     x: int
@@ -29,7 +43,14 @@ class Doughnut(AbstractPieChart):
     def makeSectors(self): ...
     def draw(self): ...
 
-def sample1(): ...
-def sample2(): ...
-def sample3(): ...
-def sample4(): ...
+def sample1():
+    """Make up something from the individual Sectors"""
+
+def sample2():
+    """Make a simple demo"""
+
+def sample3():
+    """Make a more complex demo"""
+
+def sample4():
+    """Make a more complex demo with Label Overlap fixing"""

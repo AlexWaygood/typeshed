@@ -1,3 +1,14 @@
+"""Cooperative low-level networking interface.
+
+This module provides socket operations and some related functions.
+The API of the functions and classes matches the API of the corresponding
+items in the standard :mod:`socket` module exactly, but the synchronous functions
+in this module only block the current greenlet and let the others run.
+
+For convenience, exceptions (like :class:`error <socket.error>` and :class:`timeout <socket.timeout>`)
+as well as the constants from the :mod:`socket` module are imported into this module.
+"""
+
 from socket import *
 
 from gevent._hub_primitives import (
@@ -20,4 +31,5 @@ from gevent._types import _Watcher
 
 wait = wait_on_watcher
 
-def cancel_wait(watcher: _Watcher, error: type[BaseException] | BaseException) -> None: ...
+def cancel_wait(watcher: _Watcher, error: type[BaseException] | BaseException) -> None:
+    """See :meth:`gevent.hub.Hub.cancel_wait`"""

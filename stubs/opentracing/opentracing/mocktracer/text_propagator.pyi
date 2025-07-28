@@ -10,5 +10,7 @@ field_name_span_id: str
 field_count: int
 
 class TextPropagator(Propagator):
+    """A MockTracer Propagator for Format.TEXT_MAP."""
+
     def inject(self, span_context: SpanContext, carrier: dict[Any, Any]) -> None: ...
     def extract(self, carrier: dict[Any, Any]) -> SpanContext: ...

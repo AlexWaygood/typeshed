@@ -1,3 +1,5 @@
+"""CLass to edit XDG Menus"""
+
 from _typeshed import StrPath, Unused
 from typing import Literal, overload
 from typing_extensions import TypeAlias

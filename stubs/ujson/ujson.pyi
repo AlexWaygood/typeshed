@@ -16,7 +16,9 @@ def encode(
     reject_bytes: bool = ...,
     default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
-) -> str: ...
+) -> str:
+    """Converts arbitrary object recursively into JSON. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
+
 def dumps(
     obj: Any,
     ensure_ascii: bool = ...,
@@ -29,7 +31,9 @@ def dumps(
     reject_bytes: bool = ...,
     default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
-) -> str: ...
+) -> str:
+    """Converts arbitrary object recursively into JSON. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
+
 def dump(
     obj: Any,
     fp: SupportsWrite[str],
@@ -44,9 +48,16 @@ def dump(
     reject_bytes: bool = ...,
     default: Callable[[Any], Any] | None = None,  # Specify how to serialize arbitrary types
     separators: tuple[str, str] | None = None,
-) -> None: ...
-def decode(s: str | bytes | bytearray, precise_float: bool = ...) -> Any: ...
-def loads(s: str | bytes | bytearray, precise_float: bool = ...) -> Any: ...
-def load(fp: SupportsRead[str | bytes | bytearray], precise_float: bool = ...) -> Any: ...
+) -> None:
+    """Converts arbitrary object recursively into JSON file. Use ensure_ascii=false to output UTF-8. Set encode_html_chars=True to encode < > & as unicode escape sequences. Set escape_forward_slashes=False to prevent escaping / characters.Set allow_nan=False to raise an exception when NaN or Infinity would be serialized.Set reject_bytes=True to raise TypeError on bytes."""
+
+def decode(s: str | bytes | bytearray, precise_float: bool = ...) -> Any:
+    """Converts JSON as string to dict object structure."""
+
+def loads(s: str | bytes | bytearray, precise_float: bool = ...) -> Any:
+    """Converts JSON as string to dict object structure."""
+
+def load(fp: SupportsRead[str | bytes | bytearray], precise_float: bool = ...) -> Any:
+    """Converts JSON as file to dict object structure."""
 
 class JSONDecodeError(ValueError): ...

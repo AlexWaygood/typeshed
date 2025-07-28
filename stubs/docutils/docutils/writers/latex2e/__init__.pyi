@@ -1,3 +1,5 @@
+"""LaTeX2e document tree Writer."""
+
 import re
 from _typeshed import Incomplete, StrPath, Unused
 from collections.abc import Callable, Iterable
@@ -33,6 +35,8 @@ class Writer(_Writer[str]):
     translator_class: type[LaTeXTranslator]
 
 class Babel:
+    """Language specifics for LaTeX."""
+
     language_codes: ClassVar[dict[str, str]]
     warn_msg: ClassVar[str]
     active_chars: ClassVar[dict[str, str]]
@@ -43,15 +47,30 @@ class Babel:
     setup: list[str]
 
     def __init__(self, language_code: str, reporter: Reporter | None = None) -> None: ...
-    def __call__(self) -> str: ...
-    def language_name(self, language_code: str) -> str: ...
+    def __call__(self) -> str:
+        """Return the babel call with correct options and settings"""
+
+    def language_name(self, language_code: str) -> str:
+        """Return TeX language name for `language_code`"""
+
     def get_language(self) -> str: ...
 
 class SortableDict(dict[_K, _V]):
-    def sortedkeys(self) -> list[_K]: ...
-    def sortedvalues(self) -> list[_V]: ...
+    """Dictionary with additional sorting methods
+
+    Tip: use key starting with with '_' for sorting before small letters
+         and with '~' for sorting after small letters.
+    """
+
+    def sortedkeys(self) -> list[_K]:
+        """Return sorted list of keys"""
+
+    def sortedvalues(self) -> list[_V]:
+        """Return list of values sorted by keys"""
 
 class PreambleCmds:
+    """Building blocks for the latex preamble."""
+
     color: ClassVar[str]
     float: ClassVar[str]
     linking: ClassVar[str]
@@ -94,6 +113,8 @@ block_name: str
 definitions: str
 
 class CharMaps:
+    """LaTeX representations for active and Unicode characters."""
+
     alltt: ClassVar[dict[int, str]]
     special: ClassVar[dict[int, str]]
     unsupported_unicode: ClassVar[dict[int, str]]
@@ -102,13 +123,40 @@ class CharMaps:
     pifont: ClassVar[dict[int, str]]
 
 class DocumentClass:
+    """Details of a LaTeX document class."""
+
     document_class: str
     sections: list[str]
     def __init__(self, document_class: str, with_part: bool = False) -> None: ...
-    def section(self, level: int) -> str: ...
-    def latex_section_depth(self, depth: int) -> int: ...
+    def section(self, level: int) -> str:
+        """Return the LaTeX section name for section `level`.
+
+        The name depends on the specific document class.
+        Level is 1,2,3..., as level 0 is the title.
+        """
+
+    def latex_section_depth(self, depth: int) -> int:
+        """
+        Return LaTeX equivalent of Docutils section level `depth`.
+
+        Given the value of the ``:depth:`` option of the "contents" or
+        "sectnum" directive, return the corresponding value for the
+        LaTeX ``tocdepth`` or ``secnumdepth`` counters.
+        """
 
 class Table:
+    """Manage a table while traversing.
+
+    Table style might be
+
+    :standard:   horizontal and vertical lines
+    :booktabs:   only horizontal lines (requires "booktabs" LaTeX package)
+    :borderless: no borders around table cells
+    :nolines:    alias for borderless
+
+    :colwidths-auto:  column widths determined by LaTeX
+    """
+
     legacy_column_widths: bool
     caption: list[str]
     stubs: list[Incomplete]
@@ -126,11 +174,19 @@ class Table:
     def get_opening(self, width: str = r"\linewidth") -> str: ...
     def get_closing(self) -> str: ...
     def visit_colspec(self, node: nodes.colspec) -> None: ...
-    def get_colspecs(self, node: nodes.Element) -> str: ...
-    def get_column_width(self) -> str: ...
-    def get_multicolumn_width(self, start: int, len_: int) -> str: ...
+    def get_colspecs(self, node: nodes.Element) -> str:
+        """Return column specification for longtable."""
+
+    def get_column_width(self) -> str:
+        """Return columnwidth for current cell (not multicell)."""
+
+    def get_multicolumn_width(self, start: int, len_: int) -> str:
+        """Return sum of columnwidths for multicell."""
+
     @deprecated("`writers.latex2e.Table.get_caption()` is obsolete and will be removed in Docutils 0.22.")
-    def get_caption(self) -> str: ...
+    def get_caption(self) -> str:
+        """Deprecated. Will be removed in Docutils 0.22."""
+
     def need_recurse(self) -> bool | Literal[0]: ...
     def visit_thead(self) -> list[str]: ...
     def depart_thead(self) -> list[str]: ...
@@ -143,6 +199,13 @@ class Table:
     def is_stub_column(self): ...
 
 class LaTeXTranslator(nodes.NodeVisitor):
+    """
+    Generate code for 8-bit LaTeX from a Docutils document tree.
+
+    See the docstring of docutils.writers._html_base.HTMLTranslator for
+    notes on and examples of safe subclassing.
+    """
+
     is_xetex: ClassVar[bool]
     compound_enumerators: ClassVar[bool]
     section_prefix_for_enumerators: ClassVar[bool]
@@ -205,23 +268,66 @@ class LaTeXTranslator(nodes.NodeVisitor):
     hyperref_options: str
 
     def __init__(self, document: nodes.document, babel_class: type = ...) -> None: ...
-    def stylesheet_call(self, path: StrPath) -> str: ...
-    def to_latex_encoding(self, docutils_encoding: str) -> str: ...
+    def stylesheet_call(self, path: StrPath) -> str:
+        """Return code to reference or embed stylesheet file `path`"""
+
+    def to_latex_encoding(self, docutils_encoding: str) -> str:
+        """Translate docutils encoding name into LaTeX's.
+
+        Default method is remove "-" and "_" chars from docutils_encoding.
+        """
+
     def language_label(self, docutil_label: str) -> str: ...
-    def encode(self, text: str) -> str: ...
-    def attval(self, text: str, whitespace: re.Pattern[str] = ...) -> str: ...
-    def is_inline(self, node: nodes.Node) -> bool: ...
+    def encode(self, text: str) -> str:
+        """Return text with 'problematic' characters escaped.
+
+        * Escape the special printing characters ``# $ % & ~ _ ^ \\ { }``,
+          square brackets ``[ ]``, double quotes and (in OT1) ``< | >``.
+        * Translate non-supported Unicode characters.
+        * Separate ``-`` (and more in literal text) to prevent input ligatures.
+        """
+
+    def attval(self, text: str, whitespace: re.Pattern[str] = ...) -> str:
+        """Cleanse, encode, and return attribute value text."""
+
+    def is_inline(self, node: nodes.Node) -> bool:
+        """Check whether a node represents an inline or block-level element"""
+
     def ids_to_labels(
         self, node: nodes.Element, set_anchor: bool = True, protect: bool = False, newline: bool = False
-    ) -> list[Incomplete]: ...
-    def append_hypertargets(self, node: nodes.Element) -> None: ...
-    def set_align_from_classes(self, node) -> None: ...
+    ) -> list[Incomplete]:
+        """Return list of label definitions for all ids of `node`
+
+        If `set_anchor` is True, an anchor is set with \\phantomsection.
+        If `protect` is True, the \\label cmd is made robust.
+        If `newline` is True, a newline is added if there are labels.
+        """
+
+    def append_hypertargets(self, node: nodes.Element) -> None:
+        """Append hypertargets for all ids of `node`"""
+
+    def set_align_from_classes(self, node) -> None:
+        """Convert ``align-*`` class arguments into alignment args."""
+
     def insert_align_declaration(self, node: nodes.Element, default: str | None = None) -> None: ...
-    def duclass_open(self, node) -> None: ...
-    def duclass_close(self, node) -> None: ...
+    def duclass_open(self, node) -> None:
+        """Open a group and insert declarations for class values."""
+
+    def duclass_close(self, node) -> None:
+        """Close a group of class declarations."""
+
     def push_output_collector(self, new_out) -> None: ...
     def pop_output_collector(self) -> None: ...
-    def term_postfix(self, node: nodes.Element) -> str: ...
+    def term_postfix(self, node: nodes.Element) -> str:
+        """
+        Return LaTeX code required between term or field name and content.
+
+        In a LaTeX "description" environment (used for definition
+        lists and non-docinfo field lists), a ``\\leavevmode``
+        between an item's label and content ensures the correct
+        placement of certain block constructs.
+        """
+
     def visit_Text(self, node: nodes.Text) -> None: ...
     def depart_Text(self, node: nodes.Text) -> None: ...
     def visit_abbreviation(self, node: nodes.abbreviation) -> None: ...
@@ -314,13 +420,17 @@ class LaTeXTranslator(nodes.NodeVisitor):
     def visit_footnote_reference(self, node: nodes.footnote_reference) -> None: ...
     def depart_footnote_reference(self, node: nodes.footnote_reference) -> None: ...
     def label_delim(self, node, bracket, superscript) -> None: ...
-    def visit_label(self, node: nodes.label) -> None: ...
+    def visit_label(self, node: nodes.label) -> None:
+        """footnote or citation label: in brackets or as superscript"""
+
     def depart_label(self, node: nodes.label) -> None: ...
     def visit_generated(self, node: nodes.generated) -> None: ...
     def depart_generated(self, node: nodes.generated) -> None: ...
     def visit_header(self, node: nodes.header) -> None: ...
     def depart_header(self, node: nodes.header) -> None: ...
-    def to_latex_length(self, length_str: str, pxunit: Unused = None) -> str: ...
+    def to_latex_length(self, length_str: str, pxunit: Unused = None) -> str:
+        """Convert `length_str` with rst length to LaTeX length"""
+
     def visit_image(self, node: nodes.image) -> None: ...
     def depart_image(self, node: nodes.image) -> None: ...
     def visit_inline(self, node: nodes.inline) -> None: ...
@@ -335,18 +445,29 @@ class LaTeXTranslator(nodes.NodeVisitor):
     def depart_list_item(self, node: nodes.list_item) -> None: ...
     def visit_literal(self, node: nodes.literal) -> None: ...
     def depart_literal(self, node: nodes.literal) -> None: ...
-    def is_plaintext(self, node) -> bool: ...
-    def visit_literal_block(self, node: nodes.literal_block) -> None: ...
+    def is_plaintext(self, node) -> bool:
+        """Check whether a node can be typeset verbatim"""
+
+    def visit_literal_block(self, node: nodes.literal_block) -> None:
+        """Render a literal block.
+
+        Corresponding rST elements: literal block, parsed-literal, code.
+        """
+
     def depart_literal_block(self, node: nodes.literal_block) -> None: ...
     def visit_meta(self, node: nodes.meta) -> None: ...
     def depart_meta(self, node: nodes.meta) -> None: ...
-    def visit_math(self, node: nodes.math, math_env: str = "$") -> None: ...
+    def visit_math(self, node: nodes.math, math_env: str = "$") -> None:
+        """math role"""
+
     def depart_math(self, node: nodes.math) -> None: ...
     def visit_math_block(self, node: nodes.math_block) -> None: ...
     def depart_math_block(self, node: nodes.math_block) -> None: ...
     def visit_option(self, node: nodes.option) -> None: ...
     def depart_option(self, node: nodes.option) -> None: ...
-    def visit_option_argument(self, node: nodes.option_argument) -> None: ...
+    def visit_option_argument(self, node: nodes.option_argument) -> None:
+        """Append the delimiter between an option and its argument to body."""
+
     def depart_option_argument(self, node: nodes.option_argument) -> None: ...
     def visit_option_group(self, node: nodes.option_group) -> None: ...
     def depart_option_group(self, node: nodes.option_group) -> None: ...
@@ -364,7 +485,9 @@ class LaTeXTranslator(nodes.NodeVisitor):
     def depart_problematic(self, node: nodes.problematic) -> None: ...
     def visit_raw(self, node: nodes.raw) -> None: ...
     def depart_raw(self, node: nodes.raw) -> None: ...
-    def has_unbalanced_braces(self, string: Iterable[str]) -> bool: ...
+    def has_unbalanced_braces(self, string: Iterable[str]) -> bool:
+        """Test whether there are unmatched '{' or '}' characters."""
+
     def visit_reference(self, node: nodes.reference) -> None: ...
     def depart_reference(self, node: nodes.reference) -> None: ...
     def visit_revision(self, node: nodes.revision) -> None: ...
@@ -394,15 +517,24 @@ class LaTeXTranslator(nodes.NodeVisitor):
     def depart_target(self, node: nodes.target) -> None: ...
     def visit_tbody(self, node: nodes.tbody) -> None: ...
     def depart_tbody(self, node: nodes.tbody) -> None: ...
-    def visit_term(self, node: nodes.term) -> None: ...
+    def visit_term(self, node: nodes.term) -> None:
+        """definition list term"""
+
     def depart_term(self, node: nodes.term) -> None: ...
     def visit_tgroup(self, node: nodes.tgroup) -> None: ...
     def depart_tgroup(self, node: nodes.tgroup) -> None: ...
     def thead_depth(self) -> int: ...
     def visit_thead(self, node: nodes.thead) -> None: ...
-    def visit_title(self, node: nodes.title) -> None: ...
+    def visit_title(self, node: nodes.title) -> None:
+        """Append section and other titles."""
+
     def depart_title(self, node: nodes.title) -> None: ...
-    def visit_contents(self, node) -> None: ...
+    def visit_contents(self, node) -> None:
+        """Write the table of contents.
+
+        Called from visit_topic() for "contents" topics.
+        """
+
     def visit_topic(self, node: nodes.topic) -> None: ...
     def depart_topic(self, node: nodes.topic) -> None: ...
     def visit_transition(self, node: nodes.transition) -> None: ...

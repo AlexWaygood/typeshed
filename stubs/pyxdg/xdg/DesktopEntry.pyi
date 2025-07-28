@@ -1,3 +1,15 @@
+"""
+Complete implementation of the XDG Desktop Entry Specification
+http://standards.freedesktop.org/desktop-entry-spec/
+
+Not supported:
+- Encoding: Legacy Mixed
+- Does not check exec parameters
+- Does not check URL's
+- Does not completly validate deprecated/kde items
+- Does not completly check categories
+"""
+
 import re
 from _typeshed import StrPath
 from typing import Literal
@@ -5,13 +17,36 @@ from typing import Literal
 from xdg.IniFile import IniFile
 
 class DesktopEntry(IniFile):
+    """Class to parse and validate Desktop Entries"""
+
     defaultGroup: str
     content: dict[str, dict[str, str]]
-    def __init__(self, filename: StrPath | None = None) -> None: ...
-    def parse(self, file: StrPath) -> None: ...  # type: ignore[override]
-    def findTryExec(self) -> str | None: ...
+    def __init__(self, filename: StrPath | None = None) -> None:
+        """Create a new DesktopEntry.
+
+        If filename exists, it will be parsed as a desktop entry file. If not,
+        or if filename is None, a blank DesktopEntry is created.
+        """
+
+    def parse(self, file: StrPath) -> None:  # type: ignore[override]
+        """Parse a desktop entry file.
+
+        This can raise :class:`~xdg.Exceptions.ParsingError`,
+        :class:`~xdg.Exceptions.DuplicateGroupError` or
+        :class:`~xdg.Exceptions.DuplicateKeyError`.
+        """
+
+    def findTryExec(self) -> str | None:
+        """Looks in the PATH for the executable given in the TryExec field.
+
+        Returns the full path to the executable if it is found, None if not.
+        Raises :class:`~xdg.Exceptions.NoKeyError` if TryExec is not present.
+        """
+
     def getType(self) -> str: ...
-    def getVersion(self) -> float: ...
+    def getVersion(self) -> float:
+        """deprecated, use getVersionString instead"""
+
     def getVersionString(self) -> str: ...
     def getName(self) -> str: ...
     def getGenericName(self) -> str: ...
@@ -25,7 +60,9 @@ class DesktopEntry(IniFile):
     def getExec(self) -> str: ...
     def getPath(self) -> str: ...
     def getTerminal(self) -> bool: ...
-    def getMimeType(self) -> list[re.Pattern[str]]: ...
+    def getMimeType(self) -> list[re.Pattern[str]]:
+        """deprecated, use getMimeTypes instead"""
+
     def getMimeTypes(self) -> list[str]: ...
     def getCategories(self) -> list[str]: ...
     def getStartupNotify(self) -> bool: ...
@@ -54,7 +91,13 @@ class DesktopEntry(IniFile):
     def getFilePattern(self) -> re.Pattern[str]: ...
     def getActions(self) -> list[str]: ...
     filename: str
-    def new(self, filename: str) -> None: ...
+    def new(self, filename: str) -> None:
+        """Make this instance into a new, blank desktop entry.
+
+        If filename has a .desktop extension, Type is set to Application. If it
+        has a .directory extension, Type is Directory. Other extensions will
+        cause :class:`~xdg.Exceptions.ParsingError` to be raised.
+        """
     type: Literal["Application", "Directory"]
     name: str
     def checkExtras(self) -> None: ...

@@ -8,6 +8,11 @@ from .instance_loaders import BaseInstanceLoader
 _ModelT = TypeVar("_ModelT", bound=Model)
 
 class ResourceOptions(Generic[_ModelT]):
+    """
+    The inner Meta class allows for class-level configuration of how the
+    Resource should behave. The following options are available:
+    """
+
     model: _ModelT | str
     fields: Sequence[str] | None
     exclude: Sequence[str] | None

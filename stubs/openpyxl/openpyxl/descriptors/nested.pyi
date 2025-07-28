@@ -1,3 +1,7 @@
+"""
+Generic serialisable classes
+"""
+
 from _typeshed import ConvertibleToFloat, ConvertibleToInt, Unused
 from collections.abc import Iterable
 from typing import Any, ClassVar, Literal, NoReturn, overload
@@ -42,6 +46,10 @@ class Nested(Descriptor[_T]):
     def to_tree(self, tagname: str, value: object, namespace: str | None = None) -> Element: ...
 
 class NestedValue(Nested[_T], Convertible[_T, _N]):  # type: ignore[misc]
+    """
+    Nested tag storing the value on the 'val' attribute
+    """
+
     @overload
     def __init__(
         self: NestedValue[_T, Literal[True]],  # pyright: ignore[reportInvalidTypeVarUse]  #11780
@@ -113,6 +121,10 @@ class NestedValue(Nested[_T], Convertible[_T, _N]):  # type: ignore[misc]
     ) -> None: ...
 
 class NestedText(NestedValue[_T, _N]):
+    """
+    Represents any nested tag with the value as the contents of the tag
+    """
+
     @overload
     def __init__(
         self: NestedText[_T, Literal[True]],  # pyright: ignore[reportInvalidTypeVarUse]  #11780
@@ -260,6 +272,10 @@ class NestedMinMax(Nested[_M], MinMax[_M, _N]):  # type: ignore[misc]
     ) -> None: ...
 
 class EmptyTag(Nested[bool], Bool[_N]):  # type: ignore[misc]
+    """
+    Boolean if a tag exists or not.
+    """
+
     @overload
     def __init__(self: EmptyTag[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload

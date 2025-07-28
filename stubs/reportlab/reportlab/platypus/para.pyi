@@ -1,3 +1,64 @@
+"""new experimental paragraph implementation
+
+Intended to allow support for paragraphs in paragraphs, hotlinks,
+embedded flowables, and underlining.  The main entry point is the
+function
+
+def Paragraph(text, style, bulletText=None, frags=None)
+
+Which is intended to be plug compatible with the "usual" platypus
+paragraph except that it supports more functionality.
+
+In this implementation you may embed paragraphs inside paragraphs
+to create hierarchically organized documents.
+
+This implementation adds the following paragraph-like tags (which
+support the same attributes as paragraphs, for font specification, etc).
+
+- Unnumberred lists (ala html)::
+
+    <ul>
+        <li>first one</li>
+        <li>second one</li>
+    </ul>
+
+
+Also <ul type="disc"> (default) or <ul type="circle">, <ul type="square">.
+
+- Numberred lists (ala html)::
+
+    <ol>
+        <li>first one</li>
+        <li>second one</li>
+    </ol>
+
+Also <ul type="1"> (default) or <ul type="a">, <ul type="A">.
+
+- Display lists (ala HTML):
+
+For example
+
+<dl bulletFontName="Helvetica-BoldOblique" spaceBefore="10" spaceAfter="10">
+<dt>frogs</dt> <dd>Little green slimy things. Delicious with <b>garlic</b></dd>
+<dt>kittens</dt> <dd>cute, furry, not edible</dd>
+<dt>bunnies</dt> <dd>cute, furry,. Delicious with <b>garlic</b></dd>
+</dl>
+
+ALSO the following additional internal paragraph markup tags are supported
+
+<u>underlined text</u>
+
+<a href="http://www.reportlab.com">hyperlinked text</a>
+<a href="http://www.reportlab.com" color="blue">hyperlinked text</a>
+
+<link destination="end" >Go to the end (go to document internal destination)</link>
+<link destination="start" color="cyan">Go to the beginning</link>
+
+<setLink destination="start" color="magenta">This is the document start
+  (define document destination inside paragraph, color is optional)</setLink>
+
+"""
+
 from _typeshed import Incomplete, Unused
 from collections.abc import Callable, Mapping
 from typing import Any, Final, Literal, Protocol, TypedDict, TypeVar, overload
@@ -63,30 +124,48 @@ class paragraphEngine:
     def popTextState(self) -> None: ...
     def format(
         self, maxwidth: float, maxheight: float, program: list[_Op], leading: float = 0
-    ) -> tuple[list[_Op], str, dict[str, Any], float]: ...
+    ) -> tuple[list[_Op], str, dict[str, Any], float]:
+        """return program with line operations added if at least one line fits"""
+
     def getState(self) -> dict[str, Any]: ...
     def resetState(self, state: dict[str, Any]) -> None: ...
     def fitLine(
         self, program: list[_Op], totalLength: float
-    ) -> tuple[Literal[0, 1], list[_Op], int, float, float, float, Literal[0, 1]]: ...
+    ) -> tuple[Literal[0, 1], list[_Op], int, float, float, float, Literal[0, 1]]:
+        """fit words (and other things) onto a line"""
+
     def centerAlign(self, line: list[_Op], lineLength: float, maxLength: float) -> list[_Op]: ...
     def rightAlign(self, line: list[_Op], lineLength: float, maxLength: float) -> list[_Op]: ...
     def insertShift(self, line: list[_Op], shift: float) -> list[_Op]: ...
     def justifyAlign(self, line: list[_Op], lineLength: float, maxLength: float) -> list[_Op]: ...
     def shrinkWrap(self, line: list[_Op]) -> list[_Op]: ...
-    def cleanProgram(self, line: list[_Op]) -> list[_Op]: ...
-    def runOpCodes(self, program: list[_Op], canvas: Canvas, textobject: PDFTextObject) -> dict[str, Any]: ...
+    def cleanProgram(self, line: list[_Op]) -> list[_Op]:
+        """collapse adjacent spacings"""
 
-def stringLine(line: list[_Op], length: float) -> list[_Op]: ...
-def simpleJustifyAlign(line: list[_Op], currentLength: float, maxLength: float) -> list[_Op]: ...
+    def runOpCodes(self, program: list[_Op], canvas: Canvas, textobject: PDFTextObject) -> dict[str, Any]:
+        """render the line(s)"""
+
+def stringLine(line: list[_Op], length: float) -> list[_Op]:
+    """simple case: line with just strings and spacings which can be ignored"""
+
+def simpleJustifyAlign(line: list[_Op], currentLength: float, maxLength: float) -> list[_Op]:
+    """simple justification with only strings"""
+
 def readBool(text: str) -> _BoolInt: ...
 def readAlignment(text: str) -> Literal[0, 1, 2, 4] | None: ...
-def readLength(text: str) -> float: ...
+def readLength(text: str) -> float:
+    """Read a dimension measurement: accept "3in", "5cm",
+    "72 pt" and so on.
+    """
+
 @overload
-def lengthSequence(s: str, converter: Callable[[str], float] = ...) -> list[float]: ...
+def lengthSequence(s: str, converter: Callable[[str], float] = ...) -> list[float]:
+    """from "(2, 1)" or "2,1" return [2,1], for example"""
+
 @overload
 def lengthSequence(s: str, converter: Callable[[str], _T]) -> list[_T]: ...
-def readColor(text: str | None) -> Color | None: ...
+def readColor(text: str | None) -> Color | None:
+    """Read color names or tuples, RGB or CMYK, and return a Color object."""
 
 class StyleAttributeConverters:
     fontSize: list[Callable[[str], float]]
@@ -103,6 +182,8 @@ class StyleAttributeConverters:
     backColor: list[Callable[[str], Color | None]]
 
 class SimpleStyle:
+    """simplified paragraph style without all the fancy stuff"""
+
     name: str
     fontName: str
     fontSize: float
@@ -126,6 +207,8 @@ class SimpleStyle:
 DEFAULT_ALIASES: Final[dict[str, str]]
 
 class FastPara(Flowable):
+    """paragraph with no special features (not even a single ampersand!)"""
+
     style: SimpleStyle | ParagraphStyle
     simpletext: str
     lines: list[str] | None
@@ -204,6 +287,8 @@ class bulletMaker:
     def makeBullet(self, atts, bl: str | None = None) -> None: ...
 
 class EvalStringObject:
+    """this will only work if rml2pdf is present"""
+
     tagname: str
     attdict: Incomplete
     content: str
@@ -227,7 +312,9 @@ class PageNumberObject:
     def width(self, engine) -> float: ...
     def execute(self, engine, textobject: PDFTextObject, canvas: Canvas) -> None: ...
 
-def EmbedInRml2pdf() -> None: ...
+def EmbedInRml2pdf() -> None:
+    """make the para the default para implementation in rml2pdf"""
+
 def handleSpecialCharacters(engine, text: str, program: list[_Op] | None = None) -> list[_Op]: ...
 def Paragraph(
     text: str,
@@ -235,7 +322,10 @@ def Paragraph(
     bulletText: str | None = None,
     frags: Unused | None = None,
     context: dict[str, PropertySet] | None = None,
-) -> Para | FastPara: ...
+) -> Para | FastPara:
+    """Paragraph(text, style, bulletText=None)
+    intended to be like a platypus Paragraph but better.
+    """
 
 class UnderLineHandler:
     color: _Color | None

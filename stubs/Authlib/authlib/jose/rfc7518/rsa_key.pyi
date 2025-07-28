@@ -4,6 +4,8 @@ from authlib.jose.rfc7517 import AsymmetricKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 
 class RSAKey(AsymmetricKey):
+    """Key class of the ``RSA`` key type."""
+
     kty: str
     PUBLIC_KEY_CLS: ClassVar[type]
     PRIVATE_KEY_CLS: ClassVar[type]

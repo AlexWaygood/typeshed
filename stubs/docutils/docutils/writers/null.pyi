@@ -1,3 +1,10 @@
+"""
+A do-nothing Writer.
+
+`self.output` will change from ``None`` to the empty string
+in Docutils 0.22.
+"""
+
 from typing import ClassVar
 
 from docutils import writers

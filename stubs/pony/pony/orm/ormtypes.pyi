@@ -126,6 +126,8 @@ class TrackedArray(TrackedList):
     def __contains__(self, item) -> bool: ...
 
 class Json:
+    """A wrapper over a dict or list"""
+
     @classmethod
     def default_empty_value(cls): ...
     wrapped: Incomplete

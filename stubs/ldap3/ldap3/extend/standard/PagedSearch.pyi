@@ -1,3 +1,5 @@
+""" """
+
 def paged_search_generator(
     connection,
     search_base,

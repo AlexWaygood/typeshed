@@ -4,10 +4,14 @@ from typing import NamedTuple
 __all__ = ["RL_Codecs"]
 
 class StdCodecData(NamedTuple):
+    """StdCodecData(exceptions, rexceptions)"""
+
     exceptions: Incomplete
     rexceptions: Incomplete
 
 class ExtCodecData(NamedTuple):
+    """ExtCodecData(baseName, exceptions, rexceptions)"""
+
     baseName: Incomplete
     exceptions: Incomplete
     rexceptions: Incomplete

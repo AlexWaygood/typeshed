@@ -1,3 +1,5 @@
+"""common definitions for Docutils HTML writers"""
+
 from _typeshed import Incomplete, StrPath
 from collections.abc import Callable
 from re import Pattern
@@ -20,6 +22,65 @@ class Writer(writers.Writer[str]):
     def assemble_parts(self) -> None: ...
 
 class HTMLTranslator(nodes.NodeVisitor):
+    """
+        Generic Docutils to HTML translator.
+
+        See the `html4css1` and `html5_polyglot` writers for full featured
+        HTML writers.
+
+        .. IMPORTANT::
+          The `visit_*` and `depart_*` methods use a
+          heterogeneous stack, `self.context`.
+          When subclassing, make sure to be consistent in its use!
+
+          Examples for robust coding:
+
+          a) Override both `visit_*` and `depart_*` methods, don't call the
+             parent functions.
+
+          b) Extend both and unconditionally call the parent functions::
+
+               def visit_example(self, node):
+                   if foo:
+                       self.body.append('<div class="foo">')
+                   html4css1.HTMLTranslator.visit_example(self, node)
+
+               def depart_example(self, node):
+                   html4css1.HTMLTranslator.depart_example(self, node)
+                   if foo:
+                       self.body.append('</div>')
+
+          c) Extend both, calling the parent functions under the same
+             conditions::
+
+               def visit_example(self, node):
+                   if foo:
+                       self.body.append('<div class="foo">
+    ')
+                   else: # call the parent method
+                       _html_base.HTMLTranslator.visit_example(self, node)
+
+               def depart_example(self, node):
+                   if foo:
+                       self.body.append('</div>
+    ')
+                   else: # call the parent method
+                       _html_base.HTMLTranslator.depart_example(self, node)
+
+          d) Extend one method (call the parent), but don't otherwise use the
+             `self.context` stack::
+
+               def depart_example(self, node):
+                   _html_base.HTMLTranslator.depart_example(self, node)
+                   if foo:
+                       # implementation-specific code
+                       # that does not use `self.context`
+                       self.body.append('</div>
+    ')
+
+          This way, changes in stack use will not bite you.
+    """
+
     doctype: ClassVar[str]
     doctype_mathml: ClassVar[str]
     head_prefix_template: ClassVar[str]
@@ -74,18 +135,56 @@ class HTMLTranslator(nodes.NodeVisitor):
     messages: list[Incomplete]
     def __init__(self, document: nodes.document) -> None: ...
     def astext(self) -> str: ...
-    def attval(self, text: str, whitespace: Pattern[str] = ...) -> str: ...
-    def cloak_email(self, addr: str) -> str: ...
-    def cloak_mailto(self, uri: str) -> str: ...
-    def encode(self, text: object) -> str: ...
+    def attval(self, text: str, whitespace: Pattern[str] = ...) -> str:
+        """Cleanse, HTML encode, and return attribute value text."""
+
+    def cloak_email(self, addr: str) -> str:
+        """Try to hide the link text of a email link from harversters."""
+
+    def cloak_mailto(self, uri: str) -> str:
+        """Try to hide a mailto: URL from harvesters."""
+
+    def encode(self, text: object) -> str:
+        """Encode special characters in `text` & return."""
+
     def image_size(self, node: nodes.image) -> str: ...
     def prepare_svg(self, node: nodes.image, imagedata: bytes | bytearray, size_declaration: str | None) -> str: ...
-    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str: ...
-    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str: ...
-    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str: ...
+    def stylesheet_call(self, path: StrPath, adjust_path: bool | None = None) -> str:
+        """Return code to reference or embed stylesheet file `path`"""
+
+    def starttag(self, node: nodes.Element, tagname: str, suffix: str = "\n", empty: bool = False, **attributes) -> str:
+        """
+        Construct and return a start tag given a node (id & class attributes
+        are extracted), tag name, and optional attributes.
+        """
+
+    def emptytag(self, node: nodes.Element, tagname: str, suffix: str = "\n", **attributes) -> str:
+        """Construct and return an XML-compatible empty tag."""
+
     def report_messages(self, node: nodes.Node) -> None: ...
-    def set_class_on_child(self, node, class_, index: int = 0) -> None: ...
-    def uri2imagepath(self, uri: str) -> str: ...
+    def set_class_on_child(self, node, class_, index: int = 0) -> None:
+        """
+        Set class `class_` on the visible child no. index of `node`.
+        Do nothing if node has fewer children than `index`.
+        """
+
+    def uri2imagepath(self, uri: str) -> str:
+        """Get filesystem path corresponding to an URI.
+
+        The image directive expects an image URI. Some writers require the
+        corresponding image path to read the image size from the file or to
+        embed the image in the output.
+
+        Absolute URIs consider the "root_prefix" setting.
+
+        In order to work in the output document, relative image URIs relate
+        to the output directory. For access by the writer, the corresponding
+        image path must be relative to the current working directory.
+
+        Provisional: the function's location, interface and behaviour
+        may change without advance warning.
+        """
+
     def visit_Text(self, node: nodes.Text) -> None: ...
     def depart_Text(self, node: nodes.Text) -> None: ...
     def visit_abbreviation(self, node: nodes.abbreviation) -> None: ...
@@ -104,7 +203,9 @@ class HTMLTranslator(nodes.NodeVisitor):
     def depart_authors(self, node: nodes.authors) -> None: ...
     def visit_block_quote(self, node: nodes.block_quote) -> None: ...
     def depart_block_quote(self, node: nodes.block_quote) -> None: ...
-    def check_simple_list(self, node: nodes.Node) -> bool: ...
+    def check_simple_list(self, node: nodes.Node) -> bool:
+        """Check for a simple list that can be rendered compactly."""
+
     def is_compactable(self, node: nodes.Element) -> bool: ...
     def visit_bullet_list(self, node: nodes.bullet_list) -> None: ...
     def depart_bullet_list(self, node: nodes.bullet_list) -> None: ...
@@ -118,7 +219,9 @@ class HTMLTranslator(nodes.NodeVisitor):
     def depart_classifier(self, node: nodes.classifier) -> None: ...
     def visit_colspec(self, node: nodes.colspec) -> None: ...
     def depart_colspec(self, node: nodes.colspec) -> None: ...
-    def visit_comment(self, node: nodes.comment, sub: Callable[[str, str], str] = ...) -> None: ...
+    def visit_comment(self, node: nodes.comment, sub: Callable[[str, str], str] = ...) -> None:
+        """Escape double-dashes in comment text."""
+
     def visit_compound(self, node: nodes.compound) -> None: ...
     def depart_compound(self, node: nodes.compound) -> None: ...
     def visit_container(self, node: nodes.container) -> None: ...
@@ -236,7 +339,9 @@ class HTMLTranslator(nodes.NodeVisitor):
     def depart_strong(self, node: nodes.strong) -> None: ...
     def visit_subscript(self, node: nodes.subscript) -> None: ...
     def depart_subscript(self, node: nodes.subscript) -> None: ...
-    def visit_substitution_definition(self, node: nodes.substitution_definition) -> None: ...
+    def visit_substitution_definition(self, node: nodes.substitution_definition) -> None:
+        """Internal only."""
+
     def visit_substitution_reference(self, node: nodes.substitution_reference) -> None: ...
     def visit_subtitle(self, node: nodes.subtitle) -> None: ...
     def depart_subtitle(self, node: nodes.subtitle) -> None: ...
@@ -270,6 +375,15 @@ class HTMLTranslator(nodes.NodeVisitor):
     def unimplemented_visit(self, node: nodes.Node) -> NoReturn: ...
 
 class SimpleListChecker(nodes.GenericNodeVisitor):
+    """
+    Raise `nodes.NodeFound` if non-simple list item is encountered.
+
+    Here "simple" means a list item containing nothing other than a single
+    paragraph, a simple list, or a paragraph followed by a simple list.
+
+    This version also checks for simple field lists and docinfo.
+    """
+
     def visit_list_item(self, node: nodes.list_item) -> None: ...
     def pass_node(self, node: nodes.Node) -> None: ...
     def ignore_node(self, node: nodes.Node) -> None: ...

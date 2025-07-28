@@ -1,3 +1,5 @@
+""" """
+
 from typing import Any
 
 oem_encoding: Any
@@ -100,9 +102,21 @@ class NtlmClient:
     def set_client_flag(self, flags) -> None: ...
     def reset_client_flags(self) -> None: ...
     def unset_client_flag(self, flags) -> None: ...
-    def create_negotiate_message(self): ...
-    def parse_challenge_message(self, message): ...
-    def create_authenticate_message(self): ...
+    def create_negotiate_message(self):
+        """
+        Microsoft MS-NLMP 2.2.1.1
+        """
+
+    def parse_challenge_message(self, message):
+        """
+        Microsoft MS-NLMP 2.2.1.2
+        """
+
+    def create_authenticate_message(self):
+        """
+        Microsoft MS-NLMP 2.2.1.3
+        """
+
     @staticmethod
     def pack_field(value, offset): ...
     @staticmethod

@@ -1,3 +1,49 @@
+"""
+click_default_group
+~~~~~~~~~~~~~~~~~~~
+
+Define a default subcommand by `default=True`:
+
+.. sourcecode:: python
+
+   import click
+   from click_default_group import DefaultGroup
+
+   @click.group(cls=DefaultGroup, default_if_no_args=True)
+   def cli():
+       pass
+
+   @cli.command(default=True)
+   def foo():
+       click.echo('foo')
+
+   @cli.command()
+   def bar():
+       click.echo('bar')
+
+Then you can invoke that without explicit subcommand name:
+
+.. sourcecode:: console
+
+   $ cli.py --help
+   Usage: cli.py [OPTIONS] COMMAND [ARGS]...
+
+   Options:
+     --help    Show this message and exit.
+
+   Command:
+     foo*
+     bar
+
+   $ cli.py
+   foo
+   $ cli.py foo
+   foo
+   $ cli.py bar
+   bar
+
+"""
+
 from collections.abc import Callable, MutableMapping, Sequence
 from typing import Any, Final, Literal, overload
 from typing_extensions import deprecated
@@ -8,6 +54,14 @@ __all__ = ["DefaultGroup"]
 __version__: Final[str]
 
 class DefaultGroup(click.Group):
+    """Invokes a subcommand marked with `default=True` if any subcommand not
+    chosen.
+
+    :param default_if_no_args: resolves to the default command if no arguments
+                               passed.
+
+    """
+
     ignore_unknown_options: bool
     default_cmd_name: str | None
     default_if_no_args: bool
@@ -36,7 +90,9 @@ class DefaultGroup(click.Group):
         hidden: bool = False,
         deprecated: bool = False,
     ) -> None: ...
-    def set_default_command(self, command: click.Command) -> None: ...
+    def set_default_command(self, command: click.Command) -> None:
+        """Sets a command function as the default command."""
+
     def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]: ...
     def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None: ...
     def resolve_command(self, ctx: click.Context, args: list[str]) -> tuple[str | None, click.Command | None, list[str]]: ...
@@ -75,6 +131,8 @@ class DefaultGroup(click.Group):
     def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], click.Command] | click.Command: ...
 
 class DefaultCommandFormatter:
+    """Wraps a formatter to mark a default command."""
+
     group: click.Group
     formatter: click.HelpFormatter
     mark: str

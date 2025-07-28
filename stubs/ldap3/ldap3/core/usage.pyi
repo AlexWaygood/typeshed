@@ -1,6 +1,12 @@
+""" """
+
 from typing import Any
 
 class ConnectionUsage:
+    """
+    Collect statistics on connection usage
+    """
+
     open_sockets: int
     closed_sockets: int
     wrapped_sockets: int

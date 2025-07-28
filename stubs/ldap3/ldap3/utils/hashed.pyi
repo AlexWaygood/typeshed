@@ -1,3 +1,5 @@
+""" """
+
 from typing import Any
 
 algorithms_table: Any

@@ -9,7 +9,15 @@ class AbstractResolver:
     HOSTNAME_ENCODING: str
     EAI_NONAME_MSG: str
     EAI_FAMILY_MSG: str
-    def close(self) -> None: ...
+    def close(self) -> None:
+        """
+        Release resources held by this object.
+
+        Subclasses that define resources should override.
+
+        .. versionadded:: 22.10.1
+        """
+
     @staticmethod
     def fixup_gaierror(func: _F) -> _F: ...
     def gethostbyname(self, hostname: str, family: int = 2) -> str: ...

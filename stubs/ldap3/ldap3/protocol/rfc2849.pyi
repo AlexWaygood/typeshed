@@ -1,3 +1,5 @@
+""" """
+
 from typing import Any
 
 conf_ldif_line_length: Any

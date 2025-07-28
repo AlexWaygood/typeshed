@@ -33,23 +33,80 @@ class _MultiDictLikeWithGetall(_MultiDictLikeBase, Protocol):
 _MultiDictLike: TypeAlias = _MultiDictLikeWithGetall | _MultiDictLikeWithGetlist
 
 class DefaultMeta:
-    def bind_field(self, form: BaseForm, unbound_field: UnboundField[_FieldT], options: MutableMapping[str, Any]) -> _FieldT: ...
+    """
+    This is the default Meta class which defines all the default values and
+    therefore also the 'API' of the class Meta interface.
+    """
+
+    def bind_field(self, form: BaseForm, unbound_field: UnboundField[_FieldT], options: MutableMapping[str, Any]) -> _FieldT:
+        """
+        bind_field allows potential customization of how fields are bound.
+
+        The default implementation simply passes the options to
+        :meth:`UnboundField.bind`.
+
+        :param form: The form.
+        :param unbound_field: The unbound field.
+        :param options:
+            A dictionary of options which are typically passed to the field.
+
+        :return: A bound field
+        """
+
     @overload
-    def wrap_formdata(self, form: BaseForm, formdata: None) -> None: ...
+    def wrap_formdata(self, form: BaseForm, formdata: None) -> None:
+        """
+        wrap_formdata allows doing custom wrappers of WTForms formdata.
+
+        The default implementation detects webob-style multidicts and wraps
+        them, otherwise passes formdata back un-changed.
+
+        :param form: The form.
+        :param formdata: Form data.
+        :return: A form-input wrapper compatible with WTForms.
+        """
+
     @overload
     def wrap_formdata(self, form: BaseForm, formdata: _MultiDictLike) -> _MultiDictLikeWithGetlist: ...
-    def render_field(self, field: Field, render_kw: SupportsItems[str, Any]) -> Markup: ...
+    def render_field(self, field: Field, render_kw: SupportsItems[str, Any]) -> Markup:
+        """
+        render_field allows customization of how widget rendering is done.
+
+        The default implementation calls ``field.widget(field, **render_kw)``
+        """
     csrf: bool
     csrf_field_name: str
     csrf_secret: Any | None
     csrf_context: Any | None
     csrf_class: type[Any] | None
-    def build_csrf(self, form: BaseForm) -> Any: ...
+    def build_csrf(self, form: BaseForm) -> Any:
+        """
+        Build a CSRF implementation. This is called once per form instance.
+
+        The default implementation builds the class referenced to by
+        :attr:`csrf_class` with zero arguments. If `csrf_class` is ``None``,
+        will instead use the default implementation
+        :class:`wtforms.csrf.session.SessionCSRF`.
+
+        :param form: The form.
+        :return: A CSRF implementation.
+        """
     locales: Literal[False] | Collection[str]
     cache_translations: bool
     translations_cache: dict[str, _SupportsGettextAndNgettext]
-    def get_translations(self, form: BaseForm) -> _SupportsGettextAndNgettext: ...
-    def update_values(self, values: SupportsItems[str, Any]) -> None: ...
+    def get_translations(self, form: BaseForm) -> _SupportsGettextAndNgettext:
+        """
+        Override in subclasses to provide alternate translations factory.
+        See the i18n documentation for more.
+
+        :param form: The form.
+        :return: An object that provides gettext() and ngettext() methods.
+        """
+
+    def update_values(self, values: SupportsItems[str, Any]) -> None:
+        """
+        Given a dictionary of values, update values on this `Meta` instance.
+        """
     # since meta can be extended with arbitrary data we add a __getattr__
     # method that returns Any
     def __getattr__(self, name: str) -> Any: ...

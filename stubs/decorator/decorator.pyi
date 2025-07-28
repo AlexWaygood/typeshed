@@ -1,3 +1,9 @@
+"""
+Decorator module, see
+https://github.com/micheles/decorator/blob/master/docs/documentation.md
+for the documentation.
+"""
+
 import inspect
 from builtins import dict as _dict  # alias to avoid conflicts with attribute name
 from collections.abc import Callable, Generator, Iterator
@@ -17,6 +23,12 @@ POS: Final[Literal[inspect._ParameterKind.POSITIONAL_OR_KEYWORD]]
 EMPTY: Final[type[inspect._empty]]
 
 class FunctionMaker:
+    """
+    An object with the ability to create functions with a given signature.
+    It has attributes name, doc, module, signature, defaults, dict and
+    methods update and make.
+    """
+
     args: list[str]
     varargs: str | None
     varkw: str | None
@@ -40,10 +52,18 @@ class FunctionMaker:
         module: str | None = ...,
         funcdict: _dict[str, Any] | None = ...,
     ) -> None: ...
-    def update(self, func: Any, **kw: Any) -> None: ...
+    def update(self, func: Any, **kw: Any) -> None:
+        """
+        Update the signature of func with the data in self
+        """
+
     def make(
         self, src_templ: str, evaldict: _dict[str, Any] | None = ..., addsource: bool = ..., **attrs: Any
-    ) -> Callable[..., Any]: ...
+    ) -> Callable[..., Any]:
+        """
+        Make a new function from a given template and update the signature
+        """
+
     @classmethod
     def create(
         cls,
@@ -55,19 +75,55 @@ class FunctionMaker:
         module: str | None = ...,
         addsource: bool = ...,
         **attrs: Any,
-    ) -> Callable[..., Any]: ...
+    ) -> Callable[..., Any]:
+        """
+        Create a function from the strings name, signature and body.
+        evaldict is the evaluation dictionary. If addsource is true an
+        attribute __source__ is added to the result. The attributes attrs
+        are added, if any.
+        """
 
-def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]: ...
-def decorate(func: _Func, caller: Callable[..., Any], extras: tuple[Any, ...] = ..., kwsyntax: bool = False) -> _Func: ...
-def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]: ...
+def fix(args: tuple[Any, ...], kwargs: dict[str, Any], sig: Signature) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """
+    Fix args and kwargs to be consistent with the signature
+    """
+
+def decorate(func: _Func, caller: Callable[..., Any], extras: tuple[Any, ...] = ..., kwsyntax: bool = False) -> _Func:
+    """
+    Decorates a function/generator/coroutine using a caller.
+    If kwsyntax is True calling the decorated functions with keyword
+    syntax will pass the named arguments inside the ``kw`` dictionary,
+    even if such argument are positional, similarly to what functools.wraps
+    does. By default kwsyntax is False and the the arguments are untouched.
+    """
+
+def decoratorx(caller: Callable[..., Any]) -> Callable[..., Any]:
+    """
+    A version of "decorator" implemented via "exec" and not via the
+    Signature object. Use this if you are want to preserve the `.__code__`
+    object properties (https://github.com/micheles/decorator/issues/129).
+    """
+
 def decorator(
     caller: Callable[..., Any], _func: Callable[..., Any] | None = None, kwsyntax: bool = False
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]: ...
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """
+    decorator(caller) converts a caller function into a decorator
+    """
 
 class ContextManager(_GeneratorContextManager[_T]):
     def __init__(self, g: Callable[..., Generator[_T]], *a: Any, **k: Any) -> None: ...
     def __call__(self, func: _C) -> _C: ...
 
 def contextmanager(func: Callable[_P, Iterator[_T]]) -> Callable[_P, ContextManager[_T]]: ...
-def append(a: type, vancestors: list[type]) -> None: ...
-def dispatch_on(*dispatch_args: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]: ...
+def append(a: type, vancestors: list[type]) -> None:
+    """
+    Append ``a`` to the list of the virtual ancestors, unless it is already
+    included.
+    """
+
+def dispatch_on(*dispatch_args: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """
+    Factory of decorators turning a function into a generic function
+    dispatching on the given arguments.
+    """

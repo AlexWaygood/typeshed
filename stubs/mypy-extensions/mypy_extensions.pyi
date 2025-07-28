@@ -1,3 +1,10 @@
+"""Defines experimental extensions to the standard "typing" module that are
+supported by the mypy typechecker.
+
+Example usage:
+    from mypy_extensions import TypedDict
+"""
+
 import abc
 from _collections_abc import dict_items, dict_keys, dict_values
 from _typeshed import IdentityFunction, Unused
@@ -39,29 +46,68 @@ class _TypedDict(Mapping[str, object], metaclass=abc.ABCMeta):
     def __ior__(self, value: Self, /) -> Self: ...  # type: ignore[misc]
 
 @deprecated("Use typing.TypedDict or typing_extensions.TypedDict instead")
-def TypedDict(typename: str, fields: dict[str, type[Any]], total: bool = ...) -> type[dict[str, Any]]: ...
+def TypedDict(typename: str, fields: dict[str, type[Any]], total: bool = ...) -> type[dict[str, Any]]:
+    """A simple typed name space. At runtime it is equivalent to a plain dict.
+
+    TypedDict creates a dictionary type that expects all of its
+    instances to have a certain set of keys, with each key
+    associated with a value of a consistent type. This expectation
+    is not checked at runtime but is only enforced by typecheckers.
+    Usage::
+
+        Point2D = TypedDict('Point2D', {'x': int, 'y': int, 'label': str})
+        a: Point2D = {'x': 1, 'y': 2, 'label': 'good'}  # OK
+        b: Point2D = {'z': 3, 'label': 'bad'}           # Fails type check
+        assert Point2D(x=1, y=2, label='first') == dict(x=1, y=2, label='first')
+
+    The type info could be accessed via Point2D.__annotations__. TypedDict
+    supports two additional equivalent forms::
+
+        Point2D = TypedDict('Point2D', x=int, y=int, label=str)
+
+        class Point2D(TypedDict):
+            x: int
+            y: int
+            label: str
+
+    The latter syntax is only supported in Python 3.6+, while two other
+    syntax forms work for 3.2+
+    """
+
 @overload
-def Arg(type: _T, name: str | None = ...) -> _T: ...
+def Arg(type: _T, name: str | None = ...) -> _T:
+    """A normal positional argument"""
+
 @overload
 def Arg(*, name: str | None = ...) -> Any: ...
 @overload
-def DefaultArg(type: _T, name: str | None = ...) -> _T: ...
+def DefaultArg(type: _T, name: str | None = ...) -> _T:
+    """A positional argument with a default value"""
+
 @overload
 def DefaultArg(*, name: str | None = ...) -> Any: ...
 @overload
-def NamedArg(type: _T, name: str | None = ...) -> _T: ...
+def NamedArg(type: _T, name: str | None = ...) -> _T:
+    """A keyword-only argument"""
+
 @overload
 def NamedArg(*, name: str | None = ...) -> Any: ...
 @overload
-def DefaultNamedArg(type: _T, name: str | None = ...) -> _T: ...
+def DefaultNamedArg(type: _T, name: str | None = ...) -> _T:
+    """A keyword-only argument with a default value"""
+
 @overload
 def DefaultNamedArg(*, name: str | None = ...) -> Any: ...
 @overload
-def VarArg(type: _T) -> _T: ...
+def VarArg(type: _T) -> _T:
+    """A *args-style variadic positional argument"""
+
 @overload
 def VarArg() -> Any: ...
 @overload
-def KwArg(type: _T) -> _T: ...
+def KwArg(type: _T) -> _T:
+    """A **kwargs-style variadic keyword argument"""
+
 @overload
 def KwArg() -> Any: ...
 

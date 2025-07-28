@@ -5,4 +5,8 @@ from typing import Final
 module_prefix: Final[str]
 PLUGIN_MAPPING: Final[dict[str, str]]
 
-def get_plugin_modules(plugins: Iterable[str]) -> tuple[ModuleType, ...]: ...
+def get_plugin_modules(plugins: Iterable[str]) -> tuple[ModuleType, ...]:
+    """
+    Get plugin modules from input strings
+    :param tuple plugins: a tuple of plugin names in str
+    """

@@ -30,6 +30,8 @@ class _Metadata(TypedDict):
     Endpoints: Mapping[str, _Endpoint]
 
 class Context:
+    """A context."""
+
     name: str
     context_type: str | None
     orchestrator: str | None

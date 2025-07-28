@@ -9,10 +9,19 @@ __all__ = ["canonsort_keys", "canonsort_items", "CaselessDict"]
 _T = TypeVar("_T")
 _VT = TypeVar("_VT")
 
-def canonsort_keys(keys: Iterable[str], canonical_order: Iterable[str] | None = None) -> list[str]: ...
-def canonsort_items(dict1: Mapping[str, _VT], canonical_order: Iterable[str] | None = None) -> list[tuple[str, _VT]]: ...
+def canonsort_keys(keys: Iterable[str], canonical_order: Iterable[str] | None = None) -> list[str]:
+    """Sorts leading keys according to canonical_order.  Keys not specified in
+    canonical_order will appear alphabetically at the end.
+    """
+
+def canonsort_items(dict1: Mapping[str, _VT], canonical_order: Iterable[str] | None = None) -> list[tuple[str, _VT]]:
+    """Returns a list of items from dict1, sorted by canonical_order."""
 
 class CaselessDict(OrderedDict[str, _VT]):
+    """A dictionary that isn't case sensitive, and only uses strings as keys.
+    Values retain their case.
+    """
+
     # Inherit complex __init__ from dict.
     def __getitem__(self, key: str | bytes) -> _VT: ...
     def __setitem__(self, key: str | bytes, value: _VT) -> None: ...
@@ -41,5 +50,12 @@ class CaselessDict(OrderedDict[str, _VT]):
     def __eq__(self, other: SupportsItems[str, _VT]) -> bool: ...  # type: ignore[override]
     def __ne__(self, other: SupportsItems[str, _VT]) -> bool: ...  # type: ignore[override]
     canonical_order: ClassVar[Iterable[str] | None]
-    def sorted_keys(self) -> list[str]: ...
-    def sorted_items(self) -> list[tuple[str, _VT]]: ...
+    def sorted_keys(self) -> list[str]:
+        """Sorts keys according to the canonical_order for the derived class.
+        Keys not specified in canonical_order will appear at the end.
+        """
+
+    def sorted_items(self) -> list[tuple[str, _VT]]:
+        """Sorts items according to the canonical_order for the derived class.
+        Items not specified in canonical_order will appear at the end.
+        """

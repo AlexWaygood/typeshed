@@ -1,3 +1,9 @@
+"""Check Python docstrings validate as reStructuredText (RST).
+
+This is a plugin for the tool flake8 tool for checking Python
+source code.
+"""
+
 import ast
 from argparse import Namespace
 from collections.abc import Container, Generator
@@ -19,16 +25,26 @@ def code_mapping(
     extra_roles: Container[str],
     extra_substitutions: Container[str],
     default: int = ...,
-) -> int: ...
+) -> int:
+    """Return an error code between 0 and 99."""
 
 class reStructuredTextChecker:
+    """Checker of Python docstrings as reStructuredText."""
+
     name: str
     version: str
     tree: ast.AST
     filename: str
-    def __init__(self, tree: ast.AST, filename: str = ...) -> None: ...
+    def __init__(self, tree: ast.AST, filename: str = ...) -> None:
+        """Initialise."""
+
     @classmethod
-    def add_options(cls, parser: Any) -> None: ...
+    def add_options(cls, parser: Any) -> None:
+        """Add RST directives, roles and substitutions options."""
+
     @classmethod
-    def parse_options(cls, options: Namespace) -> None: ...
-    def run(self) -> Generator[tuple[int, int, str, type[reStructuredTextChecker]], None, None]: ...
+    def parse_options(cls, options: Namespace) -> None:
+        """Adding black-config option."""
+
+    def run(self) -> Generator[tuple[int, int, str, type[reStructuredTextChecker]], None, None]:
+        """Use docutils to check docstrings are valid RST."""

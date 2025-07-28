@@ -52,6 +52,10 @@ class Surface(Serialisable):
     ) -> None: ...
 
 class _3DBase(Serialisable):
+    """
+    Base class for 3D charts
+    """
+
     tagname: ClassVar[str]
     view3D: Typed[View3D, Literal[True]]
     floor: Typed[Surface, Literal[True]]

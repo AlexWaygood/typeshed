@@ -1,9 +1,14 @@
+"""module that aggregates config information"""
+
 from _typeshed import Incomplete
 from collections.abc import Callable
 from typing import Literal
 
-def register_reset(func: Callable[[], Callable[[], object] | None]) -> None: ...
-def _reset() -> None: ...
+def register_reset(func: Callable[[], Callable[[], object] | None]) -> None:
+    """register a function to be called by rl_config._reset"""
+
+def _reset() -> None:
+    """attempt to reset reportlab and friends"""
 
 allowTableBoundsErrors: int
 shapeChecking: int

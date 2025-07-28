@@ -1,3 +1,11 @@
+"""Provides an ``ndb`` interface for the blob store.
+
+Initially, the blob store was an App Engine specific API for Google Cloud
+Storage.
+
+No longer supported.
+"""
+
 from typing import Any
 
 from google.cloud.ndb import model

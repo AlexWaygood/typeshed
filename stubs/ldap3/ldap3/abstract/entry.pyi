@@ -1,6 +1,10 @@
+""" """
+
 from typing import Any
 
 class EntryState:
+    """Contains data on the status of the entry. Does not pollute the Entry __dict__."""
+
     dn: Any
     status: Any
     attributes: Any
@@ -17,6 +21,17 @@ class EntryState:
     def entry_raw_attributes(self): ...
 
 class EntryBase:
+    """The Entry object contains a single LDAP entry.
+    Attributes can be accessed either by sequence, by assignment
+    or as dictionary keys. Keys are not case sensitive.
+
+    The Entry object is read only
+
+    - The DN is retrieved by entry_dn
+    - The cursor reference is in _cursor
+    - Raw attributes values are retrieved with _raw_attributes and the _raw_attribute() methods
+    """
+
     def __init__(self, dn, cursor) -> None: ...
     def __iter__(self): ...
     def __contains__(self, item): ...
@@ -35,7 +50,13 @@ class EntryBase:
     def entry_definition(self): ...
     @property
     def entry_raw_attributes(self): ...
-    def entry_raw_attribute(self, name): ...
+    def entry_raw_attribute(self, name):
+        """
+
+        :param name: name of the attribute
+        :return: raw (unencoded) value of the attribute, None if attribute is not found
+        """
+
     @property
     def entry_mandatory_attributes(self): ...
     @property
@@ -56,6 +77,19 @@ class EntryBase:
     def entry_to_ldif(self, all_base64: bool = False, line_separator=None, sort_order=None, stream=None): ...
 
 class Entry(EntryBase):
+    """The Entry object contains a single LDAP entry.
+    Attributes can be accessed either by sequence, by assignment
+    or as dictionary keys. Keys are not case sensitive.
+
+    The Entry object is read only
+
+    - The DN is retrieved by entry_dn
+    - The Reader reference is in _cursor()
+    - Raw attributes values are retrieved by the _ra_attributes and
+      _raw_attribute() methods
+
+    """
+
     def entry_writable(
         self, object_def=None, writer_cursor=None, attributes=None, custom_validator=None, auxiliary_class=None
     ): ...
@@ -69,7 +103,12 @@ class WritableEntry(EntryBase):
     def entry_commit_changes(self, refresh: bool = True, controls=None, clear_history: bool = True): ...
     def entry_discard_changes(self) -> None: ...
     def entry_delete(self) -> None: ...
-    def entry_refresh(self, tries: int = 4, seconds: int = 2): ...
+    def entry_refresh(self, tries: int = 4, seconds: int = 2):
+        """
+
+        Refreshes the entry from the LDAP Server
+        """
+
     def entry_move(self, destination_dn) -> None: ...
     def entry_rename(self, new_name) -> None: ...
     @property

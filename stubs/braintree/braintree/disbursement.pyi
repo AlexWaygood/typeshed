@@ -6,6 +6,8 @@ from braintree.resource import Resource
 
 class Disbursement(Resource):
     class Type:
+        """ """
+
         Credit: Final = "credit"
         Debit: Final = "debit"
 

@@ -67,6 +67,29 @@ IN6_IFF_SECURED: Final[int]
 address_families: Final[dict[int, str]]
 version: Final[str]
 
-def gateways() -> dict[int | Literal["default"], list[tuple[str, str, bool] | tuple[str, str]] | dict[int, tuple[str, str]]]: ...
-def ifaddresses(ifname: str, /) -> dict[int, list[dict[str, str]]]: ...
-def interfaces() -> list[str]: ...
+def gateways() -> dict[int | Literal["default"], list[tuple[str, str, bool] | tuple[str, str]] | dict[int, tuple[str, str]]]:
+    """Obtain a list of the gateways on this machine.
+
+    Returns a dict whose keys are equal to the address family constants,
+    e.g. netifaces.AF_INET, and whose values are a list of tuples of the
+    format (<address>, <interface>, <is_default>).
+
+    There is also a special entry with the key 'default', which you can use
+    to quickly obtain the default gateway for a particular address family.
+
+    There may in general be multiple gateways; different address
+    families may have different gateway settings (e.g. AF_INET vs AF_INET6)
+    and on some systems it's also possible to have interface-specific
+    default gateways.
+    """
+
+def ifaddresses(ifname: str, /) -> dict[int, list[dict[str, str]]]:
+    """Obtain information about the specified network interface.
+
+    Returns a dict whose keys are equal to the address family constants,
+    e.g. netifaces.AF_INET, and whose values are a list of addresses in
+    that family that are attached to the network interface.
+    """
+
+def interfaces() -> list[str]:
+    """Obtain a list of the interfaces available on this machine."""

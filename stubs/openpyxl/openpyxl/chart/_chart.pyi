@@ -19,6 +19,10 @@ class AxId(Serialisable):
 def PlotArea(): ...
 
 class ChartBase(Serialisable):
+    """
+    Base class for all charts
+    """
+
     legend: Typed[Legend, Literal[True]]
     layout: Typed[Layout, Literal[True]]
     roundedCorners: Bool[Literal[True]]
@@ -40,12 +44,30 @@ class ChartBase(Serialisable):
     pivotFormats: Incomplete
     idx_base: int
     def __init__(self, axId=(), **kw: Unused) -> None: ...
-    def __hash__(self) -> int: ...
-    def __iadd__(self, other): ...
+    def __hash__(self) -> int:
+        """
+        Just need to check for identity
+        """
+
+    def __iadd__(self, other):
+        """
+        Combine the chart with another one
+        """
     # namespace is in the wrong order to respect the override. This is an issue in openpyxl itself
     def to_tree(self, namespace: Unused = None, tagname: str | None = None, idx: Unused = None) -> Element: ...  # type: ignore[override]
-    def set_categories(self, labels) -> None: ...
-    def add_data(self, data, from_rows: bool = False, titles_from_data: bool = False) -> None: ...
-    def append(self, value) -> None: ...
+    def set_categories(self, labels) -> None:
+        """
+        Set the categories / x-axis values
+        """
+
+    def add_data(self, data, from_rows: bool = False, titles_from_data: bool = False) -> None:
+        """
+        Add a range of data in a single pass.
+        The default is to treat each column as a data series.
+        """
+
+    def append(self, value) -> None:
+        """Append a data series to the chart"""
+
     @property
     def path(self) -> str: ...

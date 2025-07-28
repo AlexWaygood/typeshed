@@ -1,3 +1,5 @@
+"""IBM DataServer Driver for Python."""
+
 from typing import Any, final, overload
 from typing_extensions import Self
 
@@ -177,6 +179,8 @@ SQL_ATTR_WCHARTYPE: int
 
 @final
 class IBM_DBClientInfo:
+    """IBM DataServer Client Information object"""
+
     def __new__(cls, *args: object, **kwargs: object) -> Self: ...
     APPL_CODEPAGE: int
     CONN_CODEPAGE: int
@@ -189,10 +193,14 @@ class IBM_DBClientInfo:
 
 @final
 class IBM_DBConnection:
+    """IBM DataServer connection object"""
+
     def __new__(cls, *args: object, **kwargs: object) -> Self: ...
 
 @final
 class IBM_DBServerInfo:
+    """IBM DataServer Information object"""
+
     def __new__(cls, *args: object, **kwargs: object) -> Self: ...
     DBMS_NAME: str
     DBMS_VER: str
@@ -219,10 +227,16 @@ class IBM_DBServerInfo:
 
 @final
 class IBM_DBStatement:
+    """IBM DataServer cursor object"""
+
     def __new__(cls, *args: object, **kwargs: object) -> Self: ...
 
-def active(connection: IBM_DBConnection | None, /) -> bool: ...
-def autocommit(connection: IBM_DBConnection, value: int = ..., /) -> int | bool: ...
+def active(connection: IBM_DBConnection | None, /) -> bool:
+    """Checks if the specified connection resource is active"""
+
+def autocommit(connection: IBM_DBConnection, value: int = ..., /) -> int | bool:
+    """Returns or sets the AUTOCOMMIT state for a database connection"""
+
 def bind_param(
     stmt: IBM_DBStatement,
     parameter_number: int,
@@ -233,14 +247,24 @@ def bind_param(
     scale: int | None = ...,
     size: int | None = ...,
     /,
-) -> bool: ...
+) -> bool:
+    """Binds a Python variable to an SQL statement parameter"""
+
 @overload
-def callproc(connection: IBM_DBConnection, procname: str, /) -> IBM_DBStatement | None: ...
+def callproc(connection: IBM_DBConnection, procname: str, /) -> IBM_DBStatement | None:
+    """Returns a tuple containing OUT/INOUT variable value"""
+
 @overload
 def callproc(connection: IBM_DBConnection, procname: str, parameters: tuple[object, ...], /) -> tuple[object, ...] | None: ...
-def check_function_support(connection: IBM_DBConnection, function_id: int, /) -> bool: ...
-def client_info(connection: IBM_DBConnection, /) -> IBM_DBClientInfo | bool: ...
-def close(connection: IBM_DBConnection, /) -> bool: ...
+def check_function_support(connection: IBM_DBConnection, function_id: int, /) -> bool:
+    """return true if fuction is supported otherwise return false"""
+
+def client_info(connection: IBM_DBConnection, /) -> IBM_DBClientInfo | bool:
+    """Returns a read-only object with information about the DB2 database client"""
+
+def close(connection: IBM_DBConnection, /) -> bool:
+    """Close a database connection"""
+
 def column_privileges(
     connection: IBM_DBConnection,
     qualifier: str | None = ...,
@@ -248,7 +272,9 @@ def column_privileges(
     table_name: str | None = ...,
     column_name: str | None = ...,
     /,
-) -> IBM_DBStatement: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing the columns and associated privileges for a table."""
+
 def columns(
     connection: IBM_DBConnection,
     qualifier: str | None = ...,
@@ -256,41 +282,97 @@ def columns(
     table_name: str | None = ...,
     column_name: str | None = ...,
     /,
-) -> IBM_DBStatement: ...
-def commit(connection: IBM_DBConnection, /) -> bool: ...
-def conn_error(connection: IBM_DBConnection | None = ..., /) -> str: ...
-def conn_errormsg(connection: IBM_DBConnection | None = ..., /) -> str: ...
-def conn_warn(connection: IBM_DBConnection | None = ..., /) -> str: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing the columns and associated metadata for a table"""
+
+def commit(connection: IBM_DBConnection, /) -> bool:
+    """Commits a transaction"""
+
+def conn_error(connection: IBM_DBConnection | None = ..., /) -> str:
+    """Returns a string containing the SQLSTATE returned by the last connection attempt"""
+
+def conn_errormsg(connection: IBM_DBConnection | None = ..., /) -> str:
+    """Returns an error message and SQLCODE value representing the reason the last database connection attempt failed"""
+
+def conn_warn(connection: IBM_DBConnection | None = ..., /) -> str:
+    """Returns a warning string containing the SQLSTATE returned by the last connection attempt"""
+
 def connect(
     database: str, user: str, password: str, options: dict[int, int | str] | None = ..., replace_quoted_literal: int = ..., /
-) -> IBM_DBConnection | None: ...
-def createdb(connection: IBM_DBConnection, dbName: str, codeSet: str = ..., mode: str = ..., /) -> bool: ...
-def createdbNX(connection: IBM_DBConnection, dbName: str, codeSet: str = ..., mode: str = ..., /) -> bool: ...
-def cursor_type(stmt: IBM_DBStatement, /) -> int: ...
-def debug(option: str | bool) -> None: ...
-def dropdb(connection: IBM_DBConnection, dbName: str, /) -> bool: ...
+) -> IBM_DBConnection | None:
+    """Connect to the database"""
+
+def createdb(connection: IBM_DBConnection, dbName: str, codeSet: str = ..., mode: str = ..., /) -> bool:
+    """Create db"""
+
+def createdbNX(connection: IBM_DBConnection, dbName: str, codeSet: str = ..., mode: str = ..., /) -> bool:
+    """createdbNX"""
+
+def cursor_type(stmt: IBM_DBStatement, /) -> int:
+    """Returns the cursor type used by a statement resource"""
+
+def debug(option: str | bool) -> None:
+    """Enable logging with optional log file or disable logging"""
+
+def dropdb(connection: IBM_DBConnection, dbName: str, /) -> bool:
+    """Drop db"""
+
 def exec_immediate(
     connection: IBM_DBConnection, statement: str | None, options: dict[int, int] = ..., /
-) -> IBM_DBStatement | bool: ...
-def execute(stmt: IBM_DBStatement, parameters: tuple[object, ...] | None = ..., /) -> bool: ...
-def execute_many(
-    stmt: IBM_DBStatement, seq_of_parameters: tuple[object, ...], options: dict[int, int] = ..., /
-) -> int | None: ...
-def fetchall(stmt: IBM_DBStatement, /) -> list[tuple[object, ...]]: ...
-def fetchmany(stmt: IBM_DBStatement, numberOfRows: int, /) -> list[tuple[object, ...]]: ...
-def fetchone(stmt: IBM_DBStatement, /) -> tuple[object, ...]: ...
-def fetch_assoc(stmt: IBM_DBStatement, row_number: int = ..., /) -> dict[str, object] | bool: ...
-def fetch_both(stmt: IBM_DBStatement, row_number: int = ..., /) -> dict[int | str, object] | bool: ...
-def fetch_row(stmt: IBM_DBStatement, row_number: int = ..., /) -> bool: ...
-def fetch_tuple(stmt: IBM_DBStatement, row_number: int = ..., /) -> tuple[object, ...]: ...
-def field_display_size(stmt: IBM_DBStatement, column: int | str, /) -> int | bool: ...
-def field_name(stmt: IBM_DBStatement, column: int | str, /) -> str | bool: ...
-def field_nullable(stmt: IBM_DBStatement, column: int | str, /) -> bool: ...
-def field_num(stmt: IBM_DBStatement, column: int | str, /) -> int | bool: ...
-def field_precision(stmt: IBM_DBStatement, column: int | str, /) -> int | bool: ...
-def field_scale(stmt: IBM_DBStatement, column: int | str, /) -> int | bool: ...
-def field_type(stmt: IBM_DBStatement, column: int | str, /) -> str | bool: ...
-def field_width(stmt: IBM_DBStatement, column: int | str, /) -> int | bool: ...
+) -> IBM_DBStatement | bool:
+    """Prepares and executes an SQL statement."""
+
+def execute(stmt: IBM_DBStatement, parameters: tuple[object, ...] | None = ..., /) -> bool:
+    """Executes an SQL statement that was prepared by ibm_db.prepare()"""
+
+def execute_many(stmt: IBM_DBStatement, seq_of_parameters: tuple[object, ...], options: dict[int, int] = ..., /) -> int | None:
+    """Execute SQL with multiple rows."""
+
+def fetchall(stmt: IBM_DBStatement, /) -> list[tuple[object, ...]]:
+    """Fetch all rows from the result set."""
+
+def fetchmany(stmt: IBM_DBStatement, numberOfRows: int, /) -> list[tuple[object, ...]]:
+    """Fetch a specified number of rows from the result set."""
+
+def fetchone(stmt: IBM_DBStatement, /) -> tuple[object, ...]:
+    """Fetch a single row from the result set."""
+
+def fetch_assoc(stmt: IBM_DBStatement, row_number: int = ..., /) -> dict[str, object] | bool:
+    """Returns a dictionary, indexed by column name, representing a row in a result set"""
+
+def fetch_both(stmt: IBM_DBStatement, row_number: int = ..., /) -> dict[int | str, object] | bool:
+    """Returns a dictionary, indexed by both column name and position, representing a row in a result set"""
+
+def fetch_row(stmt: IBM_DBStatement, row_number: int = ..., /) -> bool:
+    """Sets the result set pointer to the next row or requested row"""
+
+def fetch_tuple(stmt: IBM_DBStatement, row_number: int = ..., /) -> tuple[object, ...]:
+    """Returns an tuple, indexed by column position, representing a row in a result set"""
+
+def field_display_size(stmt: IBM_DBStatement, column: int | str, /) -> int | bool:
+    """Returns the maximum number of bytes required to display a column"""
+
+def field_name(stmt: IBM_DBStatement, column: int | str, /) -> str | bool:
+    """Returns the name of the column in the result set"""
+
+def field_nullable(stmt: IBM_DBStatement, column: int | str, /) -> bool:
+    """Returns indicated column can contain nulls or not"""
+
+def field_num(stmt: IBM_DBStatement, column: int | str, /) -> int | bool:
+    """Returns the position of the named column in a result set"""
+
+def field_precision(stmt: IBM_DBStatement, column: int | str, /) -> int | bool:
+    """Returns the precision of the indicated column in a result set"""
+
+def field_scale(stmt: IBM_DBStatement, column: int | str, /) -> int | bool:
+    """Returns the scale of the indicated column in a result set"""
+
+def field_type(stmt: IBM_DBStatement, column: int | str, /) -> str | bool:
+    """Returns the data type of the indicated column in a result set"""
+
+def field_width(stmt: IBM_DBStatement, column: int | str, /) -> int | bool:
+    """Returns the width of the indicated column in a result set"""
+
 def foreign_keys(
     connection: IBM_DBConnection,
     pk_qualifier: str | None,
@@ -300,49 +382,103 @@ def foreign_keys(
     fk_schema: str | None = ...,
     fk_table_name: str | None = ...,
     /,
-) -> IBM_DBStatement: ...
-def free_result(stmt: IBM_DBStatement, /) -> bool: ...
-def free_stmt(stmt: IBM_DBStatement, /) -> bool: ...
-def get_db_info(connection: IBM_DBConnection, option: int, /) -> str | bool: ...
-def get_last_serial_value(stmt: IBM_DBStatement, /) -> str | bool: ...
-def get_num_result(stmt: IBM_DBStatement, /) -> int | bool: ...
-def get_option(resc: IBM_DBConnection | IBM_DBStatement, options: int, type: int, /) -> Any: ...
-def get_sqlcode(connection_or_stmt: IBM_DBConnection | IBM_DBStatement | None = None, /) -> str: ...
-def next_result(stmt: IBM_DBStatement, /) -> IBM_DBStatement | bool: ...
-def num_fields(stmt: IBM_DBStatement, /) -> int | bool: ...
-def num_rows(stmt: IBM_DBStatement, /) -> int: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing the foreign keys for a table"""
+
+def free_result(stmt: IBM_DBStatement, /) -> bool:
+    """Frees resources associated with a result set"""
+
+def free_stmt(stmt: IBM_DBStatement, /) -> bool:
+    """Frees resources associated with the indicated statement resource"""
+
+def get_db_info(connection: IBM_DBConnection, option: int, /) -> str | bool:
+    """Returns an object with properties that describe the DB2 database server according to the option passed"""
+
+def get_last_serial_value(stmt: IBM_DBStatement, /) -> str | bool:
+    """Returns last serial value inserted for identity column"""
+
+def get_num_result(stmt: IBM_DBStatement, /) -> int | bool:
+    """Returns the number of rows in a current open non-dynamic scrollable cursor"""
+
+def get_option(resc: IBM_DBConnection | IBM_DBStatement, options: int, type: int, /) -> Any:
+    """Gets the specified option in the resource."""
+
+def get_sqlcode(connection_or_stmt: IBM_DBConnection | IBM_DBStatement | None = None, /) -> str:
+    """Returns a string containing the SQLCODE returned by the last connection attempt/ SQL statement"""
+
+def next_result(stmt: IBM_DBStatement, /) -> IBM_DBStatement | bool:
+    """Requests the next result set from a stored procedure"""
+
+def num_fields(stmt: IBM_DBStatement, /) -> int | bool:
+    """Returns the number of fields contained in a result set"""
+
+def num_rows(stmt: IBM_DBStatement, /) -> int:
+    """Returns the number of rows affected by an SQL statement"""
+
 def pconnect(
     database: str, username: str, password: str, options: dict[int, int | str] | None = ..., /
-) -> IBM_DBConnection | None: ...
+) -> IBM_DBConnection | None:
+    """Returns a persistent connection to a database"""
+
 def prepare(
     connection: IBM_DBConnection, statement: str, options: dict[int, int | str] | None = ..., /
-) -> IBM_DBStatement | bool: ...
+) -> IBM_DBStatement | bool:
+    """Prepares an SQL statement."""
+
 def primary_keys(
     connection: IBM_DBConnection, qualifier: str | None, schema: str | None, table_name: str | None, /
-) -> IBM_DBStatement: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing primary keys for a table"""
+
 def procedure_columns(
     connection: IBM_DBConnection, qualifier: str | None, schema: str | None, procedure: str | None, parameter: str | None, /
-) -> IBM_DBStatement | bool: ...
+) -> IBM_DBStatement | bool:
+    """Returns a result set listing the parameters for one or more stored procedures."""
+
 def procedures(
     connection: IBM_DBConnection, qualifier: str | None, schema: str | None, procedure: str | None, /
-) -> IBM_DBStatement | bool: ...
-def recreatedb(connection: IBM_DBConnection, dbName: str, codeSet: str | None = ..., mode: str | None = ..., /) -> bool: ...
-def result(stmt: IBM_DBStatement, column: int | str, /) -> Any: ...
-def rollback(connection: IBM_DBConnection, /) -> bool: ...
-def server_info(connection: IBM_DBConnection, /) -> IBM_DBServerInfo | bool: ...
-def set_option(resc: IBM_DBConnection | IBM_DBStatement, options: dict[int, int | str], type: int, /) -> bool: ...
+) -> IBM_DBStatement | bool:
+    """Returns a result set listing the stored procedures registered in a database"""
+
+def recreatedb(connection: IBM_DBConnection, dbName: str, codeSet: str | None = ..., mode: str | None = ..., /) -> bool:
+    """recreate db"""
+
+def result(stmt: IBM_DBStatement, column: int | str, /) -> Any:
+    """Returns a single column from a row in the result set"""
+
+def rollback(connection: IBM_DBConnection, /) -> bool:
+    """Rolls back a transaction"""
+
+def server_info(connection: IBM_DBConnection, /) -> IBM_DBServerInfo | bool:
+    """Returns an object with properties that describe the DB2 database server"""
+
+def set_option(resc: IBM_DBConnection | IBM_DBStatement, options: dict[int, int | str], type: int, /) -> bool:
+    """Sets the specified option in the resource"""
+
 def special_columns(
     connection: IBM_DBConnection, qualifier: str | None, schema: str | None, table_name: str | None, scope: int, /
-) -> IBM_DBStatement: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing the unique row identifier columns for a table"""
+
 def statistics(
     connection: IBM_DBConnection, qualifier: str | None, schema: str | None, table_name: str | None, unique: bool | None, /
-) -> IBM_DBStatement: ...
-def stmt_error(stmt: IBM_DBStatement = ..., /) -> str: ...
-def stmt_errormsg(stmt: IBM_DBStatement = ..., /) -> str: ...
-def stmt_warn(connection: IBM_DBConnection = ..., /) -> IBM_DBStatement: ...
+) -> IBM_DBStatement:
+    """Returns a result set listing the index and statistics for a table"""
+
+def stmt_error(stmt: IBM_DBStatement = ..., /) -> str:
+    """Returns a string containing the SQLSTATE returned by an SQL statement"""
+
+def stmt_errormsg(stmt: IBM_DBStatement = ..., /) -> str:
+    """Returns a string containing the last SQL statement error message"""
+
+def stmt_warn(connection: IBM_DBConnection = ..., /) -> IBM_DBStatement:
+    """Returns a warning string containing the SQLSTATE returned by last SQL statement"""
+
 def table_privileges(
     connection: IBM_DBConnection, qualifier: str | None = ..., schema: str | None = ..., table_name: str | None = ..., /
-) -> IBM_DBStatement | bool: ...
+) -> IBM_DBStatement | bool:
+    """Returns a result set listing the tables and associated privileges in a database"""
+
 def tables(
     connection: IBM_DBConnection,
     qualifier: str | None = ...,
@@ -350,4 +486,5 @@ def tables(
     table_name: str | None = ...,
     table_type: str | None = ...,
     /,
-) -> IBM_DBStatement | bool: ...
+) -> IBM_DBStatement | bool:
+    """Returns a result set listing the tables and associated metadata in a database"""

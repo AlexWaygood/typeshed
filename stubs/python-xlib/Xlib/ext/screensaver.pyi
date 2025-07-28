@@ -1,3 +1,14 @@
+"""This extension allows registering the client as an X screensaver,
+or query information about the current screensaver.
+
+For detailed description see any of the following documents.
+Protocol specification:
+    https://www.x.org/releases/X11R7.7/doc/scrnsaverproto/saver.html
+XCB Protocol specification:
+    https://cgit.freedesktop.org/xcb/proto/tree/src/screensaver.xml
+
+"""
+
 from typing import Final
 
 from Xlib._typing import ErrorHandler

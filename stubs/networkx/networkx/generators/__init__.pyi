@@ -1,3 +1,8 @@
+"""
+A package for generating various graphs in networkx.
+
+"""
+
 from networkx.generators.atlas import *
 from networkx.generators.classic import *
 from networkx.generators.cographs import *

@@ -1,3 +1,8 @@
+"""Capture C-level FD output on pipes
+
+Use `wurlitzer.pipes` or `wurlitzer.sys_pipes` as context managers.
+"""
+
 __all__ = ["STDOUT", "PIPE", "Wurlitzer", "pipes", "sys_pipes", "sys_pipes_forever", "stop_sys_pipes"]
 
 import contextlib
@@ -28,6 +33,11 @@ class _Stream(SupportsWrite[_T_contra], Protocol):
 _InteractiveShell: TypeAlias = Any
 
 class Wurlitzer:
+    """Class for Capturing Process-level FD output via dup2
+
+    Typically used via `wurlitzer.pipes`
+    """
+
     flush_interval: float
     encoding: str | None
     thread: Thread | None
@@ -41,7 +51,22 @@ class Wurlitzer:
         stderr: _STDOUT | SupportsWrite[str] | SupportsWrite[bytes] | logging.Logger | None = None,
         encoding: str | None = ...,
         bufsize: int | None = ...,
-    ) -> None: ...
+    ) -> None:
+        """
+        Parameters
+        ----------
+        stdout: stream or None
+            The stream for forwarding stdout.
+        stderr = stream or None
+            The stream for forwarding stderr.
+        encoding: str or None
+            The encoding to use, if streams should be interpreted as text.
+        bufsize: int or None
+            Set pipe buffer size using fcntl F_SETPIPE_SZ (linux only)
+            default: use /proc/sys/fs/pipe-max-size up to a max of 1MB
+            if 0, will do nothing.
+        """
+
     def __enter__(
         self,
     ) -> tuple[
@@ -51,14 +76,55 @@ class Wurlitzer:
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
     ) -> None: ...
 
-def dup2(a: int, b: int, timeout: float = 3) -> int: ...
-def sys_pipes(encoding: str = ..., bufsize: int | None = None) -> contextlib._GeneratorContextManager[tuple[TextIO, TextIO]]: ...
+def dup2(a: int, b: int, timeout: float = 3) -> int:
+    """Like os.dup2, but retry on EBUSY"""
+
+def sys_pipes(encoding: str = ..., bufsize: int | None = None) -> contextlib._GeneratorContextManager[tuple[TextIO, TextIO]]:
+    """Redirect C-level stdout/stderr to sys.stdout/stderr
+
+    This is useful of sys.sdout/stderr are already being forwarded somewhere,
+    e.g. in a Jupyter kernel.
+
+    DO NOT USE THIS if sys.stdout and sys.stderr are not already being forwarded.
+    """
 
 # stubtest does not support overloaded context managers, hence the _GeneratorContextManager[Foo] return types.
 @overload
 def pipes(
     stdout: _PIPE, stderr: _STDOUT, encoding: None, bufsize: int | None = None
-) -> _GeneratorContextManager[tuple[io.BytesIO, None]]: ...
+) -> _GeneratorContextManager[tuple[io.BytesIO, None]]:
+    """Capture C-level stdout/stderr in a context manager.
+
+    The return value for the context manager is (stdout, stderr).
+
+    Args:
+
+    stdout (optional, default: PIPE): None or PIPE or Writable or Logger
+    stderr (optional, default: PIPE): None or PIPE or STDOUT or Writable or Logger
+    encoding (optional): probably 'utf-8'
+    bufsize (optional): set explicit buffer size if the default doesn't work
+
+    .. versionadded:: 3.1
+        Accept Logger objects for stdout/stderr.
+        If a Logger is specified, each line will produce a log message.
+        stdout messages will be at INFO level, stderr messages at ERROR level.
+
+    .. versionchanged:: 3.0
+
+        when using `PIPE` (default), the type of captured output
+        is `io.StringIO/BytesIO` instead of an OS pipe.
+        This eliminates max buffer size issues (and hang when output exceeds 65536 bytes),
+        but also means the buffer cannot be read with `.read()` methods
+        until after the context exits.
+
+    Examples
+    --------
+
+    >>> with pipes() as (stdout, stderr):
+    ...     printf("C-level stdout")
+    ... output = stdout.read()
+    """
+
 @overload
 def pipes(
     stdout: _PIPE, stderr: _PIPE, encoding: None, bufsize: int | None = None
@@ -134,16 +200,47 @@ def pipes(
 ]: ...
 
 class _LogPipe(io.BufferedWriter):
+    """Writeable that writes lines to a Logger object as they arrive from captured pipes"""
+
     logger: logging.Logger
     stream_name: str
     level: int
     def __init__(self, logger: logging.Logger, stream_name: str, level: int = 20) -> None: ...
-    def write(self, chunk: str) -> None: ...  # type: ignore[override]
-    def flush(self) -> None: ...
+    def write(self, chunk: str) -> None:  # type: ignore[override]
+        """Given chunk, split into lines
+
+        Log each line as a discrete message
+
+        If it ends with a partial line, save it until the next one
+        """
+
+    def flush(self) -> None:
+        """Write buffer as a last message if there is one"""
+
     def __enter__(self) -> Self: ...
     def __exit__(self, *exc_info: object) -> None: ...
 
-def sys_pipes_forever(encoding: str = ..., bufsize: int | None = None) -> None: ...
-def stop_sys_pipes() -> None: ...
-def load_ipython_extension(ip: _InteractiveShell) -> None: ...
-def unload_ipython_extension(ip: _InteractiveShell) -> None: ...
+def sys_pipes_forever(encoding: str = ..., bufsize: int | None = None) -> None:
+    """Redirect all C output to sys.stdout/err
+
+    This is not a context manager; it turns on C-forwarding permanently.
+    """
+
+def stop_sys_pipes() -> None:
+    """Stop permanent redirection started by sys_pipes_forever"""
+
+def load_ipython_extension(ip: _InteractiveShell) -> None:
+    """Register me as an IPython extension
+
+    Captures all C output during execution and forwards to sys.
+
+    Does nothing on terminal IPython.
+
+    Use: %load_ext wurlitzer
+    """
+
+def unload_ipython_extension(ip: _InteractiveShell) -> None:
+    """Unload me as an IPython extension
+
+    Use: %unload_ext wurlitzer
+    """
