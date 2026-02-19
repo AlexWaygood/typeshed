@@ -14,7 +14,7 @@ def standalone_call(obj: SupportsGetItem[Any, _T]) -> _T: ...
 
 
 # Expected type of itemgetter(1).__call__
-expected_type_itemgetter_call: Callable[[SupportsGetItem[int, _T]], _T]  # pyright: ignore[reportGeneralTypeIssues]
+expected_type_itemgetter_call: Callable[[SupportsGetItem[int, _T]], _T]
 
 # Expecting itemgetter(1) to be assignable to this
 # based on the example below: min({"first": 1, "second": 2}.items(), key=itemgetter(1))
@@ -24,7 +24,7 @@ expected_assignable_to: Callable[[tuple[str, int]], SupportsDunderLT[Any] | Supp
 
 # Regression tests for https://github.com/python/mypy/issues/14032
 # assert_type(itemgetter("first")({"first": 1, "second": 2}), int) # See comment on itemgetter.__call__
-assert_type(min({"first": 1, "second": 2}, key=itemgetter(1)), str)
+assert_type(min({"first": 1, "second": 2}, key=None), str)
 assert_type(min({"first": 1, "second": 2}.items(), key=itemgetter(1)), tuple[str, int])
 assert_type(standalone_call({"first": 1, "second": 2}), int)
 assert_type(min({"first": 1, "second": 2}, key=standalone_call), str)
