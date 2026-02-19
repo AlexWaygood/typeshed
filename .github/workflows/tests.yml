@@ -50,7 +50,7 @@ jobs:
           PACKAGES=$(python tests/get_external_stub_requirements.py)
           if [ -n "$PACKAGES" ]; then
               printf "Installing python packages:\n  $(echo $PACKAGES | sed 's/ /\n  /g')\n"
-              uv pip install --python-version ${{ matrix.python-version }} $PACKAGES
+              uv pip install --python-version 3.13 $PACKAGES
           fi
       - name: Activate the isolated venv for the rest of the job
         run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
