@@ -13,6 +13,9 @@ _T = TypeVar("_T")
 def standalone_call(obj: SupportsGetItem[Any, _T]) -> _T: ...
 
 
+standalone_call(None)
+
+
 # Expected type of itemgetter(1).__call__
 expected_type_itemgetter_call: Callable[[SupportsGetItem[int, _T]], _T]
 
