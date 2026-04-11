@@ -47,6 +47,7 @@ class GroupMappingMixin:
     def map_async(
         self, func: Callable[[_T], _S], iterable: Iterable[_T], callback: Callable[[list[_S]], object] | None = None
     ) -> Greenlet[..., list[_S]]: ...
+
     @overload
     def imap(self, func: Callable[[_T1], _S], iter1: Iterable[_T1], /, *, maxsize: int | None = None) -> IMap[[_T1], _S]: ...
     @overload
@@ -103,6 +104,7 @@ class GroupMappingMixin:
         *iterables: Iterable[Any],
         maxsize: int | None = None,
     ) -> IMap[_P, _S]: ...
+
     @overload
     def imap_unordered(
         self, func: Callable[[_T1], _S], iter1: Iterable[_T1], /, *, maxsize: int | None = None
@@ -171,10 +173,12 @@ class Group(GroupMappingMixin):
     greenlet_class: type[Greenlet[..., Any]]
     greenlets: set[Greenlet[..., Any]]
     dying: set[Greenlet[..., Any]]
+
     @overload
     def __init__(self) -> None: ...
     @overload
     def __init__(self, grenlets: Collection[Greenlet[..., object]], /) -> None: ...
+
     def __len__(self) -> int: ...
     def __contains__(self, item: Greenlet[..., object]) -> bool: ...
     def __iter__(self) -> Iterator[Greenlet[..., object]]: ...

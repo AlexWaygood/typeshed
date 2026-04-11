@@ -71,6 +71,7 @@ else:
 def start_new_thread(function: Callable[[Unpack[_Ts]], object], args: tuple[Unpack[_Ts]], /) -> int: ...
 @overload
 def start_new_thread(function: Callable[..., object], args: tuple[Any, ...], kwargs: dict[str, Any], /) -> int: ...
+
 @overload
 @deprecated("Obsolete synonym. Use `start_new_thread()` instead.")
 def start_new(function: Callable[[Unpack[_Ts]], object], args: tuple[Unpack[_Ts]], /) -> int: ...  # undocumented

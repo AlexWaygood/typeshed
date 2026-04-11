@@ -218,6 +218,7 @@ if sys.version_info >= (3, 11):
 def adapt(obj: Any, proto: Any, /) -> Any: ...
 @overload
 def adapt(obj: Any, proto: Any, alt: _T, /) -> Any | _T: ...
+
 def complete_statement(statement: str) -> bool: ...
 
 if sys.version_info >= (3, 12):
@@ -259,7 +260,6 @@ if sys.version_info >= (3, 12):
         uri: bool = False,
         autocommit: bool = ...,
     ) -> _ConnectionT: ...
-
 else:
     @overload
     def connect(

@@ -110,6 +110,7 @@ class DataBar(RuleType):
     color: ColorDescriptor[Literal[False]]
     __elements__: ClassVar[tuple[str, ...]]
     cfvo: Incomplete
+
     @overload
     def __init__(
         self,

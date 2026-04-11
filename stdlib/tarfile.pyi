@@ -193,6 +193,7 @@ class TarFile:
         debug: Literal[0, 1, 2, 3] | None = None,  # default 0
         errorlevel: Literal[0, 1, 2] | None = None,  # default 1
     ) -> Self: ...
+
     if sys.version_info >= (3, 14):
         @overload
         @classmethod
@@ -495,6 +496,7 @@ class TarFile:
         errorlevel: Literal[0, 1, 2] | None = None,  # default 1
         compresslevel: int = 9,
     ) -> Self: ...
+
     @classmethod
     def taropen(
         cls,
@@ -512,6 +514,7 @@ class TarFile:
         debug: Literal[0, 1, 2, 3] | None = None,  # default 0
         errorlevel: Literal[0, 1, 2] | None = None,  # default 1
     ) -> Self: ...
+
     @overload
     @classmethod
     def gzopen(
@@ -548,6 +551,7 @@ class TarFile:
         debug: Literal[0, 1, 2, 3] | None = None,  # default 0
         errorlevel: Literal[0, 1, 2] | None = None,  # default 1
     ) -> Self: ...
+
     @overload
     @classmethod
     def bz2open(
@@ -584,6 +588,7 @@ class TarFile:
         debug: Literal[0, 1, 2, 3] | None = None,  # default 0
         errorlevel: Literal[0, 1, 2] | None = None,  # default 1
     ) -> Self: ...
+
     @classmethod
     def xzopen(
         cls,
@@ -799,10 +804,12 @@ class TarInfo:
     def frombuf(cls, buf: bytes | bytearray, encoding: str, errors: str) -> Self: ...
     @classmethod
     def fromtarfile(cls, tarfile: TarFile) -> Self: ...
+
     @property
     def linkpath(self) -> str: ...
     @linkpath.setter
     def linkpath(self, linkname: str) -> None: ...
+
     def replace(
         self,
         *,

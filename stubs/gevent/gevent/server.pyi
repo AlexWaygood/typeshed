@@ -29,6 +29,7 @@ class StreamServer(BaseServer[_GeventSocket, _Address]):
     reuse_addr: ClassVar[int | None]
     wrap_socket = ssl_wrap_socket
     ssl_args: _SSLArguments | None
+
     @overload
     def __init__(
         self,
@@ -60,6 +61,7 @@ class StreamServer(BaseServer[_GeventSocket, _Address]):
         suppress_ragged_eofs: bool = True,
         ciphers: str = ...,
     ) -> None: ...
+
     @property
     def ssl_enabled(self) -> bool: ...
     @classmethod
@@ -79,6 +81,7 @@ class DatagramServer(BaseServer[_GeventSocket, _Address]):
     @classmethod
     def get_listener(cls, address: _StrictAddress, family: int | None = None) -> _GeventSocket: ...
     def do_read(self) -> tuple[_GeventSocket, _Address]: ...
+
     @overload
     def sendto(self, data: ReadableBuffer, address: _StrictAddress, /) -> int: ...
     @overload

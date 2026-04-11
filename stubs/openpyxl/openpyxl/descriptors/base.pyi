@@ -52,10 +52,12 @@ class Typed(Descriptor[_T], Generic[_T, _N]):
         allow_none: Literal[False] = False,
         nested: bool = False,
     ) -> None: ...
+
     @overload
     def __get__(self: Typed[_T, Literal[True]], instance: Serialisable | Strict, cls: type | None = None) -> _T | None: ...
     @overload
     def __get__(self: Typed[_T, Literal[False]], instance: Serialisable | Strict, cls: type | None = None) -> _T: ...
+
     @overload
     def __set__(self: Typed[_T, Literal[True]], instance: Serialisable | Strict, value: _T | None) -> None: ...
     @overload
@@ -78,6 +80,7 @@ class Convertible(Typed[_T, _N]):
         expected_type: _ExpectedTypeParam[_T],
         allow_none: Literal[False] = False,
     ) -> None: ...
+
     # NOTE: It is currently impossible to make a generic based on the parameter type of another generic
     # So we implement explicitly the types used internally
     # MultiCellRange
@@ -123,6 +126,7 @@ class Max(Convertible[_M, _N]):
     expected_type: type[_M]
     allow_none: _N
     max: float
+
     @overload
     def __init__(
         self: Max[int, Literal[True]], *, expected_type: _ExpectedTypeParam[int], allow_none: Literal[True], max: float
@@ -144,6 +148,7 @@ class Max(Convertible[_M, _N]):
         allow_none: Literal[False] = False,
         max: float,
     ) -> None: ...
+
     @overload  # type: ignore[override]  # Different restrictions
     def __set__(self: Max[int, Literal[True]], instance: Serialisable | Strict, value: ConvertibleToInt | None) -> None: ...
     @overload
@@ -157,6 +162,7 @@ class Min(Convertible[_M, _N]):
     expected_type: type[_M]
     allow_none: _N
     min: float
+
     @overload
     def __init__(
         self: Min[int, Literal[True]], *, expected_type: _ExpectedTypeParam[int], allow_none: Literal[True], min: float
@@ -178,6 +184,7 @@ class Min(Convertible[_M, _N]):
         allow_none: Literal[False] = False,
         min: float,
     ) -> None: ...
+
     @overload  # type: ignore[override]  # Different restrictions
     def __set__(self: Min[int, Literal[True]], instance: Serialisable | Strict, value: ConvertibleToInt | None) -> None: ...
     @overload
@@ -190,6 +197,7 @@ class Min(Convertible[_M, _N]):
 class MinMax(Min[_M, _N], Max[_M, _N]):
     expected_type: type[_M]
     allow_none: _N
+
     @overload
     def __init__(
         self: MinMax[int, Literal[True]],
@@ -241,6 +249,7 @@ class NoneSet(Set[_T | None]):
 class Integer(Convertible[int, _N]):
     allow_none: _N
     expected_type: type[int]
+
     @overload
     def __init__(self: Integer[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload
@@ -249,6 +258,7 @@ class Integer(Convertible[int, _N]):
 class Float(Convertible[float, _N]):
     allow_none: _N
     expected_type: type[float]
+
     @overload
     def __init__(self: Float[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload
@@ -257,15 +267,18 @@ class Float(Convertible[float, _N]):
 class Bool(Convertible[bool, _N]):
     expected_type: type[bool]
     allow_none: _N
+
     @overload
     def __init__(self: Bool[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload
     def __init__(self: Bool[Literal[False]], name: str | None = None, *, allow_none: Literal[False] = False) -> None: ...
+
     def __set__(self, instance: Serialisable | Strict, value: _ConvertibleToBool) -> None: ...
 
 class String(Typed[str, _N]):
     allow_none: _N
     expected_type: type[str]
+
     @overload
     def __init__(self: String[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload
@@ -332,10 +345,12 @@ class MatchPattern(Descriptor[_P], Generic[_P, _N]):
         pattern: bytes | Pattern[bytes],
         allow_none: Literal[False] = False,
     ) -> None: ...
+
     @overload
     def __get__(self: MatchPattern[_P, Literal[True]], instance: Serialisable | Strict, cls: type | None = None) -> _P | None: ...
     @overload
     def __get__(self: MatchPattern[_P, Literal[False]], instance: Serialisable | Strict, cls: type | None = None) -> _P: ...
+
     @overload
     def __set__(self: MatchPattern[_P, Literal[True]], instance: Serialisable | Strict, value: _P | None) -> None: ...
     @overload
@@ -344,10 +359,12 @@ class MatchPattern(Descriptor[_P], Generic[_P, _N]):
 class DateTime(Typed[datetime, _N]):
     allow_none: _N
     expected_type: type[datetime]
+
     @overload
     def __init__(self: DateTime[Literal[True]], name: str | None = None, *, allow_none: Literal[True]) -> None: ...
     @overload
     def __init__(self: DateTime[Literal[False]], name: str | None = None, *, allow_none: Literal[False] = False) -> None: ...
+
     @overload
     def __set__(self: DateTime[Literal[True]], instance: Serialisable | Strict, value: datetime | str | None) -> None: ...
     @overload

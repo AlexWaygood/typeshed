@@ -293,7 +293,6 @@ if sys.version_info >= (3, 11):
         pipesize: int = -1,
         process_group: int | None = None,
     ) -> CompletedProcess[Any]: ...
-
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
     @overload
@@ -495,7 +494,6 @@ elif sys.version_info >= (3, 10):
         umask: int = -1,
         pipesize: int = -1,
     ) -> CompletedProcess[Any]: ...
-
 else:
     @overload
     def run(
@@ -1066,7 +1064,6 @@ if sys.version_info >= (3, 11):
         pipesize: int = -1,
         process_group: int | None = None,
     ) -> Any: ...  # morally: -> str | bytes
-
 elif sys.version_info >= (3, 10):
     # 3.10 adds "pipesize" argument
     @overload
@@ -1250,7 +1247,6 @@ elif sys.version_info >= (3, 10):
         umask: int = -1,
         pipesize: int = -1,
     ) -> Any: ...  # morally: -> str | bytes
-
 else:
     @overload
     def check_output(

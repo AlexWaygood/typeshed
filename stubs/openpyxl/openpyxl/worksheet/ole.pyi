@@ -40,6 +40,7 @@ class ObjectPr(Serialisable):
     altText: String[Literal[True]]
     dde: Bool[Literal[True]]
     __elements__: ClassVar[tuple[str, ...]]
+
     @overload
     def __init__(
         self,
@@ -84,6 +85,7 @@ class OleObject(Serialisable):
     autoLoad: Bool[Literal[True]]
     shapeId: Integer[Literal[False]]
     __elements__: ClassVar[tuple[str, ...]]
+
     @overload
     def __init__(
         self,

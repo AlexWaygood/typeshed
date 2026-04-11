@@ -58,6 +58,7 @@ def lmplot(
     line_kws: dict[str, Any] | None = None,
     facet_kws: dict[str, Any] | None = None,
 ) -> FacetGrid: ...
+
 @overload
 def regplot(
     data: None = None,
@@ -124,6 +125,7 @@ def regplot(
     line_kws: dict[str, Any] | None = None,
     ax: Axes | None = None,
 ) -> Axes: ...
+
 @overload
 def residplot(
     data: None = None,

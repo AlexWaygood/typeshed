@@ -38,6 +38,7 @@ if sys.version_info >= (3, 11):
         @overload
         @abstractmethod
         def open(self, mode: Literal["rb"]) -> IO[bytes]: ...
+
         @property
         @abstractmethod
         def name(self) -> str: ...

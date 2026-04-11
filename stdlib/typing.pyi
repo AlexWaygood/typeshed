@@ -503,6 +503,7 @@ class SupportsAbs(Protocol[_T_co]):
 @runtime_checkable
 class SupportsRound(Protocol[_T_co]):
     __slots__ = ()
+
     @overload
     @abstractmethod
     def __round__(self) -> int: ...
@@ -548,6 +549,7 @@ class Generator(Iterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra, _Retur
     def __next__(self) -> _YieldT_co: ...
     @abstractmethod
     def send(self, value: _SendT_contra, /) -> _YieldT_co: ...
+
     @overload
     @abstractmethod
     def throw(
@@ -556,6 +558,7 @@ class Generator(Iterator[_YieldT_co], Protocol[_YieldT_co, _SendT_contra, _Retur
     @overload
     @abstractmethod
     def throw(self, typ: BaseException, val: None = None, tb: TracebackType | None = None, /) -> _YieldT_co: ...
+
     if sys.version_info >= (3, 13):
         def close(self) -> _ReturnT_co | None: ...
     else:
@@ -590,6 +593,7 @@ class Coroutine(Awaitable[_ReturnT_nd_co], Generic[_YieldT_co, _SendT_nd_contra,
 
     @abstractmethod
     def send(self, value: _SendT_nd_contra, /) -> _YieldT_co: ...
+
     @overload
     @abstractmethod
     def throw(
@@ -598,6 +602,7 @@ class Coroutine(Awaitable[_ReturnT_nd_co], Generic[_YieldT_co, _SendT_nd_contra,
     @overload
     @abstractmethod
     def throw(self, typ: BaseException, val: None = None, tb: TracebackType | None = None, /) -> _YieldT_co: ...
+
     @abstractmethod
     def close(self) -> None: ...
 
@@ -628,6 +633,7 @@ class AsyncGenerator(AsyncIterator[_YieldT_co], Protocol[_YieldT_co, _SendT_cont
     def __anext__(self) -> Coroutine[Any, Any, _YieldT_co]: ...
     @abstractmethod
     def asend(self, value: _SendT_contra, /) -> Coroutine[Any, Any, _YieldT_co]: ...
+
     @overload
     @abstractmethod
     def athrow(
@@ -638,6 +644,7 @@ class AsyncGenerator(AsyncIterator[_YieldT_co], Protocol[_YieldT_co, _SendT_cont
     def athrow(
         self, typ: BaseException, val: None = None, tb: TracebackType | None = None, /
     ) -> Coroutine[Any, Any, _YieldT_co]: ...
+
     def aclose(self) -> Coroutine[Any, Any, None]: ...
 
 _ContainerT_contra = TypeVar("_ContainerT_contra", contravariant=True, default=Any)
@@ -662,6 +669,7 @@ class Sequence(Reversible[_T_co], Collection[_T_co]):
     @overload
     @abstractmethod
     def __getitem__(self, index: slice[int | None], /) -> Sequence[_T_co]: ...
+
     # Mixin methods
     def index(self, value: Any, start: int = 0, stop: int = ..., /) -> int: ...
     def count(self, value: Any, /) -> int: ...
@@ -672,24 +680,28 @@ class Sequence(Reversible[_T_co], Collection[_T_co]):
 class MutableSequence(Sequence[_T]):
     @abstractmethod
     def insert(self, index: int, value: _T, /) -> None: ...
+
     @overload
     @abstractmethod
     def __getitem__(self, index: int, /) -> _T: ...
     @overload
     @abstractmethod
     def __getitem__(self, index: slice[int | None], /) -> MutableSequence[_T]: ...
+
     @overload
     @abstractmethod
     def __setitem__(self, index: int, value: _T, /) -> None: ...
     @overload
     @abstractmethod
     def __setitem__(self, index: slice[int | None], value: Iterable[_T], /) -> None: ...
+
     @overload
     @abstractmethod
     def __delitem__(self, index: int, /) -> None: ...
     @overload
     @abstractmethod
     def __delitem__(self, index: slice[int | None], /) -> None: ...
+
     # Mixin methods
     def append(self, value: _T, /) -> None: ...
     def clear(self) -> None: ...
@@ -781,6 +793,7 @@ class Mapping(Collection[_KT], Generic[_KT, _VT_co]):
     # see discussion in https://github.com/python/typing/pull/273.
     @abstractmethod
     def __getitem__(self, key: _KT, /) -> _VT_co: ...
+
     # Mixin methods
     @overload
     def get(self, key: _KT, /) -> _VT_co | None: ...
@@ -788,6 +801,7 @@ class Mapping(Collection[_KT], Generic[_KT, _VT_co]):
     def get(self, key: _KT, default: _VT_co, /) -> _VT_co: ...  # type: ignore[misc] # pyright: ignore[reportGeneralTypeIssues] # Covariant type as parameter
     @overload
     def get(self, key: _KT, default: _T, /) -> _VT_co | _T: ...
+
     def items(self) -> ItemsView[_KT, _VT_co]: ...
     def keys(self) -> KeysView[_KT]: ...
     def values(self) -> ValuesView[_VT_co]: ...
@@ -800,13 +814,16 @@ class MutableMapping(Mapping[_KT, _VT]):
     @abstractmethod
     def __delitem__(self, key: _KT, /) -> None: ...
     def clear(self) -> None: ...
+
     @overload
     def pop(self, key: _KT, /) -> _VT: ...
     @overload
     def pop(self, key: _KT, default: _VT, /) -> _VT: ...
     @overload
     def pop(self, key: _KT, default: _T, /) -> _VT | _T: ...
+
     def popitem(self) -> tuple[_KT, _VT]: ...
+
     # This overload should be allowed only if the value type is compatible with None.
     #
     # Keep the following methods in line with MutableMapping.setdefault, modulo positional-only differences:
@@ -817,6 +834,7 @@ class MutableMapping(Mapping[_KT, _VT]):
     def setdefault(self: MutableMapping[_KT, _T | None], key: _KT, default: None = None, /) -> _T | None: ...
     @overload
     def setdefault(self, key: _KT, default: _VT, /) -> _VT: ...
+
     # 'update' used to take a Union, but using overloading is better.
     # The second overloaded type here is a bit too general, because
     # Mapping[tuple[_KT, _VT], W] is a subclass of Iterable[tuple[_KT, _VT]],
@@ -894,18 +912,21 @@ class IO(Generic[AnyStr]):
     def truncate(self, size: int | None = None, /) -> int: ...
     @abstractmethod
     def writable(self) -> bool: ...
+
     @abstractmethod
     @overload
     def write(self: IO[bytes], s: ReadableBuffer, /) -> int: ...
     @abstractmethod
     @overload
     def write(self, s: AnyStr, /) -> int: ...
+
     @abstractmethod
     @overload
     def writelines(self: IO[bytes], lines: Iterable[ReadableBuffer], /) -> None: ...
     @abstractmethod
     @overload
     def writelines(self, lines: Iterable[AnyStr], /) -> None: ...
+
     @abstractmethod
     def __next__(self) -> AnyStr: ...
     @abstractmethod
@@ -984,6 +1005,7 @@ if sys.version_info >= (3, 10):
 def get_origin(tp: GenericAlias) -> type: ...
 @overload
 def get_origin(tp: Any) -> Any | None: ...  # AnnotationForm
+
 @overload
 def cast(typ: type[_T], val: Any) -> _T: ...
 @overload
@@ -1023,6 +1045,7 @@ class NamedTuple(tuple[Any, ...]):
     @overload
     @deprecated("Creating a typing.NamedTuple using keyword arguments is deprecated and support will be removed in Python 3.15")
     def __init__(self, typename: str, fields: None = None, /, **kwargs: Any) -> None: ...
+
     @classmethod
     def _make(cls, iterable: Iterable[Any]) -> typing_extensions.Self: ...
     def _asdict(self) -> dict[str, Any]: ...
@@ -1057,14 +1080,17 @@ class _TypedDict(Mapping[str, object], metaclass=ABCMeta):
     def items(self) -> dict_items[str, object]: ...
     def keys(self) -> dict_keys[str, object]: ...
     def values(self) -> dict_values[str, object]: ...
+
     @overload
     def __or__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...
     @overload
     def __or__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+
     @overload
     def __ror__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...
     @overload
     def __ror__(self, value: dict[str, Any], /) -> dict[str, object]: ...
+
     # supposedly incompatible definitions of __or__ and __ior__
     def __ior__(self, value: typing_extensions.Self, /) -> typing_extensions.Self: ...  # type: ignore[misc]
 

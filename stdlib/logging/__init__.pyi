@@ -566,6 +566,7 @@ fatal = critical
 
 def disable(level: int = 50) -> None: ...
 def addLevelName(level: int, levelName: str) -> None: ...
+
 @overload
 def getLevelName(level: int) -> str: ...
 @overload
@@ -576,6 +577,7 @@ if sys.version_info >= (3, 11):
     def getLevelNamesMapping() -> dict[str, int]: ...
 
 def makeLogRecord(dict: Mapping[str, object]) -> LogRecord: ...
+
 @overload  # handlers is non-None
 def basicConfig(
     *,
@@ -611,6 +613,7 @@ def basicConfig(
     handlers: None = None,
     force: bool | None = False,
 ) -> None: ...
+
 def shutdown(handlerList: Sequence[Any] = ...) -> None: ...  # handlerList is undocumented
 def setLoggerClass(klass: type[Logger]) -> None: ...
 def captureWarnings(capture: bool) -> None: ...
@@ -623,10 +626,12 @@ _StreamT = TypeVar("_StreamT", bound=SupportsWrite[str])
 class StreamHandler(Handler, Generic[_StreamT]):
     stream: _StreamT  # undocumented
     terminator: str
+
     @overload
     def __init__(self: StreamHandler[TextIO], stream: None = None) -> None: ...
     @overload
     def __init__(self: StreamHandler[_StreamT], stream: _StreamT) -> None: ...  # pyright: ignore[reportInvalidTypeVarUse]  #11780
+
     def setStream(self, stream: _StreamT) -> _StreamT | None: ...
     if sys.version_info >= (3, 11):
         def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...

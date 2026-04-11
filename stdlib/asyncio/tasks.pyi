@@ -223,7 +223,6 @@ if sys.version_info >= (3, 10):
     ]: ...
     @overload
     def gather(*coros_or_futures: _FutureLike[_T], return_exceptions: bool) -> Future[list[_T | BaseException]]: ...
-
 else:
     @overload
     def gather(  # type: ignore[overload-overlap]
@@ -354,25 +353,28 @@ def run_coroutine_threadsafe(coro: Coroutine[Any, Any, _T], loop: AbstractEventL
 
 if sys.version_info >= (3, 10):
     def shield(arg: _FutureLike[_T]) -> Future[_T]: ...
+
     @overload
     async def sleep(delay: float) -> None: ...
     @overload
     async def sleep(delay: float, result: _T) -> _T: ...
+
     async def wait_for(fut: _FutureLike[_T], timeout: float | None) -> _T: ...
 
 else:
     def shield(arg: _FutureLike[_T], *, loop: AbstractEventLoop | None = None) -> Future[_T]: ...
+
     @overload
     async def sleep(delay: float, *, loop: AbstractEventLoop | None = None) -> None: ...
     @overload
     async def sleep(delay: float, result: _T, *, loop: AbstractEventLoop | None = None) -> _T: ...
+
     async def wait_for(fut: _FutureLike[_T], timeout: float | None, *, loop: AbstractEventLoop | None = None) -> _T: ...
 
 if sys.version_info >= (3, 11):
     async def wait(
         fs: Iterable[_FT], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[_FT], set[_FT]]: ...
-
 elif sys.version_info >= (3, 10):
     @overload
     async def wait(  # type: ignore[overload-overlap]
@@ -382,7 +384,6 @@ elif sys.version_info >= (3, 10):
     async def wait(
         fs: Iterable[Awaitable[_T]], *, timeout: float | None = None, return_when: str = "ALL_COMPLETED"
     ) -> tuple[set[Task[_T]], set[Task[_T]]]: ...
-
 else:
     @overload
     async def wait(  # type: ignore[overload-overlap]

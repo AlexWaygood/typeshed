@@ -65,7 +65,6 @@ if sys.version_info >= (3, 10):
         encoding: str | None = None,
         errors: str | None = None,
     ) -> FileInput[Any]: ...
-
 else:
     # bufsize is dropped and mode and openhook become keyword-only
     @overload
@@ -144,7 +143,6 @@ class FileInput(Generic[AnyStr]):
             encoding: str | None = None,
             errors: str | None = None,
         ) -> None: ...
-
     else:
         # bufsize is dropped and mode and openhook become keyword-only
         @overload

@@ -16,6 +16,7 @@ def html_parts(
     doctitle: bool = True,
     initial_header_level: _HTMLHeaderLevel = 1,
 ) -> _WriterParts: ...
+
 @overload
 def html_body(
     input_string: str | bytes,
@@ -36,6 +37,7 @@ def html_body(
     doctitle: bool = True,
     initial_header_level: _HTMLHeaderLevel = 1,
 ) -> str | bytes: ...
+
 def internals(
     source: str,
     source_path: StrPath | None = None,
